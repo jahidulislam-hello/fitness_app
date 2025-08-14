@@ -1,0 +1,552 @@
+{
+"skipNow": "Skip Now",
+
+    "onboardingText1": "Your Health Journey \nStarts with Experts",
+    "onboardingText2": "Receive customized fitness routines and diet plans from top-class professionals to stay on track.",
+    "splashButtonText": "Start Your Journey!",
+    "alreadyAccount": "Already have an account?",
+    "globalEmail": "Enter E-mail",
+    "globalPass": "Enter Password",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signUpAppBar": "Registration",
+
+
+    "signUpName": "Name",
+    "Please enter name": "Please enter name",
+    "Please enter your email": "Please enter your email",
+    "Invalid email": "Invalid email",
+    "Please enter your Password": "Please enter your Password",
+    "Password: 8 characters min, letters & digits \nrequired": "Password: 8 characters min, letters & digits \nrequired",
+    "Please enter your Confirm Password": "Please enter your Confirm Password",
+    "Password Not Match": "Password Not Match",
+    "Confirm Password": "Confirm Password",
+
+    "confirmPassword": "Confirm Password",
+    "registerButton": "Register",
+
+
+    "signInForgetPass": "Forget Password?",
+    "signInLogin": "Let’s Go",
+    "signInDoNtHaveAccount": "Don’t have an account?",
+
+
+    "forgetPass": "E-mail Verification",
+    "forgetPassButton": "Send OTP",
+
+    "otpVerifyEmail": "Verify Email",
+    "otpDidNtGetCode": "Didn’t get the code?",
+    "otpResend": "Resend",
+    "otpVerifyButton": "Verify",
+    "send_otp": "Send OTP",
+    "otp_verify_email": "Verify Email with OTP",
+    "did_not_get_code": "Didn't receive a code?",
+    "resend_otp": "Resend OTP",
+    "verify_otp": "Verify OTP",
+
+
+    "resetNewsPass": "New Password",
+    "resetRePass": "Re-type New Password",
+    "resetButton": "Reset Password",
+    "reset_password": "Reset Password",
+    "new_password": "New Password",
+    "confirm_password": "Confirm Password",
+    "reset_button": "Reset Password",
+
+
+    "homeWorkOutText": "Today’s Workout Plan",
+    "homeMealText": "Today’s Meal Plan",
+    "homeSportsText": "Today’s Sports Plan",
+
+
+    "sportsText": "Get Ready for the Sports",
+    "sportsButton": "Go to Sports",
+    "workoutText": "Get Ready for the Workout",
+    "workoutButton": "Go to WorkOut",
+    "mealText": "Get Ready for the Meal",
+    "mealButton": "Go to Meal Plan",
+
+
+    "searchText": "Search Here",
+
+    "subscriptionAppBar": "Tune in Price",
+    "subscriptionText": "Tune in to get full access to all the songs. Select the package you prefer 🎧",
+
+
+    "subscription_packages_title": "Subscription Packages",
+    "subscription_no_plan": "You’re not subscribed to any plan",
+    "subscription_message": "Please subscribe a plan to use all the features",
+    "subscription_feature1": "Get your workout plan & track records!",
+    "subscription_feature2": "Get your meal plan & control diets!",
+    "subscription_monthly": "Monthly",
+    "subscription_monthly_price": "9.99 /month",
+    "subscription_monthly_subtitle": "Buy for monthly subscription",
+    "subscription_join_now": "Join Now",
+    "subscription_yearly": "Yearly",
+    "subscription_yearly_price": "60 /year",
+    "subscription_yearly_discount": "50% saves than the monthly",
+    "subscription_member_question": "Are you a member of Gimnasio Escorpión?",
+    "subscription_use_coupon": "Use coupon to join the app",
+    "subscription_use_coupon_button": "Use coupon",
+
+
+    "congratulationsTitle": "Congratulations!",
+    "congratulationsButton": "Back to home",
+    "congratulationsSubTitle": "You have successfully purchased the Package. Now you can enjoy it offline from my music tab, anytime anywhere.",
+
+
+    "settingPass": "Change password",
+    "settingPrivacy": "Privacy policy",
+    "settingTerms": "Terms & conditions",
+    "settingAbout": "About us",
+
+
+    "changePassAppBar": "Change Password",
+    "changeCurrentPass": "Current password",
+    "changeNewPass": "Set new password",
+    "changeRePass": "Re-type New Password",
+    "changePassButton": "Save",
+    "changeForget": "Forgot Password?",
+
+
+    "profileAppBar": "My Profile",
+    "profileButton": "Following",
+    "profilePicUpdate": "Upload picture",
+
+    "hint_gender": "Please select your gender",
+    "hint_age": "What is your age?",
+    "hint_height": "What is your Height? (in cm)",
+    "hint_weight": "What is your weight? (in kg)",
+    "hint_objective": "Objective",
+    "hint_activity": "Activity Level",
+
+    "gender_male": "male",
+    "gender_female": "Female",
+    "gender_other": "Other",
+    "gender_prefer_not_to_say": "Prefer Not to Say",
+
+    "objective_bulk": "Bulk",
+    "objective_lean": "Lean",
+    "objective_main": "Maingain",
+
+    "activity_basic": "Basic",
+    "activity_intermediate": "Intermediate",
+    "activity_advanced": "Advanced",
+
+    "lets_go": "Let's Go",
+    "cancel": "Cancel",
+    "agree": "Agree",
+
+
+
+    "disclaimer":"Disclaimer",
+    "disclaimerText":"Protein and fat values based on 2018 ISSN exercise & sports nutrition review. Carbohydrate values represent the remaining calories after calculating protein and fat.",
+
+    "home_greeting": "Home",
+    "home_hello": "Hello",
+    "home_macros": "Macros",
+    "home_carbs": "Carbs",
+    "home_fat": "Fat",
+    "home_protein": "Protein",
+    "home_left": "left",
+    "workout_title":"Today’s Workout Plan",
+    "home_workout": "Get Ready for the Workout",
+    "home_workout_btn": "Make Your Plan",
+    "meal_title":"Today’s Meal Plan",
+    "home_meal": "Get Ready for the Healthy Diet",
+    "home_meal_btn": "Make Your Plan",
+
+
+"profile_title": "Profile",
+"profile_name": "Jane Cooper",
+"Profile Information": "Profile Information",
+"subscription": "Subscription",
+"settings": "Settings",
+"logout": "Logout",
+"logout_confirmation": "Are you sure you want to",
+"logout_question": "logout?",
+"notification": "notification",
+
+    "your_name": "Your Name",
+    "email": "E-mail",
+    "address": "Address",
+    "gender": "Gender",
+    "age": "Age",
+    "height": "Height",
+    "weight": "Weight",
+    "edit_profile": "Edit Profile",
+
+
+    "profile_update": "Profile Update",
+    "gallery": "Gallery",
+    "camera": "Camera",
+    "update_profile": "Update Profile",
+
+    "setting": "Setting",
+    "change_password": "Change Password",
+    "change_language": "Change Language",
+    "privacy_policy": "Privacy Policy",
+    "terms_of_services": "Terms of Services",
+    "about_us": "About Us",
+
+
+    "old_password": "Old Password",
+    "forgot_password": "Forgot Password",
+
+
+    "language_title": "Language",
+    "english": "English",
+    "spanish": "Spanish",
+
+
+    "Our Policy": "Our Policy",
+
+
+
+    "notification_title": "Notification",
+    "notification_time": "1 Hour Ago",
+    "notification_offer_title": "Today’s Special Offers",
+    "notification_offer_subtitle": "Customers will get a special promo today.",
+
+    "subscription_title": "My Subscription",
+    "subscription_plan_message": "You’re subscribed to the BASIC plan",
+    "subscription_plan_expiry": "Plan is active until 30th October, 2024",
+    "subscription_see_packages": "See Packages",
+    "subscription_back_home": "Back to Home",
+
+    "coupon_title": "Gym Member Coupon",
+    "coupon_enter_code": "Enter Code",
+    "coupon_placeholder": "Enter your code",
+    "coupon_confirm": "Confirm",
+
+
+    "cart_title": "Shopping List",
+    "category_meats": "Meats, Poultry, and Fish",
+    "category_dairy": "Dairy and Cold Cuts",
+    "category_vegetables": "Vegetables",
+    "weight_unit": "150g",
+
+
+    "your_workout_plan": "Your Workout Plan",
+    "week1": "week 1",
+    "week2": "week 2",
+    "week3": "week 3",
+    "week4": "week 4",
+    "workout_plan_for": "Workout Plan for",
+    "day_01": "Day-01 (Legs)",
+    "day_02": "Day-02 (Chest)",
+    "day_03": "Day-03 (Back)",
+    "day_04": "Day-04 (Legs)",
+    "complete": "Complete",
+    "incomplete": "Incomplete",
+
+    "gymExercise": "Gym Exercise",
+    "workoutPlanDay": "Workout plan Day-01",
+    "exerciseInstruction": "Exercise instruction of Pull Up",
+    "description": "Lorem ipsum dolor sit amet consectetur. Mi nibh aenean est quis euismod.",
+    "reps": "10 Reps",
+    "sets": "4 Sets",
+    "swapToChange": "swap to change",
+    "finishExercise": "Finish Today's exercise",
+    "pullUp": "Pull Up",
+    "trackYourBestReps": "Track your best reps",
+    "trackBestRepsHint": "Track your best reps below. If you used bodyweight, just don’t enter weight.",
+    "weightKg": "Weight (kg)",
+    "trackRepsButton": "Track Reps",
+
+
+    "swap_exercise": "Swap Exercise",
+    "search_workout": "Search the workout you want to swap",
+    "search_here": "Search Here",
+
+    "pushUp": "Push Up",
+    "squat": "Squat",
+    "deadlift": "Deadlift",
+    "benchPress": "Bench Press",
+    "lunges": "Lunges",
+    "plank": "Plank",
+    "burpees": "Burpees",
+    "jumpRope": "Jump Rope",
+    "mountainClimbers": "Mountain Climbers",
+
+
+    "workout_generate": "Workout Generate",
+    "generate_routine_for": "Generate your routine for",
+    "workout": "Workout",
+    "training_location": "Training Location",
+    "at_home": "At Home",
+    "at_gym": "At the Gym",
+    "training_duration": "Training Duration?",
+    "20_minutes": "20 minutes",
+    "45_minutes": "45 minutes",
+    "60_minutes": "60 minutes",
+    "weekly_frequency": "Weekly Frequency",
+    "training_level": "Training Level",
+    "basic": "Basic",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced",
+    "muscles_of_interest": "Muscles of Interest",
+    "general_growth": "General Growth",
+    "Legs and Glutes": "Legs and Glutes",
+    "back": "Back",
+    "chest": "Chest",
+    "shoulders_arms": "Shoulders and Arms",
+    "Core": "Core",
+    "injuries": "Injuries",
+    "lower_back": "Lower Back",
+    "knees": "Knees",
+    "shoulder_rotator_cuff": "Shoulder (Rotator Cuff)",
+    "none": "N/A",
+    "generate_routine": "Generate Routine",
+
+    "basic_info": "Basic Info",
+
+    "meal_plan": "Meal Plan",
+
+    "hint_training_location": "Select Training Location",
+    "hint_training_duration":"Select Training Duration",
+
+    "hint_training_level": "Select Training Level",
+
+    "hint_muscle_group": "Select Muscle Group",
+
+    "legs": "Legs",
+
+
+    "shoulders_and_arms": "Shoulders and Arms",
+    "hint_injuries": "Select Injuries",
+
+
+    "Any injuries": "Any injuries",
+    "Lower back": "Lower back",
+    "knees": "knees",
+    "shoulder (Rotator cuff)": "shoulder (Rotator cuff)",
+    "no_injuries": "No Injuries",
+
+
+    "shoulder": "Shoulder",
+    "hint_frequency": "Frequency per week",
+    "submit": "Submit",
+    "hint_diet": "Select Diet",
+    "hint_daily_meal": "Daily meals",
+    "no_restrictions": "No Restrictions",
+    "vegan": "Vegan",
+    "vegetarian": "Vegetarian",
+    "keto": "Keto",
+    "low_carb": "Low Carb",
+    "hint_goal": "Select Goal",
+    "bulking": "Bulking",
+    "cutting": "Cutting",
+    "maintenance": "Maintenance",
+    "hint_food_preferences": "Select Food Preferences",
+    "protein": "Protein",
+    "carbs": "Carbs",
+    "fat": "Fat",
+
+    "trial_text":"Get 3 Days free trial",
+
+
+    "Please select your Gender": "Please select your Gender",
+    "What is your age?": "What is your age?",
+    "age":"age",
+    "Please enter Age":"Please enter Age",
+    "What is your Height?":"What is your Height?",
+    "Enter Your Height":"Enter Your Height",
+    "Information":"Information",
+    "Workout":"Workout",
+    "Meal Plan":"Meal Plan",
+    "Sedentary (0 active days/week)":"Sedentary (0 active days/week)",
+    "Light ( 1-3 active days/ week )":"Light ( 1-3 active days/ week )",
+    "Moderate ( 3-5 active days/ week )":"Moderate ( 3-5 active days/ week )",
+    "Active ( 5-7 active days/ week )":"Active ( 5-7 active days/ week )",
+    "Which country are you from?":"Which country are you from?",
+    "You can always fully custom your routine and diet afterwards":"You can always fully custom your routine and diet afterward",
+    "Select your activity level":"Select your activity level",
+    "Fitness Level?": "Fitness Level?",
+    "Where do you train ?":"Where do you train ?",
+    "How long do you train ?":"How long do you train ?",
+    "Interested in growing a specific muscle":"Interested in growing a specific muscle",
+    "How often do you want to train ? (2,3,4,5 days)":"How often do you want to train ? (2,3,4,5 days)",
+    "Mon": "Mon", "Tue":"Tue", "Wed":"Wed", "Thu":"Thu", "Fri":"Fri" , "Sat":"Sat", "Sun":"Sun",
+
+
+   "Meal plan": " ===============Meal plan========================",
+
+    "Objective":"Objective",
+    "Lean":"Lean",
+    "Bulk":"Bulk",
+    "Which meals do you do a day?":"Which meals do you do a day?",
+    "Breakfast":"Breakfast",
+    "Snack":"Snack",
+    "Lunch":"Lunch",
+    "Evening meal":"Evening meal",
+    "Dinner":"Dinner",
+    "What is your current Weight? ":"What is your current Weight?",
+    "100":"100",
+    "lbs":"lbs",
+    "What is your objective Weight? ":"What is your objective Weight? ",
+    "90":"90",
+    "Which food do you like ?":"Which food do you like ?",
+    "Chicken":"Chicken",
+    "Fish":"Fish",
+    "Egg":"Egg",
+    "Carbs":"Carbs",
+    "Lettuce":"Lettuce",
+    "Beetroot":"Beetroot",
+    "Carrot":"Carrot",
+    "Brocolli":"Brocolli",
+    "Cabbage":"Cabbage",
+    "Beef":"Beef",
+    "Dairy":"Dairy",
+    "Cheese":"Cheese",
+    "Chocolate":"Chocolate",
+    "Curd":"Curd",
+    "Milk":"Milk",
+    "What speed you want to achieve your goal?":"What speed you want to achieve your goal?",
+    "Slow":"Slow",
+    "Neutral":"Neutral",
+    "Fast":"Fast",
+    "Submit":"Submit",
+
+
+
+    "Protiesn": "=========================Protiesn====================",
+
+    "Lean minced meat": "Lean minced meat",
+    "Churrasco de rump": "Churrasco de rump",
+    "Entrails": "Entrails",
+    "Tri Tip": "Tri Tip",
+    "Ribs": "Ribs",
+    "Flap": "Flap",
+    "Picanha": "Picanha",
+    "Back": "Back",
+    "Rib eye": "Rib eye",
+    "Sirloin Steak/Chorizo Steak": "Sirloin Steak/Chorizo Steak",
+    "Vacuum steak": "Vacuum steak",
+    "Chicken (skinless breast)": "Chicken (skinless breast)",
+    "Chicken (legs)": "Chicken (legs)",
+    "Pork (loin)": "Pork (loin)",
+    "Pork (Ribs)": "Pork (Ribs)",
+    "Salmon (raw)": "Salmon (raw)",
+    "Tuna (raw)": "Tuna (raw)",
+    "Hake (raw)": "Hake (raw)",
+    "Sardine": "Sardine",
+    "Egg (whole)": "Egg (whole)",
+    "Egg whites": "Egg whites",
+    "Tofu": "Tofu",
+    "Seitan": "Seitan",
+    "Whey": "Whey",
+    "Soy": "Soy",
+    "Lentils": "Lentils",
+    "Chickpeas": "Chickpeas",
+    "Body fat": "Body fat",
+    "What’s your current body fat?": "What’s your current body fat?",
+    "You can always fully customize your routine and diet afterwards.": "You can always fully customize your routine and diet afterwards.",
+
+    "What’s your bodyfat goal?": "What’s your bodyfat goal?",
+    "Generate Routine": "Generate Routine",
+    "You can use the app for free! With limited functions Or you can become a premium user to unlock all of them": "You can use the app for free! With limited functions Or you can become a premium user to unlock all of them",
+    "Get free Trial for 7 days": "Get free Trial for 7 days",
+    "Free Trial": "Free Trial",
+    "Tap to change": "Tap to change",
+    "Go to exercise": "Go to exercise",
+    "Your Workout": "Your Workout",
+  "Eat Now": "Eat Now",
+  "Workouts": "Workouts",
+  "+ Add  Exercise": "+ Add  Exercise",
+  "Push Ups": "Push Ups",
+  "Swap workout": "Swap workout",
+  "Add Exercise": "Add Exercise",
+  "Update Your Plan": "Update Your Plan",
+  "Get Ready for the Healthy Diet": "Get Ready for the Healthy Dietn",
+  "Meal Generate": "Meal Generate",
+  "Generate your routine for Meal": "Generate your routine for Meal",
+  "Food": "Food",
+  "Search your food": "Search your food",
+  "Create Food": "Create Food",
+  "Name": "Name",
+  "Category": "Category",
+  "Serving weight": "Serving weight",
+  "Calories": "Calories",
+  "Carbs": "Carbs",
+  "Protine": "Protine",
+  "Fat": "Fat",
+  "My Food": "My Food",
+  "My recipe": "My recipe",
+  "Search food": "Search food",
+  "+ Add New Food": "+  Add New Food",
+  "Add In Breakfast": "Add In Breakfast",
+
+   "Progresss": "///Progress======================================= ",
+
+  "Monthly": "Monthly",
+  "Yearly": "Yearly",
+  "Weight in": "Weight in",
+  "Weight Chart": "Weight Chart",
+  "Track your weights": "Track your weights",
+  "Badges": "Badges",
+  "Recent activity": "Recent activity",
+  "Leaderboard": "Leaderboard",
+  "Early Bird": "Early Bird",
+  "Power lifter": "Power lifter",
+  "Master": "Master",
+  "No excuse": "No excuse",
+  "Exercise Time": "Exercise Time",
+
+  "Start talking with Gym bro": "Start talking with Gym bro",
+  "Hey bro, how can I help you today?": "Hey bro, how can I help you today?",
+
+
+  "Protien": "Protien",
+  "Meats, Poultry, and Fish": "Meats, Poultry, and Fish",
+  "Dairy and Cold Cuts": "Dairy and Cold Cuts",
+  "Vegetables": "Vegetables",
+
+
+  "Add workout": "Add workout",
+  "+ Add  New Workout": "+ Add  New Workout",
+  "Add workout picture": "Add workout picture",
+  "Add new meal": "Add new meal",
+  "Add meal picture": "Add meal picture",
+
+
+  "how many days do you want to train": "how many days do you want to train?",
+  "\uD83C\uDF1F You can use the app for free! \uD83C\uDF1F": "\uD83C\uDF1F You can use the app for free! \uD83C\uDF1F",
+  "✨ Super Easy to Use:": "✨ Super Easy to Use:",
+  "\uD83D\uDCF1 TheFirst All-in-One Fitness App:": "\uD83D\uDCF1 TheFirst All-in-One Fitness App:",
+  "\uD83E\uDD16 Virtual Gym Bro:": "\uD83E\uDD16 Virtual Gym Bro:",
+  "\uD83C\uDF1F Habit Creation and track:": "\uD83C\uDF1F Habit Creation and track:",
+  "\uD83C\uDFC5 Achievement Badges:": "\uD83C\uDFC5\nAchievement Badges:",
+  "\uD83C\uDFC5 Division:": "\uD83C\uDFC5 Division:",
+  "❓\n Still in doubt?": "❓\n Still in doubt?",
+
+  "Build the habits that lead to success!": "Build the habits that lead to success!",
+  "Great Prices:": "Great Prices:",
+  "Training Tracking:": "Training Tracking:",
+  "Your digital training buddy!": "Your digital training buddy!",
+  "Personalized Workout Plans:": "Personalized Workout Plans:",
+  "Personalized Meal Plans:": "Personalized Meal Plans:",
+  "Crafted just for you.": "Crafted just for you.",
+  "Tailored to your goals.": "Tailored to your goals.",
+  "Check your ranking and see how you stack up!": "Check your ranking and see how you stack up!",
+  "Shopping Cart:": "Shopping Cart:",
+  "5-day free trial": "5-day free trial",
+  "Take the": "Take the",
+  "and see for yourself!": "and see for yourself!",
+  "For seamless planning and purchases!": "For seamless planning and purchases!",
+  "Fully customize your own workout plans and visualize your progress!": "Fully customize your own workout plans and visualize your progress!",
+
+  "With no loss in functions or possibilities! ": "With no loss in functions or possibilities!",
+  "Create personalized meal plans, view your progress, and history! ": "Create personalized meal plans, view your progress, and history!",
+  "Access all these amazing features without breaking the bank!": "Access all these amazing features without breaking the bank!"
+
+
+
+
+
+
+
+
+
+
+}
