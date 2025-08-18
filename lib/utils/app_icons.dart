@@ -9,6 +9,11 @@ class AppIcons{
 
   static const String cheloperIcon = "$path/cheloperIcon.svg";
   static const String profiles = "$path/profiles.svg";
+  static const String qIcon = "$path/qIcon.svg";
+  static const String qIcon2 = "$path/qIcon2.svg";
+  static const String qIcon3 = "$path/qIcon3.svg";
+  static const String qIcon4 = "$path/qIcon4.svg";
+  static const String qIcon5 = "$path/qIcon5.svg";
   static const Icon profile = Icon(Icons.person,);
   static const Icon email = Icon(Icons.email_outlined);
   static const Icon key = Icon(Icons.key);
