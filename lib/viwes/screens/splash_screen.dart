@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../helpers/helpers.dart';
+import '../../routes/routes_name.dart';
 import '../../utils/utils.dart';
 
-
+import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -31,11 +33,20 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     );
 
     // Navigate after splash screen duration
-    Future.delayed(const Duration(seconds: 3), () {
-      // Navigate to the next screen
-      // For example: Navigator.pushReplacementNamed(context, '/home');
-    });
+    _goNext();
   }
+  Future<void> _goNext() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    String token = await PrefsHelper.getString(AppConstants.bearerToken);
+
+    if (token.isNotEmpty) {
+      context.goNamed(RouteNames.signInScreen);
+    } else {
+      context.goNamed(RouteNames.onboardingScreen);
+    }
+  }
+
 
   @override
   void dispose() {

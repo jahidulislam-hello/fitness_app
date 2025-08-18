@@ -4,6 +4,11 @@ class RouteNames{
 
   static const String splashScreen='/';
   static const String onboardingScreen='/OnboardingScreen';
+  static const String fitnessQuestionScreen='/fitnessQuestionScreen';
+  static const String fitnessQuestionScreen2='/fitnessQuestionScreen2';
+  static const String fitnessQuestionScreen3='/fitnessQuestionScreen3';
+  static const String fitnessQuestionScreen4 ='/fitnessQuestionScreen4';
+  static const String questionFinalScreen ='/questionFinalScreen';
 
   static const String signInScreen='/SignInScreen';
   static const String singUpScreen='/SingUpScreen';

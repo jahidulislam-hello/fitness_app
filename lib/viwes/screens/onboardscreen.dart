@@ -1,11 +1,16 @@
 
-
 import 'package:flutter/material.dart';
-
-import '../../controller/controllers.dart';
 import 'package:get/get.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
+import '../../controller/controllers.dart';
+import '../../routes/routes_name.dart';
 import '../../utils/utils.dart';
+import '../../global widget/global_widget.dart';
+
+import 'package:go_router/go_router.dart';
+
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -14,37 +19,48 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  // bool isEnglish = true;
-  // late VideoPlayerController _controller;
-  // // Initialize the video player with your asset video or network video URL
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Initialize the video player with your asset video or network video URL
-  //   _controller = VideoPlayerController.networkUrl(
-  //     Uri.parse('https://escorpion-fitness-asifur-rahman.sarv.live/video/intro-video-es.mp4'),
-  //   ) // Replace with a network URL if needed
-  //     ..initialize().then((_) {
-  //       setState(() {
-  //         _controller.play(); // Auto-play video
-  //       });
-  //     });
-  //   // Listen for video completion and navigate to the next screen
-  //   // _controller.addListener(() async{
-  //   //   if (_controller.value.position == _controller.value.duration) {
-  //   //     // When the video reaches the end, navigate to the home screen
-  //   //
-  //   //       // String token = await PrefsHelper.getString(AppConstants.bearerToken);
-  //   //       // if(token.isNotEmpty){
-  //   //       //   Get.offAllNamed(RouteNames.customNavBar);
-  //   //       // }else{
-  //   //       //   Get.offAllNamed(RouteNames.signInScreen);
-  //   //       // }
-  //   //
-  //   //
-  //   //   }
-  //   // });
-  // }
+  int currentPage = 0;
+  final PageController _pageController = PageController();
+
+  final List<Map<String, String>> onboardingData = [
+    {
+      "title": "Your Care Journey Starts Here",
+      "description":
+      "Whether you're a Nurse, Carer, or Cleaner — we connect you with real opportunities to support people in their homes.",
+      "onboardImage": "assets/images/firstOnbordIcon.png",
+    },
+    {
+      "title": "Care When You Can",
+      "description":
+      "Choose the jobs that fit your availability — morning, evening, or weekends. You're in control.",
+      "onboardImage": "assets/images/secondOnbordIcons.png",
+    },
+    {
+      "title": "Track Hours. See Your Earnings.",
+      "description":
+      "Clock in/out with one tap and keep track of your pay with ease. We make it simple to stay on top of your time.",
+      "onboardImage": "assets/images/thirdOnbordIcon.png",
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController.addListener(() {
+      final newPage = _pageController.page?.round() ?? 0;
+      if (newPage != currentPage) {
+        setState(() {
+          currentPage = newPage;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
 
   final LocalizationController _localizationController =
   Get.find<LocalizationController>(); // Tracks the current language state
@@ -55,33 +71,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final sizeW = MediaQuery.sizeOf(context).width;
 
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
-          // Main image
-          // Image.asset(
-          //   AppImages.onBoarding,
-          //   fit: BoxFit.fitHeight,
-          //   height: double.infinity,
-          //   width: double.infinity,
-          // ),
-
-
-
-          // SizedBox(
-          //   height: double.infinity,
-          //   width: double.infinity,
-          //   child: FittedBox(
-          //     fit: BoxFit.cover, // Ensures the video covers the full screen
-          //     child: SizedBox(
-          //       width: _controller.value.size.width,
-          //       height: _controller.value.size.height,
-          //       child: VideoPlayer(_controller),
-          //     ),
-          //   ),
-          // ),
-          // Dark shadow
-          Container(color: Colors.black.withOpacity(0.5),),
           // Main content
           Center(
             child: Padding(
@@ -89,143 +81,188 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // App logo
-                  // SizedBox(height: sizeH * .03),
-                  // Image.asset(
-                  //   AppImages.finalLogo,
-                  //   height: sizeH * .3,
-                  //   width: sizeW * .7,
-                  //   color: Colors.white,
-                  // ),
-                  // SizedBox(height: sizeH * .10),
-                  //
-                  // // Title
-                  // HeadingTwo(
-                  //   data: 'onboardingText1'.tr,
-                  //   fontSize: sizeH * .030,
-                  //   color: AppColors.primaryColor,
-                  // ),
-                  // SizedBox(height: sizeH * .03),
-                  //
-                  // // Subtitle
-                  // HeadingThree(
-                  //   data: 'onboardingText2'.tr,
-                  //   fontSize: sizeH * .018,
-                  //   color: Colors.white,
-                  // ),
-                  // SizedBox(height: sizeH * .03),
-                  Spacer(),
-                  // Button
-                  // CustomTextButton(
-                  //   text: 'splashButtonText'.tr,
-                  //   onTap: () {
-                  //     Get.offAllNamed(RouteNames.singUpScreen);
-                  //   },
-                  // ),
-                  // SizedBox(height: sizeH * .01),
-                  //
-                  // // Already have account
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     HeadingThree(
-                  //       data: 'alreadyAccount'.tr,
-                  //       fontSize: sizeH * .018,
-                  //       color: Colors.white,
-                  //     ),
-                  //     StyleTextButton(
-                  //       text: 'signIn'.tr,
-                  //       onTap: () {
-                  //         Get.offAllNamed(RouteNames.signInScreen);
-                  //       },
-                  //     ),
-                  //     SizedBox(height: sizeH * .03),
-                  //   ],
-                  // ),
+                  // CarouselSlider Implementation
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 380.h, // You can change the height based on your design
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: true,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          currentPage = index;
+                        });
+                      },
+                    ),
+                    items: onboardingData.map((data) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  data["onboardImage"]!,
+                                  width: 405.w,
+                                  height: 320.h,
+                                  fit: BoxFit.contain,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }).toList(),
+                  ),
+
+                  // Optional: Page Indicator (if required)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      onboardingData.length,
+                          (index) => Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        height: 14.h,
+                        width: 10.w,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: currentPage == index
+                              ? Colors.black
+                              : Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "Track Your Macros. Log your Workouts. See Results.".tr,
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      color: Color(0xff222222)
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
                 ],
               ),
             ),
+          ),
+
+          // Get Started Button
+          Positioned(
+            bottom: 100.h,
+            left: sizeW * 0.12,
+            right: sizeW * 0.12,
+            child: CustomTextButton(
+              text:  'Get Started'.tr,
+              onTap: () {
+                context.pushNamed(RouteNames.fitnessQuestionScreen);
+
+
+                // Navigate to next screen
+              },
+            ),
+          ),
+
+
+          Positioned(
+            bottom: 40.h,
+            left: sizeW * 0.20,
+            right: sizeW * 0.12,
+            child: Row(
+              children: [
+                CustomText(text: "Already have an account?",),
+                InkWell(
+                    onTap: (){
+                      context.pushNamed(RouteNames.signInScreen);
+                    },
+                    child: CustomText(text: " Log In",color: AppColors.primaryColor,fontWeight: FontWeight.w500,))
+              ],
+            )
           ),
 
           // Language toggle at the top-right
           Positioned(
             top: sizeH * 0.05,
             right: sizeW * 0.05,
-            child: Row(
-              children: [
-                Text(
-                  'language_title'.tr,
-                  style: TextStyle(color: Colors.white, fontSize: sizeH * 0.02),
-                ),
-                const SizedBox(width: 8),
-                // Toggle for language
-                Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+            child:Row(
+                children: [
+                  Text(
+                    'language_title'.tr,
+                    style: TextStyle(color: Colors.white, fontSize: sizeH * 0.02),
                   ),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          // setState(() {
-                          //    = false;
-                          //   Get.updateLocale(const Locale('es', 'ES'));
-                          // });
-                        },
-                        child: Text(
-                          'Esp',
-                          style: TextStyle(
-                            color: _localizationController.isLtr
-                                ? Colors.grey
-                                : Colors.white,
-                            fontWeight: FontWeight.bold,
+                  const SizedBox(width: 8),
+                  // Toggle for language
+                  Container(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            // setState(() {
+                            //    = false;
+                            //   Get.updateLocale(const Locale('es', 'ES'));
+                            // });
+                          },
+                          child: Text(
+                            'Spanish',
+                            style: TextStyle(
+                              // color: _localizationController.isLtr
+                              //     ? Colors.grey
+                              //     : Colors.white,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      Switch(
-                        value: _localizationController.isLtr,
-                        onChanged: (value) {
-                          setState(() {
-                            //   isEnglish = value;
-                            //   Get.updateLocale(value
-                            //       ? const Locale('en', 'US')
-                            //       : const Locale('es', 'ES'));
-                            _localizationController.isLtr
-                                ? _localizationController
-                                .setLanguage(const Locale('es', "ES"))
-                                : _localizationController
-                                .setLanguage(const Locale('en', "US"));
-                          });
-                        },
-                        activeColor: AppColors.primaryColor,
-                        inactiveThumbColor: Colors.white,
-                        inactiveTrackColor: Colors.grey,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          // setState(() {
-                          //   isEnglish = true;
-                          //   Get.updateLocale(const Locale('en', 'US'));
-                          // });
-                        },
-                        child: Text(
-                          'Eng',
-                          style: TextStyle(
-                            color: _localizationController.isLtr
-                                ? Colors.white
-                                : Colors.grey,
-                            fontWeight: FontWeight.bold,
+                        Switch(
+                          value: _localizationController.isLtr,
+                          onChanged: (value) {
+                            setState(() {
+                              //   isEnglish = value;
+                              //   Get.updateLocale(value
+                              //       ? const Locale('en', 'US')
+                              //       : const Locale('es', 'ES'));
+                              _localizationController.isLtr
+                                  ? _localizationController
+                                  .setLanguage(const Locale('es', "ES"))
+                                  : _localizationController
+                                  .setLanguage(const Locale('en', "US"));
+                            });
+                          },
+                          activeColor: AppColors.primaryColor,
+                          inactiveThumbColor: Colors.white,
+                          inactiveTrackColor: Colors.grey,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            // setState(() {
+                            //   isEnglish = true;
+                            //   Get.updateLocale(const Locale('en', 'US'));
+                            // });
+                          },
+                          child: Text(
+                            'English',
+                            style: TextStyle(
+                              // color: _localizationController.isLtr
+                              //     ? Colors.white
+                              //     : Colors.grey,
+                              color:  Colors.grey,
+
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
+
         ],
       ),
     );
