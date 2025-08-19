@@ -360,6 +360,8 @@ class AuthController extends GetxController {
   final TextEditingController heightController = TextEditingController();
   String? selectedCmFtmLevel;
   String? selectedActivityLevel;
+  String? selectedGoal;
+  TextEditingController _currentHeightController = TextEditingController();
 
   ///-------------basic info-----------------
 

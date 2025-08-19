@@ -12,7 +12,10 @@ class RouteNames{
 
   static const String signInScreen='/SignInScreen';
   static const String singUpScreen='/SingUpScreen';
+  static const String basicInfo='/basicInfo';
+  static const String calculateMacros='/calculateMacros';
   static const String informationOfClient='/InformationOfClient';
+  static const String infoCongratulationScreen='/infoCongratulationScreen';
   static const String forgetPassScreen='/ForgetPassScreen';
   static const String otpVerificationScreen='/OtpVerificationScreen';
   static const String resetPassScreen='/ResetPassScreen';
