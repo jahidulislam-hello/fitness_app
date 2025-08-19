@@ -48,27 +48,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        //==========================>Text Field<============================
 
-                        ///Name===================
-                        Padding(
-                          padding: EdgeInsets.only(bottom: 16.h),
-                          child: CustomTextField(
-                            controller: authController.nameTEController,
-                            hintText: "signUpName".tr,
-                            borderColor: AppColors.buttonColor,
-                            prefixIcon: Padding(
-                              padding: EdgeInsets.only(left: 16.w, right: 12.w),
-                              child: SvgPicture.asset(AppIcons.profiles, color: AppColors.primaryColor, height: 24.h, width: 24.w),
-                            ),
-                            validator: (value){
-                              if(value == null || value.isEmpty){
-                                return 'Please enter name'.tr;
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
                         ///Email
                         Padding(
                           padding: EdgeInsets.only(bottom: 16.h),
@@ -142,6 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                 loading: authController.signUpLoading.value == true,
                                 title: 'signUp'.tr,
                                 onpress: () {
+                                  context.pushNamed(RouteNames.basicInfo);
                                   // Get.toNamed(
                                   //     RouteNames.otpVerificationScreen,preventDuplicates: false
                                   // );

@@ -11,3 +11,8 @@ export 'auths/forget_pass_screen.dart';
 export 'auths/otp_verification_screen.dart';
 export 'auths/reset_pass_screen.dart';
 export 'auths/sign_up_screen.dart';
+export 'auths/info/basic_info_screen.dart';
+export 'auths/info/calculate_macros.dart';
+export 'auths/info/metric_screen.dart';
+export 'auths/info/imperial_screen.dart';
+export 'auths/info/info_congratulation_screen.dart';

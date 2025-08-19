@@ -76,6 +76,22 @@ class AppRoutes {
         builder: (context, state) =>  SignUpScreen(),
       ),
 
+      GoRoute(
+        path: RouteNames.basicInfo,
+        name: RouteNames.basicInfo,
+        builder: (context, state) =>  BasicInfoScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.calculateMacros,
+        name: RouteNames.calculateMacros,
+        builder: (context, state) =>  CalculateMacros(),
+      ),
+      GoRoute(
+        path: RouteNames.infoCongratulationScreen,
+        name: RouteNames.infoCongratulationScreen,
+        builder: (context, state) =>  InfoCongratulationScreen(),
+      ),
+
       //
       // GoRoute(
       //   path: RouteNames.splashScreen,
