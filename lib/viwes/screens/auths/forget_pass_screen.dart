@@ -10,6 +10,7 @@ import '../../../global widget/global_widget.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/widgets.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class ForgetPassScreen extends StatefulWidget {
   const ForgetPassScreen({super.key});

@@ -92,6 +92,17 @@ class AppRoutes {
         builder: (context, state) =>  InfoCongratulationScreen(),
       ),
 
+      GoRoute(
+        path: RouteNames.subscriptionScreen,
+        name: RouteNames.subscriptionScreen,
+        builder: (context, state) =>  SubscriptionPackegeScreen(),
+      ),
+
+      GoRoute(
+        path: RouteNames.customNavBar,
+        name: RouteNames.customNavBar,
+        builder: (context, state) =>  CustomNavbar(),
+      ),
       //
       // GoRoute(
       //   path: RouteNames.splashScreen,
