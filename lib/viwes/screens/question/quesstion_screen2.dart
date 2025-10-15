@@ -106,7 +106,7 @@ class _QuesstionScreen2State extends State<QuesstionScreen2> {
                   ),
                 ),
               );
-            }).toList(),
+            }),
 
             // Continue Button
             SizedBox(height: 40.h),

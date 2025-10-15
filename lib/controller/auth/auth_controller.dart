@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import '../../helpers/helpers.dart';
 import '../../routes/routes_name.dart';
 
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../services/services.dart';
@@ -340,7 +339,7 @@ class AuthController extends GetxController {
     };
 
     var response = await ApiClient.postData(
-        "${ApiConstants.resetPassEndPoint}", jsonEncode(body),
+        ApiConstants.resetPassEndPoint, jsonEncode(body),
         headers: headers);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -361,7 +360,7 @@ class AuthController extends GetxController {
   String? selectedCmFtmLevel;
   String? selectedActivityLevel;
   String? selectedGoal;
-  TextEditingController _currentHeightController = TextEditingController();
+  final TextEditingController _currentHeightController = TextEditingController();
 
   ///-------------basic info-----------------
 

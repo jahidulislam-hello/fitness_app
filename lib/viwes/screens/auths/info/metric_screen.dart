@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/routes/routes_name.dart';
@@ -14,7 +13,7 @@ import 'imperial_screen.dart';
 
 class MetricScreen extends StatefulWidget {
   final TabController tabController;
-   MetricScreen({super.key, required this.tabController});
+   const MetricScreen({super.key, required this.tabController});
 
   @override
   State<MetricScreen> createState() => _MetricScreenState();

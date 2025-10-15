@@ -15,7 +15,7 @@ class CustomButtonCommon extends StatelessWidget {
   final double? fontSize;
   final bool loading;
 
-  CustomButtonCommon({
+  const CustomButtonCommon({
     super.key,
     required this.title,
     required this.onpress,

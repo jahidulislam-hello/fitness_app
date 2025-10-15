@@ -1,7 +1,5 @@
 
 import 'package:get/get.dart';
-import '../viwes/screens/screens.dart';
-import 'routes_name.dart';
 
 class RoutePages {
   static List<GetPage<dynamic>>? routes = [

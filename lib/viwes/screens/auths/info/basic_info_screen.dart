@@ -8,10 +8,8 @@ import '../../../../utils/utils.dart';
 import '../../../widgets/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:flutter_svg/svg.dart';
-import 'package:get/get.dart';
 class BasicInfoScreen extends StatefulWidget {
-  BasicInfoScreen({super.key});
+  const BasicInfoScreen({super.key});
 
   @override
   State<BasicInfoScreen> createState() => _BasicInfoScreenState();

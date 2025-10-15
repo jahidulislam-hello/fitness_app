@@ -1,10 +1,7 @@
-import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../../../../utils/utils.dart';
 import '../../../widgets/widgets.dart';
 
 class SubscriptionPackegeScreen extends StatefulWidget {
@@ -124,7 +121,7 @@ class _SubscriptionPackegeScreenState extends State<SubscriptionPackegeScreen> {
                     SizedBox(height: 20.h),
                     Stack(
                       children: [
-                        Container(
+                        SizedBox(
                           height: 150.h,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -222,6 +219,8 @@ class _SubscriptionPackegeScreenState extends State<SubscriptionPackegeScreen> {
 }
 
 class PricingPlan extends StatelessWidget {
+  const PricingPlan({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Row(

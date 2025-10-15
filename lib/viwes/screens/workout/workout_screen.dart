@@ -28,7 +28,7 @@ class WorkoutScreen extends StatelessWidget {
                 color: Color(0xff999999),
                 radius: 16.r,
                 onTap: () {}),
-            Container(
+            SizedBox(
               height: sizeH * 0.379, child: ListView.builder(
               itemCount:3,
               itemBuilder: (context, index) {

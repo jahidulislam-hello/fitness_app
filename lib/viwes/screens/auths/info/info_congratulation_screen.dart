@@ -115,7 +115,7 @@ class InfoCongratulationScreen extends StatelessWidget {
 
 
         SizedBox(height: 10.h),
-        Text('${dailyWeek}',style: TextStyle(fontSize: 10.sp,),),
+        Text(dailyWeek,style: TextStyle(fontSize: 10.sp,),),
       ],
     );
   }
@@ -129,6 +129,8 @@ class BulletPointList extends StatelessWidget {
     "International Society of Sports Nutrition",
     "National Institutes of Health",
   ];
+
+   BulletPointList({super.key});
 
   @override
   Widget build(BuildContext context) {

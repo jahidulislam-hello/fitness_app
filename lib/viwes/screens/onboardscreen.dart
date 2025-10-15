@@ -234,7 +234,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                     .setLanguage(const Locale('en', "US"));
                               });
                             },
-                            activeColor: AppColors.primaryColor,
+                            activeThumbColor: AppColors.primaryColor,
                             inactiveThumbColor: Colors.white,
                             inactiveTrackColor: Colors.grey,
                           ),
@@ -263,7 +263,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ],
                 ),
               ),
-        
           ],
         ),
       ),

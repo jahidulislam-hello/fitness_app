@@ -65,4 +65,20 @@ class RouteNames{
   static const String chatScorpionDes ='/chatScorpionDes';
 
 
+
+  static const String exercise ='/ExerciseScreen';
+  static const String mealPlan ='/MealScreen';
+  static const String weightTrack ='/WeightTrackingScreen';
+  static const String calculateMacro ='/CalculateMacrosScreen';
+  static const String settingsProfile ='/SettingsProfileScreen';
+  static const String profileInfoScreen ='/ProfileInfoScreen';
+  static const String subscriptionpackScreen = '/SubscriptionPackagesScreen';
+  static const String subscriptionbuyScreen = '/SubscriptionBuyScreen';
+  static const String subscriptioncodeScreen = '/SubscriptionCodeScreen';
+  static const String buypackScreen = '/BuyPackageScreen';
+  static const String choosecardScreen = '/ChooseYourCardScreen';
+
+
+
+
 }
