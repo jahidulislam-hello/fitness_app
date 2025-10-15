@@ -4,13 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:go_router/go_router.dart';
 import '../../../global widget/global_widget.dart';
-import 'package:get/get.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../../utils/utils.dart';
 
 
 class FitnessQuestionScreen extends StatefulWidget {
+  const FitnessQuestionScreen({super.key});
+
   @override
   _FitnessQuestionScreenState createState() => _FitnessQuestionScreenState();
 }
@@ -112,7 +113,7 @@ class _FitnessQuestionScreenState extends State<FitnessQuestionScreen> {
                   ),
                 ),
               );
-            }).toList(),
+            }),
 
             // Continue Button
             SizedBox(height: 40.h),

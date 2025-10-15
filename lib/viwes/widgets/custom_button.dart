@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../utils/utils.dart';
 import 'widgets.dart';
 
-class CustomButton extends StatelessWidget {
+class CustomNewButton extends StatelessWidget {
   final VoidCallback onpress;
   final String title;
   final Color? color;
@@ -14,7 +14,7 @@ class CustomButton extends StatelessWidget {
   final double? fontSize;
   final bool loading;
 
-  CustomButton({
+  const CustomNewButton({
     super.key,
     required this.title,
     required this.onpress,

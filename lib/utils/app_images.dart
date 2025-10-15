@@ -1,6 +1,8 @@
 class AppImages {
   static const String path = "assets/images";
   static const String categories = "assets/images/categories";
+  static String baseUrlLogo = "assets/svg";
+
 
   ///-----------------------Splash Screen------------------------>
   static const String onBoarding = "$path/onBoarding.jpg";
@@ -70,4 +72,31 @@ class AppImages {
   static const String bodyfat6 = "$path/P_139_L2 (30–34_).png";
   static const String bodyfat7 = "$path/P_139_L2 (35–39_).png";
   static const String bodyfat8 = "$path/P_139_L2 (40_).png";
+
+
+  ///-----------------------Profile ------------------------>
+  static String Profile = "$baseUrlLogo/profile.svg";
+  static String Notification = "$baseUrlLogo/notification.svg";
+  static String Measure = "$baseUrlLogo/measure.svg";
+  static String Subcription = "$baseUrlLogo/subscription.svg";
+  static String Feed = "$baseUrlLogo/feed.svg";
+  static String Settings = "$baseUrlLogo/settings.svg";
+  static String Logout = "$baseUrlLogo/logout.svg";
+  static String chevronRight = "$baseUrlLogo/chevron-right.svg";
+  static String chevronLeft = "$baseUrlLogo/chevron-left.svg";
+
+  static String lock = "$baseUrlLogo/lock.svg";
+  static String translate = "$baseUrlLogo/translate.svg";
+  static String privacy = "$baseUrlLogo/privacy.svg";
+  static String terms = "$baseUrlLogo/terms.svg";
+  static String about = "$baseUrlLogo/about.svg";
+  static String delete = "$baseUrlLogo/delete.svg";
+
+  static String masterCard = "$baseUrlLogo/master_card.svg";
+  static String error = "$baseUrlLogo/error.svg";
+
+  static String us = "$baseUrlLogo/us_flag.svg";
+  static String spain = "$baseUrlLogo/spain_flag.svg";
+
+
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../global widget/global_widget.dart';
 import '../../../routes/routes_name.dart';
@@ -108,7 +107,7 @@ class _QuesstionScreen4State extends State<QuesstionScreen4> {
                   ),
                 ),
               );
-            }).toList(),
+            }),
 
             // Continue Button
             SizedBox(height: 40.h),

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
+import 'package:gym_cheloper/routes/routes_name.dart';
+import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_screen/meal_plan_screen.dart';
+import 'package:gym_cheloper/viwes/workout/settings/settings/settings_screen/settings_profile_screen.dart';
+import 'package:gym_cheloper/viwes/workout/weight_tracking/weight_tracking_screen/weight_tracking_screen.dart';
 
-import '../../../controller/controllers.dart';
 import '../../../global widget/global_widget.dart';
-import '../../../models/models.dart';
 
 import '../../../utils/utils.dart';
 import '../screens.dart';
@@ -25,8 +26,9 @@ class CustomNavbarState extends State<CustomNavbar> {
 
   final screens = [
     WorkoutScreen(),
-    CircularProgressIndicator(),
-    CircularProgressIndicator(),
+    MealScreen(),
+    WeightTrackingScreen(),
+    SettingsProfileScreen(),
     //  HomeScreen(),
     // const WorkoutScreen(),
     // // const ChatScorpion(),
@@ -83,24 +85,48 @@ class CustomNavbarState extends State<CustomNavbar> {
         //   ],
         // ):null,
         actions: [
-          IconButton(onPressed: () {}, icon: AppIcons.fire),
-          IconButton(onPressed: () {
-        //    Get.toNamed(RouteNames.cartScreen,preventDuplicates: false);
-          }, icon: Icon(Icons.shopping_cart_outlined),),
-          InkWell(
-            onTap: () {
-         //     Get.toNamed(RouteNames.profileScreen);
-            },
-            child:
-            // Obx(()=>
-              CircleAvatar(
-                radius: sizeH * .02,
-            //    backgroundImage: NetworkImage("${ApiConstants.imageBaseUrl}${homeController.getMyCouponResponseModel.value.image}"),
-              ),
-            // ),
+          IconButton(
+            onPressed: () {},
+            icon: AppIcons.fire,
           ),
-          SizedBox(width: sizeW * .02),
+          IconButton(
+            onPressed: () {
+              // Example navigation to cart screen
+              // Get.toNamed(RouteNames.cartScreen, preventDuplicates: false);
+            },
+            icon: const Icon(Icons.shopping_cart_outlined),
+          ),
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                currentIndex = 3; // 👈 go to Settings Profile tab
+              });
+            },
+            child: Container(
+              margin: EdgeInsets.only(right: sizeW * .03),
+              padding: EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.grey.shade300, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: CircleAvatar(
+                radius: sizeH * .02,
+                backgroundColor: Colors.grey.shade200,
+                backgroundImage: const AssetImage('assets/images/profile_placeholder.png'),
+                // If you have a dynamic image, uncomment this:
+                // backgroundImage: NetworkImage("${ApiConstants.imageBaseUrl}${homeController.getMyCouponResponseModel.value.image}"),
+              ),
+            ),
+          ),
         ],
+
       ),
       body: screens[currentIndex],
       bottomNavigationBar: _buildBottomNavBar(sizeH, sizeW),

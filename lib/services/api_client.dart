@@ -160,9 +160,9 @@ class ApiClient extends GetxService {
         ));
       }
       request.fields.addAll(body);
-      http.Response _response =
+      http.Response response =
       await http.Response.fromStream(await request.send());
-      return handleResponse(_response, uri);
+      return handleResponse(response, uri);
     } catch (e) {
       return const Response(statusCode: 1, statusText: noInternetMessage);
     }
@@ -378,7 +378,7 @@ class ApiClient extends GetxService {
     };
     try {
       debugPrint('====> API Call: $uri\nHeader: ${headers ?? mainHeaders}');
-      debugPrint('====> API Call: $uri\n Body: ${body}');
+      debugPrint('====> API Call: $uri\n Body: $body');
 
       http.Response response = await http
           .delete(Uri.parse(ApiConstants.baseUrl + uri),

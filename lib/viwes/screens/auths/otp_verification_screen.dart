@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../../global widget/global_widget.dart';
-import '../../../helpers/helpers.dart';
 import '../../../routes/routes_name.dart';
 import '../../../utils/utils.dart';
 import '../../widgets/widgets.dart';
@@ -15,7 +13,7 @@ import '../../widgets/widgets.dart';
 
 
 class OtpVerificationScreen extends StatefulWidget {
-  OtpVerificationScreen({super.key});
+  const OtpVerificationScreen({super.key});
   @override
   State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
 }

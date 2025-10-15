@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 
 
-import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import 'controller/controllers.dart';
 import 'helpers/di.dart' as di;
 
-import 'controller/controller_bindings.dart';
 import 'routes/goroutes.dart';
-import 'routes/routes_name.dart';
-import 'routes/routes_page.dart';
 import 'themes/light_theme.dart';
 import 'utils/app_constant.dart';
 import 'utils/message.dart';
@@ -19,11 +15,11 @@ import 'utils/message.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Get.lazyPut(() => InformationOfClientState());
-  Map<String, Map<String, String>> _languages = await di.init();
+  Map<String, Map<String, String>> languages = await di.init();
 
 
   runApp(MyApp(
-    languages: _languages,
+    languages: languages,
   ));
 }
 

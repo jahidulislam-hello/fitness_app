@@ -24,7 +24,8 @@ Widget buildPopupMenuField(List<String> options, {String? selectedValue, require
                 ? Colors.black.withOpacity(0.5)
                 : Colors.black,
             fontSize: fontsize?? 14.sp,
-          ),),
+          ),
+        ),
 
         PopupMenuButton<String>(
           onSelected: (String value) {
