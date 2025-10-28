@@ -12,7 +12,7 @@ class RouteNames{
 
   static const String signInScreen='/SignInScreen';
   static const String singUpScreen='/SingUpScreen';
-  static const String basicInfo='/basicInfo';
+  static const String basicInformation='/basicInfo';
   static const String calculateMacros='/calculateMacros';
   static const String informationOfClient='/InformationOfClient';
   static const String infoCongratulationScreen='/infoCongratulationScreen';
@@ -77,6 +77,10 @@ class RouteNames{
   static const String subscriptioncodeScreen = '/SubscriptionCodeScreen';
   static const String buypackScreen = '/BuyPackageScreen';
   static const String choosecardScreen = '/ChooseYourCardScreen';
+
+  static const String settings = '/SettingsScreen';
+  static const String changePass = '/ChangePasswordScreen';
+  static const String chooseLanguage = '/ChooseLanguageScreen';
 
 
 

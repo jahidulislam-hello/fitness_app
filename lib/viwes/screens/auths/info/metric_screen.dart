@@ -174,7 +174,7 @@ class _MetricScreenState extends State<MetricScreen> {
                     title: 'Done'.tr,
                     onpress: () {
                       context.pushNamed(RouteNames.infoCongratulationScreen);
-                      // Validate and trigger sign up
+
           
                     },
                   ),

@@ -218,7 +218,7 @@ class SettingsProfileScreen extends StatelessWidget {
                           height: 24,
                         ),
                         onTap: () {
-                          // Get.to(() => PrivacyScreen());
+                          context.pushNamed(RouteNames.settings);
                         },
                       ),
                       const SizedBox(height: 24),

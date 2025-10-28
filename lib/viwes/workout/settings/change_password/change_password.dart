@@ -123,7 +123,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             loading: authController.signUpLoading.value == true,
                             title: 'Confirm'.tr,
                             onpress: () {
-                              context.pushNamed(RouteNames.basicInfo);
+                              context.pushNamed(RouteNames.basicInformation);
                               // Get.toNamed(
                               //     RouteNames.otpVerificationScreen,preventDuplicates: false
                               // );

@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 import '../../services/services.dart';
 import '../../utils/utils.dart';
 class AuthController extends GetxController {
-  ///===============Sing up ================<>
+  ///=============== Sign Up ================
   final TextEditingController emailTEController = TextEditingController();
   final TextEditingController passTEController = TextEditingController();
   final TextEditingController confirmPassTEController = TextEditingController();
@@ -21,109 +21,53 @@ class AuthController extends GetxController {
 
   Future<void> signUpHandle() async {
     signUpLoading(true);
-    var headers = {'Content-Type': 'application/json'};
-    var body = {
-      "name": nameTEController.text,
-      "email": emailTEController.text,
-      "password": passTEController.text,
-      "confirmPassword": confirmPassTEController.text,
-    };
-    var response = await ApiClient.postData(
-      ApiConstants.signUpEndPoint,
-      jsonEncode(body),
-      headers: headers,
-    );
-    print("regggggggggggggggggggggggggggg${response.body}");
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      await PrefsHelper.setString(
-          AppConstants.bearerToken, response.body['data']['token']);
-      Get.toNamed(RouteNames.otpVerificationScreen, preventDuplicates: false,
-          parameters: {'email': emailTEController.text,});
-      ToastMessageHelper.successMessageShowToster(
-          "Account create successful.\n \nNow you have a one time code your email");
-      signUpLoading(false);
-    } else {
-      ToastMessageHelper.errorMessageShowToster("This email is already registered");
+    try {
+      var headers = {'Content-Type': 'application/json'};
+
+      // Backend expects only name, email, password
+      var body = {
+        "name": nameTEController.text.trim(),
+        "email": emailTEController.text.trim(),
+        "password": passTEController.text.trim(),
+      };
+
+      var response = await ApiClient.postData(
+        ApiConstants.signUpEndPoint,
+        jsonEncode(body),
+        headers: headers,
+      );
+
+      print("Signup Response: ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+
+        // ✅ Save access token
+        if (data['data'] != null && data['data']['accessToken'] != null) {
+          await PrefsHelper.setString(
+            AppConstants.bearerToken,
+            data['data']['accessToken'],
+          );
+        }
+
+        ToastMessageHelper.successMessageShowToster(
+          "Account created successfully!",
+        );
+
+        // ✅ Move to Basic Info screen
+        Get.toNamed(RouteNames.basicInformation);
+      } else {
+        final err = jsonDecode(response.body);
+        ToastMessageHelper.errorMessageShowToster(
+          err['message'] ?? "Signup failed",
+        );
+      }
+    } catch (e) {
+      ToastMessageHelper.errorMessageShowToster("Error: $e");
+    } finally {
       signUpLoading(false);
     }
   }
-
-
-  // RxBool verifyLoading = false.obs;
-  // Future<void> otpVerify({required String code}) async {
-  //   verifyLoading(true);
-  //   String bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
-  //
-  //   var headers = {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer $bearerToken'
-  //   };
-  //
-  //   var body = jsonEncode({"otp": code});
-  //
-  //   var response = await ApiClient.postData(
-  //     "/user/verify-otp",
-  //     body,
-  //     headers: headers,
-  //   );
-  //
-  //   print("Response: ${response.body}");
-  //
-  //   if (response.statusCode == 200 || response.statusCode == 201) {
-  //     Map<String, dynamic> responseData = jsonDecode(response.body); // JSON ডিকোড করা
-  //     print("Decoded Response: $responseData");
-  //
-  //     await PrefsHelper.setString(AppConstants.bearerToken, responseData['data']['token']);
-  //     await PrefsHelper.setString(AppConstants.userId, responseData['data']['userId']);
-  //
-  //     Get.toNamed(RouteNames.informationOfClient, preventDuplicates: false);
-  //     verifyLoading(false);
-  //   } else {
-  //     print("Error Response: ${response.body}");
-  //     verifyLoading(false);
-  //   }
-  // }
-
-  ///======================otpVerify+++++++++++++++++++
-  // RxBool  verifyLoading = false.obs;
-  // Future<void> otpVerify({required String code}) async{
-  //   verifyLoading(true);
-  //   String bearerToken = await  PrefsHelper.getString(AppConstants.bearerToken);
-  //   // String? userIds = await PrefsHelper.getString(AppConstants.userId);
-  //   var headers = {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer $bearerToken'
-  //   };
-  //
-  //   var body ={
-  //     "otp": code
-  //   };
-  //   var response = await ApiClient.postData("/user/verify-otp",
-  //       jsonEncode(body),
-  //       headers: headers
-  //   );
-  //
-  //   print("dataaaaaaaaaaaaaaa ${response.body}");
-  //   if(response.statusCode == 200 || response.statusCode == 201){
-  //     print("token==================> ${response.body}");
-  //     await PrefsHelper.setString(AppConstants.bearerToken, response.body['data']['token']);
-  //     await PrefsHelper.setString(AppConstants.userId, response.body['data']['userId']);
-  //     // if(Get.parameters['screenType'] == 'forgot'){
-  //     //  // Get.toNamed(AppRoutes.resetPassScreen,preventDuplicates: false);
-  //     // } else{
-  //     //   await PrefsHelper.setString(AppConstants.bearerToken, response.body['data']['token']);
-  //     //   Get.toNamed(RouteNames.informationOfClient,preventDuplicates: false);
-  //     // }
-  //     Get.toNamed(RouteNames.informationOfClient,preventDuplicates: false);
-  //  //   ToastMessageHelper.successMessageShowToster(response.body['message']);
-  //     verifyLoading(false);
-  //   }else{
-  //   //  ToastMessageHelper.errorMessageShowToster(response.body['message']);
-  //     print("token==================> ${response.body}");
-  //     verifyLoading(false);
-  //   }
-  // }
-  //
 
 
   RxBool verifyLoading = false.obs;
@@ -224,43 +168,72 @@ class AuthController extends GetxController {
     }
   }
 
+  //
+  // ///=========== Login ===========<>
+  // final TextEditingController loginEmailTEController = TextEditingController();
+  // final TextEditingController loginPassTEController = TextEditingController();
+  //
+  // RxBool loadingLoading = false.obs;
+  //
+  // Future<void> loginHandle(String email, String password) async {
+  //   loadingLoading(true);
+  //
+  //   try {
+  //     if (email.isEmpty || password.isEmpty) {
+  //       print("⚠️ Please enter both email and password.");
+  //       ToastMessageHelper.errorMessageShowToster("Email and password are required");
+  //       return;
+  //     }
+  //
+  //     var headers = {'Content-Type': 'application/json'};
+  //     var body = {'email': email.trim(), 'password': password.trim()};
+  //
+  //     var response = await ApiClient.postData(
+  //       ApiConstants.baseUrl + ApiConstants.signInEndPoint,
+  //       jsonEncode(body), // Make sure body is JSON-encoded
+  //       headers: headers,
+  //     );
+  //
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final data = response.body; // Already decoded in ApiClient.handleResponse
+  //
+  //       if (data['success'] == true) {
+  //         // Extract tokens and user safely
+  //         final accessToken = data['data'][0]['accessToken'] as String;
+  //         final refreshToken = data['data'][1]['refreshToken'] as String;
+  //         final user = data['data'][2]['user'] as Map<String, dynamic>;
+  //
+  //         // Save tokens
+  //         await PrefsHelper.setString(AppConstants.bearerToken, accessToken);
+  //
+  //
+  //         print("✅ Login Successful!");
+  //         print("🔐 Access Token: $accessToken");
+  //         print("♻️ Refresh Token: $refreshToken");
+  //         print("👤 User: $user");
+  //
+  //         // Navigate to home screen
+  //         Get.offAllNamed(RouteNames.customNavBar);
+  //       } else {
+  //         print("❌ Login failed: ${data['message']}");
+  //         ToastMessageHelper.errorMessageShowToster(data['message'] ?? "Login failed");
+  //       }
+  //     } else {
+  //       print("❌ HTTP Error: ${response.statusCode}");
+  //       ToastMessageHelper.errorMessageShowToster("HTTP Error: ${response.statusCode}");
+  //     }
+  //   } catch (e) {
+  //     print("💥 Error during login: $e");
+  //     ToastMessageHelper.errorMessageShowToster("Error: $e");
+  //   } finally {
+  //     loadingLoading(false);
+  //   }
+  // }
 
-  ///===========login===========<>
-  final TextEditingController loginEmailTEController = TextEditingController();
-  final TextEditingController loginPassTEController = TextEditingController();
-  RxBool loadingLoading = false.obs;
-
-  loginHandle(String email, String password) async {
-    loadingLoading(true);
-    var headers = {'Content-Type': 'application/json'};
-    var body =
-    {
-      'email': loginEmailTEController.text,
-      'password': loginPassTEController.text
-    };
 
 
-    var response = await ApiClient.postData(
-        ApiConstants.signInEndPoint,
-        jsonEncode(body),
-        headers: headers
-    );
 
 
-    print("tokennnnnn =========== ${response.body}");
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      var data = response.body['data'];
-      await PrefsHelper.setString(AppConstants.bearerToken, data['token']);
-      await PrefsHelper.setString(AppConstants.email, email);
-      await PrefsHelper.setString(AppConstants.userId, data['user']['id']);
-      Get.toNamed(RouteNames.customNavBar, preventDuplicates: false);
-      ToastMessageHelper.successMessageShowToster(response.body['message']);
-      loadingLoading(false);
-    } else {
-      loadingLoading(false);
-      ToastMessageHelper.errorMessageShowToster(response.body['message']);
-    }
-  }
 
 
   RxBool resendLoading = false.obs;
@@ -484,66 +457,147 @@ class AuthController extends GetxController {
   ///-------------Meal info-----------------
 
   RxBool addMealLoading = false.obs;
+  // Future<void> addMealPlanHandle() async {
+  //   addMealLoading(true);
+  //   String bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
+  //   String? userIds = await PrefsHelper.getString(AppConstants.userId);
+  //   final url = Uri.parse(
+  //       '${ApiConstants.baseUrl}${ApiConstants.basicInfo}');
+  //   var body = {
+  //     "gender": selectedGender,
+  //     "age": ageController.text,
+  //     "height": {
+  //       "value": int.tryParse(heightController.text), // Parse height to integer
+  //       "unit": selectedCmFtmLevel,
+  //     },
+  //     "activityLevel": selectedActivityLevel,
+  //     "workoutInformation": {
+  //       "fitnessLevel": selectedTrainingLevel,
+  //       "trainingLocation": selectedTrainingLocation,
+  //       "trainingDuration": selectedTrainingDuration,
+  //       "interestMuscleGrow": selectedMuscleGroup,
+  //       "injuries": selectedInjuries,
+  //       "trainingDay": selectedDays,
+  //     },
+  //     "mealInformation": {
+  //       "objective": selectedObjective,
+  //       "dailyMeals": selectedMealsList,
+  //       "currentWeight": {
+  //         "value": int.tryParse(currentHeightController.text),
+  //         "unit": selectedLbsKgLevel
+  //       },
+  //       "objectiveWeight": {
+  //         "value": int.tryParse(objectiveHeightController.text),
+  //         "unit": objectiveLbsKgLevel
+  //       },
+  //       "likeFood": {
+  //         "protein": selectedPortenList,
+  //         "vegetables": selectedVegetablesList,
+  //         "carbs": selectedCarbsList,
+  //         "fat": selectedFatsList,
+  //         "dairy": selectedDairyList
+  //       }
+  //     }
+  //   };
+  //   try {
+  //     final response = await http.post(
+  //       url,
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': 'Bearer $bearerToken'
+  //       },
+  //       body: json.encode(body),
+  //     );
+  //
+  //     if (response.statusCode == 200 || response.statusCode == 201) {
+  //       final responseData = json.decode(response.body);
+  //
+  //       if (responseData['success'] == true) {
+  //         Get.toNamed(RouteNames.bodyFatScreen, preventDuplicates: false);
+  //       }
+  //       else {
+  //         print("OTP verification failed: ${responseData['message']}");
+  //       }
+  //     } else {
+  //       print("HTTP Error: ${response.statusCode}");
+  //       print("Response Body: ${response.body}");
+  //     }
+  //   } catch (e) {
+  //     print("Exception: $e");
+  //   } finally {
+  //     addMealLoading(false);
+  //   }
+  // }
+
+
+
+  final TextEditingController heightFtController = TextEditingController();
+  final TextEditingController heightInController = TextEditingController();
+
+
   Future<void> addMealPlanHandle() async {
     addMealLoading(true);
     String bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
     String? userIds = await PrefsHelper.getString(AppConstants.userId);
-    final url = Uri.parse(
-        '${ApiConstants.baseUrl}${ApiConstants.infoEndPoint(userIds)}');
+    final url = Uri.parse('${ApiConstants.baseUrl}${ApiConstants.basicInfo}');
+
+    // Check if Metric or Imperial
+    String unitSystem = selectedCmFtmLevel == "cm" ? "Metric" : "Imperial";
+
     var body = {
+      "unitSystem": unitSystem,
       "gender": selectedGender,
       "age": ageController.text,
-      "height": {
-        "value": int.tryParse(heightController.text), // Parse height to integer
-        "unit": selectedCmFtmLevel,
+      "height": unitSystem == "Metric"
+          ? {
+        "ft": null,
+        "in": null,
+        "cm": int.tryParse(heightController.text),
+      }
+          : {
+        "ft": int.tryParse(heightFtController.text),
+        "in": int.tryParse(heightInController.text),
+        "cm": null,
       },
       "activityLevel": selectedActivityLevel,
-      "workoutInformation": {
-        "fitnessLevel": selectedTrainingLevel,
-        "trainingLocation": selectedTrainingLocation,
-        "trainingDuration": selectedTrainingDuration,
-        "interestMuscleGrow": selectedMuscleGroup,
-        "injuries": selectedInjuries,
-        "trainingDay": selectedDays,
-      },
-      "mealInformation": {
-        "objective": selectedObjective,
-        "dailyMeals": selectedMealsList,
-        "currentWeight": {
-          "value": int.tryParse(currentHeightController.text),
-          "unit": selectedLbsKgLevel
-        },
-        "objectiveWeight": {
-          "value": int.tryParse(objectiveHeightController.text),
-          "unit": objectiveLbsKgLevel
-        },
-        "likeFood": {
-          "protein": selectedPortenList,
-          "vegetables": selectedVegetablesList,
-          "carbs": selectedCarbsList,
-          "fat": selectedFatsList,
-          "dairy": selectedDairyList
-        }
+      "goal": selectedGoal,
+      "currentWeight": unitSystem == "Metric"
+          ? {
+        "lbs": null,
+        "kg": int.tryParse(currentHeightController.text),
       }
+          : {
+        "lbs": int.tryParse(currentHeightController.text),
+        "kg": null,
+      },
+      "desiredWeight": unitSystem == "Metric"
+          ? {
+        "lbs": null,
+        "kg": int.tryParse(objectiveHeightController.text),
+      }
+          : {
+        "lbs": int.tryParse(objectiveHeightController.text),
+        "kg": null,
+      },
+      "weightLossSpeed": 0.8, // Example: bind your selected speed variable
     };
+
     try {
       final response = await http.post(
         url,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $bearerToken'
+          'Authorization': 'Bearer $bearerToken',
         },
         body: json.encode(body),
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final responseData = json.decode(response.body);
-
         if (responseData['success'] == true) {
           Get.toNamed(RouteNames.bodyFatScreen, preventDuplicates: false);
-        }
-        else {
-          print("OTP verification failed: ${responseData['message']}");
+        } else {
+          print("API failed: ${responseData['message']}");
         }
       } else {
         print("HTTP Error: ${response.statusCode}");
@@ -553,6 +607,93 @@ class AuthController extends GetxController {
       print("Exception: $e");
     } finally {
       addMealLoading(false);
+    }
+  }
+
+
+  ///=============== Basic Info ================
+  RxBool basicInfoLoading = false.obs;
+
+  Future<void> addBasicInfoHandle({required bool isMetric}) async {
+    basicInfoLoading(true);
+    try {
+      final token = await PrefsHelper.getString(AppConstants.bearerToken);
+
+      // ✅ Common data
+      final body = {
+        "unitSystem": isMetric ? "Metric" : "Imperial",
+        "activityLevel": selectedActivityLevel,
+        "goal": selectedGoal,
+        "gender": selectedGender,
+        "age": ageController.text.trim(),
+        "weightLossSpeed": selectedGoal == "cutting"
+            ? 0.8
+            : selectedGoal == "bulking"
+            ? 1.5
+            : 0.5, // Example: can be chosen dynamically
+        "height": isMetric
+            ? {
+          "ft": null,
+          "in": null,
+          "cm": int.tryParse(heightController.text.trim()),
+        }
+            : {
+          "ft": int.tryParse(heightFtController.text.trim()),
+          "in": int.tryParse(heightInController.text.trim()),
+          "cm": null,
+        },
+        "currentWeight": isMetric
+            ? {
+          "lbs": null,
+          "kg": int.tryParse(currentHeightController.text.trim()),
+        }
+            : {
+          "lbs": int.tryParse(currentHeightController.text.trim()),
+          "kg": null,
+        },
+        "desiredWeight": isMetric
+            ? {
+          "lbs": null,
+          "kg": int.tryParse(objectiveHeightController.text.trim()),
+        }
+            : {
+          "lbs": int.tryParse(objectiveHeightController.text.trim()),
+          "kg": null,
+        },
+      };
+
+      print("🟦 Basic Info Request: ${jsonEncode(body)}");
+
+      final response = await http.post(
+        Uri.parse("${ApiConstants.baseUrl}${ApiConstants.basicInfo}"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode(body),
+      );
+
+      print("🟩 Response: ${response.statusCode} => ${response.body}");
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          ToastMessageHelper.successMessageShowToster(
+              "User information added successfully!");
+          Get.toNamed(RouteNames.bodyFatScreen);
+        } else {
+          ToastMessageHelper.errorMessageShowToster(
+              data['message'] ?? "Failed to add info");
+        }
+      } else {
+        print("HTTP Error: ${response.statusCode}");
+        print("Response Body: ${response.body}");
+      }
+    } catch (e) {
+      print("❌ Exception: $e");
+      ToastMessageHelper.errorMessageShowToster("Error: $e");
+    } finally {
+      basicInfoLoading(false);
     }
   }
 

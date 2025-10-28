@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_cheloper/viwes/workout/buy_package/buy_package_screen/buy_package_screen.dart';
 import 'package:gym_cheloper/viwes/workout/calculate_marcos/calculate_marcos_screen/calculate_marcos_screen.dart';
+import 'package:gym_cheloper/viwes/workout/choose_language/choose_laguage_screen/choose_language_screen.dart';
 import 'package:gym_cheloper/viwes/workout/exercise/exercise_screen/exercise_screen.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_screen/meal_plan_screen.dart';
+import 'package:gym_cheloper/viwes/workout/settings/change_password/change_password.dart';
 import 'package:gym_cheloper/viwes/workout/settings/edit_profile/edit_profile_screen/edit_profile_screen.dart';
 import 'package:gym_cheloper/viwes/workout/settings/settings/settings_screen/settings_profile_screen.dart';
+import 'package:gym_cheloper/viwes/workout/settings/settings/settings_screen/settings_screen.dart';
 import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/subscription_buy_screen.dart';
 import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/subscription_card_screen.dart';
 import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/subscription_code_screen.dart';
@@ -82,8 +85,8 @@ class AppRoutes {
         builder: (context, state) =>  SignUpScreen(),
       ),
       GoRoute(
-        path: RouteNames.basicInfo,
-        name: RouteNames.basicInfo,
+        path: RouteNames.basicInformation,
+        name: RouteNames.basicInformation,
         builder: (context, state) =>  BasicInfoScreen(),
       ),
       GoRoute(
@@ -132,6 +135,11 @@ class AppRoutes {
         builder: (context, state) =>  SettingsProfileScreen(),
       ),
       GoRoute(
+        path: RouteNames.settings,
+        name: RouteNames.settings,
+        builder: (context, state) =>  SettingsScreen(),
+      ),
+      GoRoute(
         path: RouteNames.profileInfoScreen,
         name: RouteNames.profileInfoScreen,
         builder: (context, state) =>  ProfileInfoScreen(),
@@ -156,6 +164,17 @@ class AppRoutes {
         name: RouteNames.choosecardScreen,
         path: RouteNames.choosecardScreen,
         builder: (context, state) =>  ChooseYourCardScreen(),
+      ),
+
+      GoRoute(
+        name: RouteNames.changePass,
+        path: RouteNames.changePass,
+        builder: (context, state) =>  ChangePasswordScreen(),
+      ),
+      GoRoute(
+        name: RouteNames.chooseLanguage,
+        path: RouteNames.chooseLanguage,
+        builder: (context, state) =>  ChooseLanguageScreen(),
       ),
 
 

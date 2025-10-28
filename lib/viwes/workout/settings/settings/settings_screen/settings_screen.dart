@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_cheloper/global%20widget/custom_appbar.dart';
+import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/utils/app_images.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_button.dart';
 import 'package:gym_cheloper/viwes/workout/settings/settings/settings_controller/settings_controller.dart';
@@ -47,6 +49,7 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     const SizedBox(height: 24),
                     SettingTile(
+
                       // Left icon as SVG
                       iconWidget: SvgPicture.asset(
                         AppImages.lock,
@@ -62,7 +65,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
 
                       onTap: () {
-                        // Get.to(() => ChangePasswordScreen());
+                        context.pushNamed(RouteNames.changePass);
                       },
                     ),
 
@@ -80,7 +83,7 @@ class SettingsScreen extends StatelessWidget {
                         height: 16,
                       ),
                       onTap: () {
-                        // Get.to(() => PrivacyScreen());
+                        context.pushNamed(RouteNames.chooseLanguage);
                       },
                     ),
 

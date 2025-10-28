@@ -117,19 +117,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                         //==========================>Register Button<============================
                         // Obx(()=>
-                            CustomButtonCommon(
-                                loading: authController.signUpLoading.value == true,
-                                title: 'signUp'.tr,
-                                onpress: () {
-                                  context.pushNamed(RouteNames.basicInfo);
-                                  // Get.toNamed(
-                                  //     RouteNames.otpVerificationScreen,preventDuplicates: false
-                                  // );
-                                  // if(_formKey.currentState!.validate()){
-                                  //   authController.signUpHandle();
-                                  // }
+                        CustomButtonCommon(
+                          loading: authController.signUpLoading.value,
+                          title: 'Sign Up',
+                          onpress: () {
+                            if (_formKey.currentState!.validate()) {
+                              authController.signUpHandle();
+                            }
+                          },
+                        ),
 
-                                }),
                         // ),
 
                         SizedBox(
@@ -159,13 +156,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ));
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    authController.emailTEController.dispose();
-    authController.nameTEController.dispose();
-    authController.confirmPassTEController.dispose();
-    authController.passTEController.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  //   authController.emailTEController.dispose();
+  //   authController.nameTEController.dispose();
+  //   authController.confirmPassTEController.dispose();
+  //   authController.passTEController.dispose();
+  // }
 }
