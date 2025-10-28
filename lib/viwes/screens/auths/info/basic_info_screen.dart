@@ -79,8 +79,6 @@ class _BasicInfoScreenState extends State<BasicInfoScreen> {
                     title: 'Continue'.tr,
                     onpress: () {
                       context.pushNamed(RouteNames.calculateMacros);
-                      // Validate and trigger sign up
-        
                     },
                   ),
                 ),

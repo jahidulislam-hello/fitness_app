@@ -5,6 +5,9 @@ class AppConstants {
   static const String type = "role";
   // static String roleMock = 'roleMock';
   static String bearerToken = 'token';
+  static String refreshToken = 'refreshToken';
+  static String userData = 'userData';
+
   static String email = 'email';
   static String isLogged = 'true';
   static String userId = 'userId';

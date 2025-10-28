@@ -1,18 +1,18 @@
 
 class ApiConstants{
-  // static const String baseUrl = "https://asifur5000.sobhoy.com/api/v1";
-  // static const String imageBaseUrl = "https://asifur5000.sobhoy.com/";
 
-
-  static const String baseUrl = "https://escorpion-fitness-asifur-rahman.sarv.live/api/v1";
+  static const String baseUrl = "https://fitness-training-be.vercel.app/api/v1";
 
   static const String imageBaseUrl = "https://escorpion-fitness-asifur-rahman.sarv.live/";
 
 
 
-  static const String signUpEndPoint = "/user/register";
+  static const String signUpEndPoint = "/users/add-user";
+  static const String basicInfo = "/users/add-user-information";
+
+  static const String signInEndPoint = "/users/login-user";
+
   static const String otpEndPoint = "/user/verify-otp";
-  static const String signInEndPoint = "/user/login";
   static String infoEndPoint(String id) => "/user-information/create?id=$id";
   static const String resetPassEndPoint = "/user/reset-password";
   static const String getTermsCOnEndPoint = "/terms";

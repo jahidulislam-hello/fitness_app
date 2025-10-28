@@ -52,17 +52,17 @@ class ApiClient extends GetxService {
     String bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
 
     var mainHeaders = {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $bearerToken',
     };
 
     try {
-      print('====> API Call: $uri\nHeader: $mainHeaders');
+      print('====> API Call: $uri\nHeader: ${headers ?? mainHeaders}');
       print('====> API Body: $body');
 
-      http.Response response = await client
-          .post(
+      http.Response response = await client.post(
         Uri.parse(ApiConstants.baseUrl + uri),
-        body: body,
+        body: jsonEncode(body), // ✅ encode Map to JSON here
         headers: headers ?? mainHeaders,
       ).timeout(const Duration(seconds: timeoutInSeconds));
 
@@ -74,35 +74,8 @@ class ApiClient extends GetxService {
     }
   }
 
-  // //==========================================> Test Post Data <======================================
-  // static Future<Response> testPostData(String uri, var body,
-  //     {Map<String, String>? headers}) async {
-  //   bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
-  //
-  //   var mainHeaders = {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer $bearerToken'
-  //   };
-  //   try {
-  //     debugPrint('====> API Call: $uri\nHeader: ${headers ?? mainHeaders}');
-  //     debugPrint('====> API Body: $body');
-  //
-  //     http.Response response = await client
-  //         .post(
-  //       Uri.parse(ApiConstants.baseUrl + uri),
-  //       body: body,
-  //       headers: headers ?? mainHeaders,
-  //     )
-  //         .timeout(const Duration(seconds: timeoutInSeconds));
-  //     debugPrint(
-  //         "==========> Response Post Method :------ : ${response.statusCode}");
-  //     return handleResponse(response, uri);
-  //   } catch (e) {
-  //     print("===> $e");
-  //     return const Response(statusCode: 1, statusText: noInternetMessage);
-  //   }
-  // }
-  //
+
+
 
 
   //==========================================> patch<======================================
@@ -193,56 +166,6 @@ class ApiClient extends GetxService {
       return const Response(statusCode: 1, statusText: noInternetMessage);
     }
   }
-
-  // //==========================================> Put Multipart Data <======================================
-  // static Future<Response> putMultipartData(String uri, Map<String, String> body,
-  //     {List<MultipartBody>? multipartBody,
-  //       List<MultipartListBody>? multipartListBody,
-  //       Map<String, String>? headers}) async {
-  //   try {
-  //     bearerToken = await PrefsHelper.getString(AppConstants.bearerToken);
-  //
-  //     var mainHeaders = {
-  //       'Content-Type': 'application/json',
-  //       'Authorization': 'Bearer $bearerToken'
-  //     };
-  //
-  //     debugPrint('====> API Call: $uri\nHeader: ${headers ?? mainHeaders}');
-  //     debugPrint('====> API Body: $body with ${multipartBody?.length}  ');
-  //
-  //     var request =
-  //     http.MultipartRequest('PUT', Uri.parse(ApiConstants.baseUrl + uri));
-  //     request.fields.addAll(body);
-  //
-  //
-  //     if (multipartBody!.isNotEmpty) {
-  //       multipartBody.forEach((element) async {
-  //         debugPrint("path : ${element.file.path}");
-  //         String? mimeType = mime(element.file.path);
-  //         request.files.add(http.MultipartFile(
-  //           element.key,
-  //           element.file.readAsBytes().asStream(),
-  //           element.file.lengthSync(),
-  //           contentType: MediaType.parse(mimeType!),
-  //         ));
-  //       });
-  //     }
-  //     // request.headers.addAll(mainHeaders);
-  //     request.headers.addAll(headers ?? mainHeaders);
-  //     http.StreamedResponse response = await request.send();
-  //     final content = await response.stream.bytesToString();
-  //     debugPrint(
-  //         '====> API Response: [${response.statusCode}}] $uri\n$content');
-  //
-  //     return Response(
-  //         statusCode: response.statusCode,
-  //         statusText: noInternetMessage,
-  //         body: json.decode(content));
-  //   } catch (e) {
-  //     print("====================================e $e");
-  //     return const Response(statusCode: 1, statusText: noInternetMessage);
-  //   }
-  // }
 
 
   //==========================================> Put Multipart Data <======================================

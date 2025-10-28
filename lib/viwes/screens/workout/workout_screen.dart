@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -27,7 +29,7 @@ class WorkoutScreen extends StatelessWidget {
                 text: '+ Add  New Workout'.tr,
                 color: Color(0xff999999),
                 radius: 16.r,
-                onTap: () {}),
+                onTap: () { context.pushNamed(RouteNames.exercise);}),
             SizedBox(
               height: sizeH * 0.379, child: ListView.builder(
               itemCount:3,
