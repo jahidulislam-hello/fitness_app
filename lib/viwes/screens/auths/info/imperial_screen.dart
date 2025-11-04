@@ -1,66 +1,58 @@
-
 import 'package:flutter/material.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:gym_cheloper/routes/routes_name.dart';
-import '../../../../controller/controllers.dart';
 import '../../../../utils/utils.dart';
 import '../../../widgets/widgets.dart';
-import 'package:go_router/go_router.dart';
+import '../controller/calculate_controller.dart';
 
 class ImperialScreen extends StatefulWidget {
-   const ImperialScreen({super.key, required this.tabController});
+  const ImperialScreen({super.key, required this.tabController, required this.controller});
   final TabController tabController;
+  final CalculateController controller;
 
   @override
   State<ImperialScreen> createState() => _ImperialScreenState();
 }
 
 class _ImperialScreenState extends State<ImperialScreen> {
-  AuthController authController = Get.put(AuthController());
+  late CalculateController calculateController;
 
+  @override
+  void initState() {
+    super.initState();
+    calculateController = widget.controller;
+  }
 
   @override
   Widget build(BuildContext context) {
     final sizeH = MediaQuery.sizeOf(context).height;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding:  EdgeInsets.symmetric(horizontal: 20.w),
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 20.h),
-                CustomText(text: "What is your Height?".tr,),
+                CustomText(text: "What is your Height?".tr),
                 SizedBox(height: sizeH * .01),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // TextField
                     Expanded(
                       child: Row(
                         children: [
                           Expanded(
                             flex: 3,
                             child: CustomTextField(
-                              controller: authController.heightController,
-                              hintText: "5".tr,
-                              borderColor: AppColors.textFieldBorderColor,
+                              controller: calculateController.ftController,
+                              hintText: "5",
                               keyboardType: TextInputType.number,
-                              validator: (value){
-                                if(value == null || value.isEmpty){
-                                  return 'Please enter Age'.tr;
-                                }
-                                return null;
-                              },
                             ),
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: CustomText(text: "ft",),
-                          )
+                          Expanded(flex: 1, child: CustomText(text: "ft")),
                         ],
                       ),
                     ),
@@ -71,145 +63,83 @@ class _ImperialScreenState extends State<ImperialScreen> {
                           Expanded(
                             flex: 3,
                             child: CustomTextField(
-                              controller: authController.heightController,
-                              hintText: "5".tr,
-                              borderColor: AppColors.textFieldBorderColor,
+                              controller: calculateController.inchController,
+                              hintText: "5",
                               keyboardType: TextInputType.number,
-                              validator: (value){
-                                if(value == null || value.isEmpty){
-                                  return 'Please enter '.tr;
-                                }
-                                return null;
-                              },
                             ),
                           ),
-                          Expanded(
-                            flex: 1,
-                            child: CustomText(text: "in",),
-                          )
+                          Expanded(flex: 1, child: CustomText(text: "in")),
                         ],
                       ),
                     ),
-          
-          
                   ],
                 ),
                 SizedBox(height: sizeH * .02),
-                // Age Input
-                CustomText(text: "Select your activity level".tr,),
+                CustomText(text: "Select your activity level"),
                 SizedBox(height: sizeH * .01),
-                ///=============Name===================
                 buildPopupMenuField(
                   ['0-2 Workout per week', '3-5 Workout per week', '6+ Workout per week'],
-                  selectedValue: authController.selectedActivityLevel?.tr,
+                  selectedValue: calculateController.selectedActivityLevel,
                   hintText: 'Select your activity level',
-                  onChanged: (String? value) {
-                    setState(() {
-                      authController.selectedActivityLevel = value;
-                      print(value);
-                    });
+                  onChanged: (value) {
+                    setState(() => calculateController.selectedActivityLevel = value);
                   },
-          
                 ),
-          
                 SizedBox(height: sizeH * .02),
-                // Age Input
-                CustomText(text: "Goal".tr,),
+                CustomText(text: "Goal"),
                 SizedBox(height: sizeH * .01),
-                ///=============Name===================
                 buildPopupMenuField(
-                  ['Cutting', 'Maintenance', 'Bulking'],
-                  selectedValue: authController.selectedGoal?.tr,
+                  ['cutting', 'maintenance', 'bulking'],
+                  selectedValue: calculateController.selectedGoal,
                   hintText: 'Maintenance',
-                  onChanged: (String? value) {
-                    setState(() {
-                      authController.selectedGoal = value;
-                      print(value);
-                    });
+                  onChanged: (value) {
+                    setState(() => calculateController.selectedGoal = value);
                   },
-          
                 ),
-          
                 SizedBox(height: sizeH * .02),
-          
-
-            CustomText(text: "What is your current Weight? ".tr ,),
-            SizedBox(height: sizeH * .01),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // TextField
-                Expanded(
-                  flex: 4,
-                  child: CustomTextField(
-                    controller: authController.currentHeightController,
-                    hintText: "176".tr,
-                    borderColor: AppColors.textFieldBorderColor,
-                    validator: (value){
-                      if(value == null || value.isEmpty){
-                        return 'current Weight?'.tr;
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-          
-                Expanded(
-                  flex: 1,
-                  child: CustomText(text: "lbs",),
-                )
-                ],),
-          
-                SizedBox(height: sizeH * .02),
-          
-                ///===============Which meals do you do a day?=========================================
-                CustomText(text: "What is your objective Weight? ".tr ,),
+                CustomText(text: "What is your current Weight?"),
                 SizedBox(height: sizeH * .01),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // TextField
                     Expanded(
                       flex: 4,
                       child: CustomTextField(
-                        controller: authController.objectiveHeightController,
-                        hintText: "176".tr,
-                        borderColor: AppColors.textFieldBorderColor,
-                        validator: (value){
-                          if(value == null || value.isEmpty){
-                            return 'objective Weight?'.tr;
-                          }
-                          return null;
-                        },
+                        controller: calculateController.currentLbsController,
+                        hintText: "170",
+                        keyboardType: TextInputType.number,
                       ),
                     ),
-          
-                    Expanded(
-                      flex: 1,
-                      child: CustomText(text: "lbs",),
-                    )
-                  ],),
-          
+                    Expanded(flex: 1, child: CustomText(text: "lbs")),
+                  ],
+                ),
                 SizedBox(height: sizeH * .02),
-          
-                ///===============Which meals do you do a day?=========================================
-                CustomText(text: "Speed of weight loss per week".tr ,),
+                CustomText(text: "What is your objective Weight?"),
                 SizedBox(height: sizeH * .01),
-                Center(child: SizedBox(width: double.infinity, child: WeightSlider())),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 4,
+                      child: CustomTextField(
+                        controller: calculateController.desiredLbsController,
+                        hintText: "165",
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    Expanded(flex: 1, child: CustomText(text: "lbs")),
+                  ],
+                ),
+                SizedBox(height: sizeH * .02),
+                CustomText(text: "Speed of weight loss per week"),
+                SizedBox(height: sizeH * .01),
+                Center(child: SizedBox(width: double.infinity, child: ImperialWeightSlider(controller: calculateController))),
                 SizedBox(height: sizeH * .02),
                 Align(
                   alignment: Alignment.center,
                   child: CustomButtonCommon(
-          
                     title: 'Done'.tr,
-                    onpress: () {
-                      context.pushNamed(RouteNames.calculateMacros);
-                      // Validate and trigger sign up
-          
-                    },
+                    onpress: () => calculateController.addBasicInfoHandle(isMetric: false, context: context),
                   ),
                 ),
-                SizedBox(height: sizeH * .01),
               ],
             ),
           ),
@@ -220,29 +150,42 @@ class _ImperialScreenState extends State<ImperialScreen> {
 }
 
 
-class WeightSlider extends StatefulWidget {
-  const WeightSlider({super.key});
+
+
+
+
+
+class ImperialWeightSlider extends StatefulWidget {
+  final CalculateController controller;
+  const ImperialWeightSlider({super.key, required this.controller});
 
   @override
-  State<WeightSlider> createState() => _WeightSliderState();
+  State<ImperialWeightSlider> createState() => _ImperialWeightSliderState();
 }
 
-class _WeightSliderState extends State<WeightSlider> {
-  double _value = 0.8; // initial value
+class _ImperialWeightSliderState extends State<ImperialWeightSlider> {
+  double _value = 0.8;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controller value as string
+    widget.controller.weightLossSpeed = _value.toStringAsFixed(1);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         // Labels row
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: const [
-              _LabelBox(text: "0.1 kg"),
-              _LabelBox(text: "0.8 kg"),
-              _LabelBox(text: "1.5 kg"),
+            children: [
+              _LabelBox(text: "0.1 lb"),
+              _LabelBox(text: "0.8 lb"),
+              _LabelBox(text: "1.5 lb"),
             ],
           ),
         ),
@@ -259,14 +202,23 @@ class _WeightSliderState extends State<WeightSlider> {
           child: Slider(
             min: 0.1,
             max: 1.5,
+            divisions: 14,
             value: _value,
-            onChanged: (newVal) => setState(() => _value = newVal),
+            onChanged: (newVal) {
+              setState(() => _value = newVal);
+              // Convert to string for backend
+              widget.controller.weightLossSpeed = newVal.toStringAsFixed(1);
+            },
           ),
         ),
+        const SizedBox(height: 6),
+        Text("${_value.toStringAsFixed(1)} lb/week",
+            style: const TextStyle(fontWeight: FontWeight.w500)),
       ],
     );
   }
 }
+
 
 class _LabelBox extends StatelessWidget {
   final String text;
@@ -275,18 +227,14 @@ class _LabelBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade400),
+        color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(6),
-        color: Colors.white,
       ),
       child: Text(
         text,
-        style: const TextStyle(
-          fontSize: 12,
-          color: Colors.black87,
-        ),
+        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
       ),
     );
   }

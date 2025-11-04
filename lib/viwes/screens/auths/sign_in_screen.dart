@@ -99,12 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: StyleTextButton(
                           text: 'signInForgetPass'.tr,
                           onTap: () {
-                            Get.toNamed(RouteNames.forgetPassScreen,
-                                parameters: {
-                                  'email': signInController
-                                      .loginEmailTEController.text,
-                                },
-                                preventDuplicates: false);
+                            context.go(RouteNames.forgetPassScreen);
                           },
                         ),
                       ),
