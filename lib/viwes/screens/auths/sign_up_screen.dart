@@ -122,7 +122,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           title: 'Sign Up',
                           onpress: () {
                             if (_formKey.currentState!.validate()) {
-                              authController.signUpHandle();
+                              authController.signUpHandle( context);
                             }
                           },
                         ),

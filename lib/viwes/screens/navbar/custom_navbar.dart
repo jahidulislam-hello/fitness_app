@@ -29,38 +29,13 @@ class CustomNavbarState extends State<CustomNavbar> {
     MealScreen(),
     WeightTrackingScreen(),
     SettingsProfileScreen(),
-    //  HomeScreen(),
-    // const WorkoutScreen(),
-    // // const ChatScorpion(),
-    // const MealPlanScreen(),
-    // const ProgressScreen(),
+
   ];
   @override
   void initState() {
     super.initState();
-    // Register this state to be found by Get.find<CustomNavbarState>()
-   // homeController.getMacrosData();
     Get.put(this);
   }
-
-  // Method to update the current index from external sources
-  // void setCurrentIndex(int index) {
-  //   setState(() {
-  //     currentIndex = index;
-  //   });
-  // }
-
-  // List<WorkoutPlanResponseModel> selectedWorkoutPlans = [];
-  //
-  // void setCurrentIndex(int index, {List<WorkoutPlanResponseModel>? workoutPlans}) {
-  //   setState(() {
-  //     currentIndex = index;
-  //     if (workoutPlans != null) {
-  //       selectedWorkoutPlans = workoutPlans;
-  //     }
-  //   });
-  // }
-  //
 
   @override
   Widget build(BuildContext context) {
@@ -75,15 +50,7 @@ class CustomNavbarState extends State<CustomNavbar> {
           padding: const EdgeInsets.all(8.0),
           child: AppLogo(),
         ),
-        // currentIndex == 0 ? Column(
-        //  crossAxisAlignment: CrossAxisAlignment.start,
-        //   children: [
-        //     HeadingThree(data: 'home_hello'.tr, color: AppColors.primaryColor),
-        //    Obx((){
-        //      return homeController.getMyCouponResponseModel.value.name == "" ?CustomText(text: "user",): HeadingThree(data: '${homeController.getMyCouponResponseModel.value.name ?? "N/A"} ✨');
-        //    }),
-        //   ],
-        // ):null,
+
         actions: [
           IconButton(
             onPressed: () {},
@@ -146,7 +113,6 @@ class CustomNavbarState extends State<CustomNavbar> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-
            _buildNavItem(Icons.fitness_center, 0, true),
           _buildNavItem(Icons.restaurant, 1, true),
           _buildNavItem(Icons.show_chart, 2,true),

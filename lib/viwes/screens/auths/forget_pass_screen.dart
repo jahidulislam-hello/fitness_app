@@ -79,7 +79,7 @@ TextEditingController emailController = TextEditingController();
                       CustomTextButton(
                           text: 'forgetPassButton'.tr,
                           onTap: () {
-                            context.pushNamed(RouteNames.otpVerificationScreen);
+                            context.go(RouteNames.otpVerificationScreen);
                             // if(authController.loginEmailTEController.text.isEmpty){
                             //   ToastMessageHelper.errorMessageShowToster("Enter Your Email");
                             // }else{

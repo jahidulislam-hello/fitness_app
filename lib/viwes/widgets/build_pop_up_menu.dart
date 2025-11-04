@@ -16,7 +16,7 @@ Widget buildPopupMenuField(List<String> options, {String? selectedValue, require
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(selectedValue ?? hintText.tr,
+        Text((selectedValue ?? hintText.tr).toLowerCase(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(

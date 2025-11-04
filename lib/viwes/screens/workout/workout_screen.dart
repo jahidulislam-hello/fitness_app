@@ -86,11 +86,6 @@ class WorkoutScreen extends StatelessWidget {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // ClipRRect(
-                              //   borderRadius: BorderRadius.circular(8.r),
-                              //   child: Image.asset(AppImages.workout,
-                              //       width: sizeW * 0.14),
-                              // ),
                               SizedBox(width: 6.w,),
                               // Column with two texts: "Workout Plan for" and `day` in red
                               HeadingThree(data: 'Chest Day'.tr),
@@ -101,13 +96,6 @@ class WorkoutScreen extends StatelessWidget {
                                   padding: sizeH*.01,
                                   text: isComplete ? 'Workout'.tr : 'incomplete'.tr,
                                   onTap: () {
-                                    // var workoutPlan = navBarState.selectedWorkoutPlans[index];
-                                    // print("Navigating with workout plan: $workoutPlan");  // Debugging line
-                                    // Get.toNamed(RouteNames.exerciseScreen, arguments: {
-                                    //   'dayData': workoutPlan,  // Ensure this contains valid data
-                                    // }, preventDuplicates: false);
-                                    // Handle button press
-                                    // Get.toNamed(RouteNames.exerciseScreen,preventDuplicates: false);
                                   },
                                   color: isComplete ? AppColors.primaryColor : Colors.grey,
 
@@ -123,12 +111,12 @@ class WorkoutScreen extends StatelessWidget {
               },
             ),
             ),
-            Image.network(
-              'https://lottiefiles.com/animations/t-plank-exercise-g5qVU6RPYY',
-              width: 200,
-              height: 200,
-              fit: BoxFit.cover,
-            )
+            // Image.network(
+            //   'https://lottiefiles.com/animations/t-plank-exercise-g5qVU6RPYY',
+            //   width: 200,
+            //   height: 200,
+            //   fit: BoxFit.cover,
+            // )
           ],
         ),
       ),
