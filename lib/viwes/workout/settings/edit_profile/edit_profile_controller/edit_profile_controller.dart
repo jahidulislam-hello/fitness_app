@@ -1,10 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-
+import 'package:gym_cheloper/helpers/prefs_helper.dart';
+import 'package:gym_cheloper/helpers/toast_message_helper.dart';
+import 'package:gym_cheloper/services/api_constants.dart';
 
 class ProfileInfoController extends GetxController {
   RxBool isLoading = false.obs;
+  RxBool isEditMode = false.obs;
+
   RxString profileImage = ''.obs;
   RxString firstName = ''.obs;
   RxString lastName = ''.obs;
@@ -13,7 +19,6 @@ class ProfileInfoController extends GetxController {
   RxString age = ''.obs;
   RxString height = ''.obs;
   RxString weight = ''.obs;
-  RxBool isEditMode = false.obs;
 
   // TextControllers
   late TextEditingController fullNameController;
@@ -29,9 +34,10 @@ class ProfileInfoController extends GetxController {
     fullNameController = TextEditingController();
     emailController = TextEditingController();
     genderController = TextEditingController();
-    ageController = TextEditingController(); // ✅ initialized
+    ageController = TextEditingController();
     heightController = TextEditingController();
-    weightController = TextEditingController();// ✅ initialized
+    weightController = TextEditingController();
+
     fetchUserProfile();
   }
 
@@ -50,29 +56,62 @@ class ProfileInfoController extends GetxController {
     isEditMode.value = !isEditMode.value;
   }
 
-  void fetchUserProfile() async {
+  Future<void> fetchUserProfile() async {
     isLoading.value = true;
 
-    await Future.delayed(const Duration(seconds: 1));
+    try {
+      final token = await PrefsHelper.getString("bearerToken");
+      if (token == null || token.isEmpty) {
+        ToastMessageHelper.errorMessageShowToster("No token found");
+        isLoading.value = false;
+        return;
+      }
 
-    profileImage.value = 'https://i.pravatar.cc/150?img=3';
-    firstName.value = 'John';
-    lastName.value = 'Doe';
-    email.value = 'john.doe@example.com';
-    gender.value = 'Male';
-    age.value = '24 yrs';
-    height.value = '178 cm';
-    weight.value = '55 kg';
+      final url = Uri.parse("${ApiConstants.baseUrl}/profile/profile-information");
+      final response = await http.get(url, headers: {
+        "Authorization": "Bearer $token",
+        "Accept": "application/json",
+      });
 
-    // Fill TextControllers
-    fullNameController.text = '${firstName.value} ${lastName.value}';
-    emailController.text = email.value;
-    genderController.text = gender.value;
-    ageController.text = age.value;
-    heightController.text = height.value;
-    weightController.text = weight.value;
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body)['data'];
 
-    isLoading.value = false;
+        if (data != null && data.length >= 2) {
+          final user = data[0]['user'];
+          final userInfo = data[1]['userInfo'];
+
+          profileImage.value = user['profile_pic']?['url'] ?? '';
+          firstName.value = userInfo['name'] ?? '';
+          lastName.value = ''; // API has only one name
+          email.value = user['email'] ?? '';
+          gender.value = userInfo['gender'] ?? '';
+          age.value = userInfo['age'] ?? '';
+          height.value =
+          "${userInfo['height']?['ft'] ?? 0}ft ${userInfo['height']?['in'] ?? 0}in";
+          weight.value = "${userInfo['currentWeight']?['lbs'] ?? 0} lbs";
+
+          // Fill TextControllers
+          fullNameController.text = '${firstName.value} ${lastName.value}';
+          emailController.text = email.value;
+          genderController.text = gender.value;
+          ageController.text = age.value;
+          heightController.text = height.value;
+          weightController.text = weight.value;
+
+          print("✅ PROFILE LOADED SUCCESSFULLY");
+        } else {
+          ToastMessageHelper.errorMessageShowToster("Invalid profile data");
+        }
+      } else {
+        ToastMessageHelper.errorMessageShowToster(
+            "Error ${response.statusCode}: ${response.body}");
+      }
+    } catch (e) {
+      print("💥 PROFILE LOAD ERROR: $e");
+      ToastMessageHelper.errorMessageShowToster("Connection error");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   void pickImage() async {
@@ -95,7 +134,6 @@ class ProfileInfoController extends GetxController {
     height.value = heightController.text.trim();
     weight.value = weightController.text.trim();
 
-    // no navigation here, screen will call Get.back()
+    ToastMessageHelper.successMessageShowToster("Profile updated locally");
   }
-
 }

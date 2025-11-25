@@ -6,6 +6,10 @@ class ApiConstants{
   static const String imageBaseUrl = "https://escorpion-fitness-asifur-rahman.sarv.live/";
 
 
+  static const String addFood = "/meals/add-food";
+  static const String getAllMeals = "/meals/get-all-meals";
+
+
 
   static const String signUpEndPoint = "/users/add-user";
   static const String basicInfo = "/users/add-user-information";

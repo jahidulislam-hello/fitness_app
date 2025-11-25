@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -15,61 +14,111 @@ class MealScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 16.h),
+        child: Obx(() {
+          // ✅ Show loading indicator while fetching data
+          if (controller.isLoading.value) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Color(0xffF93533),
+              ),
+            );
+          }
 
-                // Date Selector
-                _buildDateSelector(controller),
+          return RefreshIndicator(
+            onRefresh: () => controller.loadMealsFromAPI(),
+            color: Color(0xffF93533),
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 16.h),
 
-                SizedBox(height: 24.h),
+                    // Date Selector
+                    _buildDateSelector(controller),
 
-                // Calories Circle Row
-                _buildCaloriesRow(controller),
+                    SizedBox(height: 24.h),
 
-                SizedBox(height: 24.h),
+                    // Calories Circle Row
+                    _buildCaloriesRow(controller),
 
-                // Water Intake
-                _buildWaterIntake(controller),
+                    SizedBox(height: 24.h),
 
-                SizedBox(height: 24.h),
+                    // Water Intake
+                    _buildWaterIntake(controller),
 
-                // Today Label
-                Text(
-                  'Today',
-                  style: TextStyle(
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
-                  ),
+                    SizedBox(height: 24.h),
+
+                    // Today Label
+                    Text(
+                      'Today',
+                      style: TextStyle(
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+
+                    SizedBox(height: 16.h),
+
+                    // Meals List
+                    Obx(() => controller.meals.isEmpty
+                        ? _buildEmptyState()
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: controller.meals.length,
+                      itemBuilder: (context, index) {
+                        return _buildMealCard(controller, index);
+                      },
+                    )),
+
+                    SizedBox(height: 16.h),
+
+                    // Add New Meal Button
+                    _buildAddMealButton(controller),
+
+                    SizedBox(height: 24.h),
+                  ],
                 ),
+              ),
+            ),
+          );
+        }),
+      ),
+    );
+  }
 
-                SizedBox(height: 16.h),
-
-                // Meals List
-                Obx(() => ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: controller.meals.length,
-                  itemBuilder: (context, index) {
-                    return _buildMealCard(controller, index);
-                  },
-                )),
-
-                SizedBox(height: 16.h),
-
-                // Add New Meal Button
-                _buildAddMealButton(controller),
-
-                SizedBox(height: 24.h),
-              ],
+  Widget _buildEmptyState() {
+    return Container(
+      padding: EdgeInsets.all(32.w),
+      child: Column(
+        children: [
+          Icon(
+            Icons.restaurant_menu,
+            size: 64.sp,
+            color: Colors.grey[400],
+          ),
+          SizedBox(height: 16.h),
+          Text(
+            'No meals added yet',
+            style: TextStyle(
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[600],
             ),
           ),
-        ),
+          SizedBox(height: 8.h),
+          Text(
+            'Add your first meal to start tracking',
+            style: TextStyle(
+              fontSize: 14.sp,
+              color: Colors.grey[500],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -109,16 +158,16 @@ class MealScreen extends StatelessWidget {
             final dayNumber = date.day;
 
             // Base colors
-            Color borderColor = const Color(0xFFD1D1D1); // light gray border
+            Color borderColor = const Color(0xFFD1D1D1);
             Color fillColor = Colors.white;
             Color textColor = Colors.black87;
 
-            // Apply color indicators (based on your image)
-            if (index == 0) borderColor = const Color(0xFFE57373); // Red
-            if (index == 1) borderColor = const Color(0xFFFFD54F); // Yellow
-            if (index == 2) borderColor = const Color(0xFF4CAF50); // Green
+            // Apply color indicators
+            if (index == 0) borderColor = const Color(0xFFE57373);
+            if (index == 1) borderColor = const Color(0xFFFFD54F);
+            if (index == 2) borderColor = const Color(0xFF4CAF50);
 
-            // Selected state (filled green)
+            // Selected state
             if (isSelected) {
               fillColor = const Color(0xFF4CAF50);
               borderColor = const Color(0xFF4CAF50);
@@ -173,7 +222,6 @@ class MealScreen extends StatelessWidget {
     ));
   }
 
-
   Widget _buildCaloriesRow(MealTrackingController controller) {
     return Obx(() => Row(
       children: [
@@ -181,7 +229,6 @@ class MealScreen extends StatelessWidget {
         Expanded(
           child: Column(
             children: [
-              // Date label above circle
               Text(
                 controller.todayDateString,
                 style: TextStyle(
@@ -208,7 +255,7 @@ class MealScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        '${controller.dailyCalories.value}',
+                        '${controller.dailyCalories.value.toStringAsFixed(0)}',
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
@@ -216,7 +263,7 @@ class MealScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '/${controller.dailyCaloriesGoal.value}',
+                        '/${controller.dailyCaloriesGoal.value.toStringAsFixed(0)}',
                         style: TextStyle(
                           fontSize: 10.sp,
                           color: Colors.black54,
@@ -263,7 +310,6 @@ class MealScreen extends StatelessWidget {
         Expanded(
           child: Column(
             children: [
-              // Date range label above circle
               Text(
                 controller.weekDateRangeString,
                 style: TextStyle(
@@ -290,7 +336,7 @@ class MealScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        '${controller.weeklyCalories.value}',
+                        '${controller.weeklyCalories.value.toStringAsFixed(0)}',
                         style: TextStyle(
                           fontSize: 20.sp,
                           fontWeight: FontWeight.bold,
@@ -298,7 +344,7 @@ class MealScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '/${controller.weeklyCaloriesGoal.value}',
+                        '/${controller.weeklyCaloriesGoal.value.toStringAsFixed(0)}',
                         style: TextStyle(
                           fontSize: 10.sp,
                           color: Colors.black54,
@@ -326,7 +372,7 @@ class MealScreen extends StatelessWidget {
     ));
   }
 
-  Widget _buildMacroBar(String label, int value, int goal, double percentage, Color color) {
+  Widget _buildMacroBar(String label, double value, double goal, double percentage, Color color) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -342,7 +388,7 @@ class MealScreen extends StatelessWidget {
               ),
             ),
             Text(
-              '$value/$goal g',
+              '${value.toStringAsFixed(1)}/${goal.toStringAsFixed(0)} g',
               style: TextStyle(
                 fontSize: 11.sp,
                 fontWeight: FontWeight.w500,
@@ -385,7 +431,6 @@ class MealScreen extends StatelessWidget {
           ),
           SizedBox(height: 12.h),
 
-          // Row to display the 0.0L, waterIntake.valueL, and waterGoal.valueL above the line
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -399,7 +444,6 @@ class MealScreen extends StatelessWidget {
               Expanded(
                 child: Column(
                   children: [
-
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
                       decoration: BoxDecoration(
@@ -428,7 +472,7 @@ class MealScreen extends StatelessWidget {
             ],
           ),
 
-          SizedBox(height: 8.h), // Space between the values and the progress bar
+          SizedBox(height: 8.h),
 
           Row(
             children: [
@@ -452,9 +496,6 @@ class MealScreen extends StatelessWidget {
     ));
   }
 
-
-
-
   Widget _buildMealCard(MealTrackingController controller, int index) {
     final meal = controller.meals[index];
 
@@ -463,10 +504,9 @@ class MealScreen extends StatelessWidget {
       child: Slidable(
         key: ValueKey(meal.name + index.toString()),
 
-        // Swipe Right → show Pin button
         startActionPane: ActionPane(
           motion: const DrawerMotion(),
-          extentRatio: 0.25, // control how much area slides in
+          extentRatio: 0.25,
           children: [
             SlidableAction(
               onPressed: (context) => controller.pinMeal(index),
@@ -479,7 +519,6 @@ class MealScreen extends StatelessWidget {
           ],
         ),
 
-        // Swipe Left → show Delete button
         endActionPane: ActionPane(
           motion: const DrawerMotion(),
           extentRatio: 0.25,
@@ -495,7 +534,6 @@ class MealScreen extends StatelessWidget {
           ],
         ),
 
-        // The meal card content
         child: Container(
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
@@ -532,10 +570,10 @@ class MealScreen extends StatelessWidget {
                       spacing: 8.w,
                       runSpacing: 6.h,
                       children: [
-                        _buildMealMacroChip('${meal.calories} kcal'),
-                        _buildMealMacroChip('Carbs ${meal.carbs}g'),
-                        _buildMealMacroChip('Protein ${meal.protein}g'),
-                        _buildMealMacroChip('Fat ${meal.fat}g'),
+                        _buildMealMacroChip('${meal.calories.toStringAsFixed(0)} kcal'),
+                        _buildMealMacroChip('Carbs ${meal.carbs.toStringAsFixed(1)}g'),
+                        _buildMealMacroChip('Protein ${meal.protein.toStringAsFixed(1)}g'),
+                        _buildMealMacroChip('Fat ${meal.fat.toStringAsFixed(1)}g'),
                       ],
                     ),
                   ],
@@ -569,16 +607,14 @@ class MealScreen extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildMealMacroChip(String text) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       decoration: BoxDecoration(
-        color: Colors.white, // ✅ White background
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: const Color(0xffF93533), // ✅ Red border
+          color: const Color(0xffF93533),
           width: 1.2,
         ),
       ),
@@ -587,12 +623,11 @@ class MealScreen extends StatelessWidget {
         style: TextStyle(
           fontSize: 10.sp,
           fontWeight: FontWeight.w500,
-          color: Colors.black87, // ✅ Dark readable text
+          color: Colors.black87,
         ),
       ),
     );
   }
-
 
   Widget _buildAddMealButton(MealTrackingController controller) {
     return GestureDetector(
@@ -633,20 +668,9 @@ class MealScreen extends StatelessWidget {
     return names[weekday - 1];
   }
 
-
   bool _isSameDay(DateTime date1, DateTime date2) {
     return date1.year == date2.year &&
         date1.month == date2.month &&
         date1.day == date2.day;
   }
 }
-
-
-
-
-
-
-
-
-
-
