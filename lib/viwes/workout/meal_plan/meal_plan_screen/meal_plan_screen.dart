@@ -630,8 +630,9 @@ class MealScreen extends StatelessWidget {
   }
 
   Widget _buildAddMealButton(MealTrackingController controller) {
-    return GestureDetector(
-      onTap: () => controller.addNewMeal(),
+    return Builder(
+      builder: (context) => GestureDetector(
+        onTap: () => controller.addNewMeal(context),
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.h),
         decoration: BoxDecoration(
@@ -653,6 +654,7 @@ class MealScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
       ),
     );
   }

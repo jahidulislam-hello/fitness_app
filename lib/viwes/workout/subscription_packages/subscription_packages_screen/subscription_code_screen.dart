@@ -5,6 +5,7 @@ import 'package:gym_cheloper/global widget/custom_appbar.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_button.dart';
 import 'package:gym_cheloper/global widget/custom_button.dart';
 import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_controller/subscription_code_controller.dart';
+import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/subscription_buy_screen.dart' show SubscriptionBuyScreen;
 
 class SubscriptionCodeScreen extends StatelessWidget {
   final SubscriptionCodeController controller =
@@ -94,7 +95,7 @@ class SubscriptionCodeScreen extends StatelessWidget {
                   controller.code.value = code;
 
                   // Navigate to next screen
-                  // Get.to(() => SubscriptionBuyingScreen());
+                  Get.to(() => SubscriptionBuyScreen());
                 },
               ),
             ],

@@ -71,7 +71,7 @@ class _SubscriptionPackegeScreenState extends State<SubscriptionPackegeScreen> {
                     SizedBox(height: 40.h,),
                     CarouselSlider(
                       options: CarouselOptions(
-                        height: 380.h, // You can change the height based on your design
+                        height: 360.h,
                         autoPlay: true,
                         enlargeCenterPage: true,
                         enableInfiniteScroll: true,
@@ -87,11 +87,13 @@ class _SubscriptionPackegeScreenState extends State<SubscriptionPackegeScreen> {
                             return Padding(
                               padding: EdgeInsets.symmetric(horizontal: 20.0),
                               child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Image.asset(
                                     data["onboardImage"]!,
                                     width: 405.w,
-                                    height: 320.h,
+                                    height: 290.h,
                                     fit: BoxFit.contain,
                                   ),
                                 ],
@@ -141,7 +143,7 @@ class _SubscriptionPackegeScreenState extends State<SubscriptionPackegeScreen> {
                                   ],
                                 ),
                               ),
-              
+
                               Container(
                                 width: 170.w,
                                 height: 100.h,
@@ -152,8 +154,8 @@ class _SubscriptionPackegeScreenState extends State<SubscriptionPackegeScreen> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('Monthly', style: TextStyle(color: Colors.grey)),
-                                    Text('US\$ 12.99/mo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                    Text('3 month', style: TextStyle(color: Colors.grey)),
+                                    Text('US\$ 9.74/mo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                                   ],
                                 ),
                               ),

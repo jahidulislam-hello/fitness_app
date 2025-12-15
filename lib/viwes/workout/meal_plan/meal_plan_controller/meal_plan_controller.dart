@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_tracking_api.dart';
+import 'package:gym_cheloper/viwes/workout/meal_plan/add_meal_popup.dart';
 import 'package:intl/intl.dart';
 
 class MealTrackingController extends GetxController {
@@ -304,8 +305,13 @@ class MealTrackingController extends GetxController {
     meals.refresh();
   }
 
-  void addNewMeal() {
-    Get.toNamed('/add-meal');
+  void addNewMeal(BuildContext context) {
+    final dateString = _formatDateForAPI(selectedDate.value);
+    showDialog(
+      context: context,
+      builder: (context) => AddMealPopup(selectedDate: dateString),
+      barrierDismissible: true,
+    );
   }
 
   /// ✅ Swipe Actions

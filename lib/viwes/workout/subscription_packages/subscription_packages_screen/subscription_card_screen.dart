@@ -691,12 +691,8 @@ class ChooseYourCardScreen extends StatelessWidget {
                   color: const Color(0xff3971FF),   // button background color
                   titlecolor: Colors.white,
                   onpress: () {
-                    Get.snackbar(
-                      "Success",
-                      "Payment completed successfully!",
-                      backgroundColor: Colors.green,
-                      colorText: Colors.white,
-                    );
+                    // Navigate to Subscription Success Screen
+                    Navigator.pushNamed(context, '/subscription-buy');
                   },
                 ),
                 ),

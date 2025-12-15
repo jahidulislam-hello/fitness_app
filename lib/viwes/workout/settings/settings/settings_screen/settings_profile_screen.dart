@@ -7,7 +7,7 @@ import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/utils/app_colors.dart';
 import 'package:gym_cheloper/utils/app_images.dart';
 import 'package:gym_cheloper/viwes/workout/settings/edit_profile/edit_profile_screen/edit_profile_screen.dart';
-import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/subscription_packages_screen.dart';
+import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/Profile_subscription_packages_screen.dart';
 import '../settings_controller/settings_profile_controller.dart';
 
 
@@ -184,7 +184,8 @@ class SettingsProfileScreen extends StatelessWidget {
                           height: 24,
                         ),
                         onTap: () {
-                          context.pushNamed(RouteNames.buypackScreen);
+                          // Get.to(() => SubscriptionPackagesScreen());
+                          // context.pushNamed(RouteNames.buypackScreen);
                         },
                       ),
                       const SizedBox(height: 24),
