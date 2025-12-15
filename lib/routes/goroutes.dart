@@ -13,13 +13,13 @@ import '../viwes/workout/settings/settings/settings_screen/settings_screen.dart'
 import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_buy_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_card_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_code_screen.dart';
-import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_packages_screen.dart';
+import '../viwes/workout/subscription_packages/subscription_packages_screen/Profile_subscription_packages_screen.dart';
 import '../viwes/workout/weight_tracking/weight_tracking_screen/weight_tracking_screen.dart';
 import 'routes_name.dart';
 
 class AppRoutes {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteNames.splashScreen,
+    initialLocation: RouteNames.subscriptionpackScreen,
     routes: [
       // Splash
       GoRoute(
@@ -108,6 +108,11 @@ class AppRoutes {
         path: RouteNames.profileInfoScreen,
         name: RouteNames.profileInfoScreen,
         builder: (context, state) => ProfileInfoScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.subscriptionpackScreen,
+        name: RouteNames.subscriptionpackScreen,
+        builder: (context, state) => ProfileSubscriptionScreen(),
       ),
       // Add more screens as needed...
     ],

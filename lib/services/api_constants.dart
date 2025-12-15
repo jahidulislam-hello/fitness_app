@@ -9,7 +9,8 @@ class ApiConstants{
   static const String addFood = "/meals/add-food";
   static const String getAllMeals = "/meals/get-all-meals";
 
-
+  static const String getProfileInfo = "/profile/profile-information";
+  static const String updateProfile = "/profile/profile-update";
 
   static const String signUpEndPoint = "/users/add-user";
   static const String basicInfo = "/users/add-user-information";
