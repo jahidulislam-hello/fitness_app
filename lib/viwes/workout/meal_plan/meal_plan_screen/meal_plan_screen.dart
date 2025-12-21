@@ -421,16 +421,77 @@ class MealScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Water Intake',
-            style: TextStyle(
-              fontSize: 14.sp,
-              fontWeight: FontWeight.w600,
-              color: Colors.black87,
-            ),
+          // Header Row with Title and Controls
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Water Intake',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.black87,
+                ),
+              ),
+              // +/- Controls
+              Row(
+                children: [
+                  // Decrement Button
+                  GestureDetector(
+                    onTap: () => controller.decrementWaterIntake(),
+                    child: Container(
+                      width: 32.w,
+                      height: 32.w,
+                      decoration: BoxDecoration(
+                        color: controller.waterIntake.value > 0
+                            ? Color(0xff2196F3).withOpacity(0.1)
+                            : Colors.grey[300],
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: controller.waterIntake.value > 0
+                              ? Color(0xff2196F3)
+                              : Colors.grey[400]!,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.remove,
+                        color: controller.waterIntake.value > 0
+                            ? Color(0xff2196F3)
+                            : Colors.grey[400],
+                        size: 18.sp,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                  // Increment Button
+                  GestureDetector(
+                    onTap: () => controller.incrementWaterIntake(),
+                    child: Container(
+                      width: 32.w,
+                      height: 32.w,
+                      decoration: BoxDecoration(
+                        color: Color(0xff2196F3).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: Color(0xff2196F3),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: Color(0xff2196F3),
+                        size: 18.sp,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
           SizedBox(height: 12.h),
 
+          // Water Value Display Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -447,11 +508,11 @@ class MealScreen extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 2.h),
                       decoration: BoxDecoration(
-                        color: Colors.grey[600],
+                        color: Color(0xff2196F3),
                         borderRadius: BorderRadius.circular(8.r),
                       ),
                       child: Text(
-                        '${controller.waterIntake.value}L',
+                        '${controller.waterIntake.value.toStringAsFixed(1)}L',
                         style: TextStyle(
                           fontSize: 10.sp,
                           fontWeight: FontWeight.w600,
@@ -463,7 +524,7 @@ class MealScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                '${controller.waterGoal.value}L',
+                '${controller.waterGoal.value.toStringAsFixed(1)}L',
                 style: TextStyle(
                   fontSize: 10.sp,
                   color: Colors.black54,
@@ -474,6 +535,7 @@ class MealScreen extends StatelessWidget {
 
           SizedBox(height: 8.h),
 
+          // Progress Bar
           Row(
             children: [
               SizedBox(width: 8.w),
@@ -503,8 +565,9 @@ class MealScreen extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 12.h),
       child: Slidable(
         key: ValueKey(meal.name + index.toString()),
+        enabled: !meal.isDefaultMealType, // ✅ Disable swipe for default meals
 
-        startActionPane: ActionPane(
+        startActionPane: !meal.isDefaultMealType ? ActionPane(
           motion: const DrawerMotion(),
           extentRatio: 0.25,
           children: [
@@ -517,9 +580,9 @@ class MealScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
           ],
-        ),
+        ) : null,
 
-        endActionPane: ActionPane(
+        endActionPane: !meal.isDefaultMealType ? ActionPane(
           motion: const DrawerMotion(),
           extentRatio: 0.25,
           children: [
@@ -532,14 +595,19 @@ class MealScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
           ],
-        ),
+        ) : null,
 
         child: Container(
           padding: EdgeInsets.all(16.w),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(color: Colors.grey[300]!, width: 1),
+            border: Border.all(
+              color: meal.isDefaultMealType && meal.calories == 0
+                ? Colors.grey[200]!
+                : Colors.grey[300]!,
+              width: 1
+            ),
           ),
           child: Row(
             children: [
@@ -560,9 +628,24 @@ class MealScreen extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16.sp,
                             fontWeight: FontWeight.w600,
-                            color: Colors.black87,
+                            color: meal.isDefaultMealType && meal.calories == 0
+                                ? Colors.grey[500]
+                                : Colors.black87,
                           ),
                         ),
+                        if (meal.isDefaultMealType && meal.calories == 0)
+                          Padding(
+                            padding: EdgeInsets.only(left: 6.w),
+                            child: Text(
+                              '(Empty)',
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey[400],
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                     SizedBox(height: 6.h),

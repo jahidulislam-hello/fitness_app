@@ -108,9 +108,23 @@ class MealTrackingController extends GetxController {
   /// ✅ Parse API Response - FIXED to handle multiple dates in response
   void _parseMealsData(List<dynamic> data) {
     meals.clear();
-    if (data.isEmpty) return;
+
+    // Reset macros to 0
+    dailyCalories.value = 0.0;
+    carbs.value = 0.0;
+    protein.value = 0.0;
+    fat.value = 0.0;
+    waterIntake.value = 0.0;
+    weeklyCalories.value = 0.0;
+
+    if (data.isEmpty) {
+      _showDefaultMealsWithZeroValues();
+      return;
+    }
+
     final selectedDateString = _formatDateForAPI(selectedDate.value);
     print('🔍 Looking for meal plan with date: $selectedDateString');
+
     Map<String, dynamic>? matchingMealPlan;
     for (var item in data) {
       if (item is Map && item.containsKey('date')) {
@@ -125,21 +139,20 @@ class MealTrackingController extends GetxController {
       }
     }
 
-    // If no matching date found, clear and return
+    // Get weekly calories (always last item in array)
+    if (data.isNotEmpty && data.last is Map && data.last.containsKey('totalLast7DaysCalories')) {
+      weeklyCalories.value = _toDouble(data.last['totalLast7DaysCalories']);
+      print('📊 Weekly Calories: ${weeklyCalories.value}');
+    }
+
+    // If no matching date found, show default meals with 0 values
     if (matchingMealPlan == null) {
       print('⚠️ No meal plan found for $selectedDateString');
-      _clearMealData();
-
-      // Get weekly calories (always last item in array)
-      if (data.isNotEmpty && data.last is Map && data.last.containsKey('totalLast7DaysCalories')) {
-        weeklyCalories.value = _toDouble(data.last['totalLast7DaysCalories']);
-        print('📊 Weekly Calories: ${weeklyCalories.value}');
-      }
-
+      _showDefaultMealsWithZeroValues();
       return;
     }
 
-    // Parse the matching meal plan
+    // Parse the matching meal plan macros
     final macrosData = matchingMealPlan['macrosValue'];
     if (macrosData != null) {
       dailyCalories.value = _toDouble(macrosData['calories']);
@@ -147,18 +160,19 @@ class MealTrackingController extends GetxController {
       protein.value = _toDouble(macrosData['protein']);
       fat.value = _toDouble(macrosData['fat']);
       waterIntake.value = _toDouble(macrosData['waterIntake']);
+
+      print('📊 Macros - Cal: ${dailyCalories.value}, Carbs: ${carbs.value}, Protein: ${protein.value}, Fat: ${fat.value}');
     }
 
-    // Get weekly calories (last item in array)
-    if (data.isNotEmpty && data.last is Map && data.last.containsKey('totalLast7DaysCalories')) {
-      weeklyCalories.value = _toDouble(data.last['totalLast7DaysCalories']);
-    }
+    // Track which default meal types have data
+    Set<String> mealsWithData = {};
 
     // Parse meals array
     final mealsData = matchingMealPlan['meals'] as List<dynamic>?;
     if (mealsData != null && mealsData.isNotEmpty) {
       for (var mealData in mealsData) {
         final timeName = mealData['timeName'] ?? '';
+        final capitalizedTimeName = _capitalizeTimeName(timeName);
         final foodsList = mealData['foods'] as List<dynamic>?;
 
         if (foodsList != null && foodsList.isNotEmpty) {
@@ -178,30 +192,94 @@ class MealTrackingController extends GetxController {
             }
           }
 
-          // Only add if there's actual data
-          if (totalCalories > 0 || totalCarbs > 0 || totalProtein > 0 || totalFat > 0) {
-            meals.add(MealModel(
-              name: _capitalizeTimeName(timeName),
-              calories: totalCalories,
-              carbs: totalCarbs,
-              protein: totalProtein,
-              fat: totalFat,
-              isCompleted: false,
-              isPinned: false,
-              mealId: mealData['_id'],
-              foods: foodsList,
-            ));
-          }
+          // Add meal with data
+          meals.add(MealModel(
+            name: capitalizedTimeName,
+            calories: totalCalories,
+            carbs: totalCarbs,
+            protein: totalProtein,
+            fat: totalFat,
+            isCompleted: false,
+            isPinned: false,
+            mealId: mealData['_id'],
+            foods: foodsList,
+            isDefaultMealType: _isDefaultMealType(capitalizedTimeName),
+          ));
+
+          mealsWithData.add(capitalizedTimeName);
         }
       }
     }
 
-    // Debug print to check if meals were parsed
+    // Add default meal types that don't have data yet (Breakfast, Lunch, Dinner with 0 values)
+    for (var defaultMealName in MealConstants.defaultMealTypes) {
+      if (!mealsWithData.contains(defaultMealName)) {
+        meals.add(MealModel(
+          name: defaultMealName,
+          calories: 0.0,
+          carbs: 0.0,
+          protein: 0.0,
+          fat: 0.0,
+          isCompleted: false,
+          isPinned: false,
+          isDefaultMealType: true,
+        ));
+      }
+    }
+
+    // Sort meals: pinned first, then Breakfast, Lunch, Dinner, then others
+    meals.sort((a, b) {
+      if (a.isPinned != b.isPinned) return a.isPinned ? -1 : 1;
+
+      final orderA = _getMealTypeOrder(a.name);
+      final orderB = _getMealTypeOrder(b.name);
+
+      return orderA.compareTo(orderB);
+    });
+
     print('📊 Parsed ${meals.length} meals');
     print('🔢 Daily Calories: ${dailyCalories.value}');
     print('🥗 Carbs: ${carbs.value}, Protein: ${protein.value}, Fat: ${fat.value}');
 
     meals.refresh();
+  }
+
+  /// Helper to check if a meal name is a default meal type
+  bool _isDefaultMealType(String mealName) {
+    return MealConstants.defaultMealTypes.contains(mealName);
+  }
+
+  /// Helper to get meal type order for sorting
+  int _getMealTypeOrder(String mealName) {
+    switch (mealName) {
+      case 'Breakfast':
+        return 1;
+      case 'Lunch':
+        return 2;
+      case 'Dinner':
+        return 3;
+      default:
+        return 4; // Other meals come after default ones
+    }
+  }
+
+  /// Show default meals (Breakfast, Lunch, Dinner) with 0 values
+  void _showDefaultMealsWithZeroValues() {
+    meals.clear();
+    for (var defaultMealName in MealConstants.defaultMealTypes) {
+      meals.add(MealModel(
+        name: defaultMealName,
+        calories: 0.0,
+        carbs: 0.0,
+        protein: 0.0,
+        fat: 0.0,
+        isCompleted: false,
+        isPinned: false,
+        isDefaultMealType: true,
+      ));
+    }
+    meals.refresh();
+    print('📋 Showing default meals with 0 values');
   }
 
   // Helper methods for type conversion
@@ -223,24 +301,9 @@ class MealTrackingController extends GetxController {
 
   // Helper to load default meals when no API data
   void _clearMealData() {
-    // Load default meals (Breakfast, Lunch, Dinner) instead of clearing
-    loadDefaultMeals();
-    print('🧹 No API data - showing default meals');
-  }
-
-  /// Load default meals from constants (Breakfast, Lunch, Dinner)
-  void loadDefaultMeals() {
-    meals.value = MealConstants.getDefaultMeals();
-
-    // Calculate totals from default meals
-    dailyCalories.value = meals.fold(0.0, (sum, meal) => sum + meal.calories);
-    carbs.value = meals.fold(0.0, (sum, meal) => sum + meal.carbs);
-    protein.value = meals.fold(0.0, (sum, meal) => sum + meal.protein);
-    fat.value = meals.fold(0.0, (sum, meal) => sum + meal.fat);
-
-    meals.refresh();
-    print('📋 Loaded ${meals.length} default meals (Breakfast, Lunch, Dinner)');
-    print('🔢 Total Daily Calories: ${dailyCalories.value}');
+    // Show default meals with 0 values
+    _showDefaultMealsWithZeroValues();
+    print('🧹 No API data - showing default meals with 0 values');
   }
 
   String _formatDateForDisplay(DateTime date) {
@@ -335,6 +398,21 @@ class MealTrackingController extends GetxController {
   }
 
   void deleteMeal(int index) {
+    final meal = meals[index];
+
+    // ✅ Prevent deletion of default meal types (Breakfast, Lunch, Dinner)
+    if (meal.isDefaultMealType) {
+      Get.snackbar(
+        'Cannot Delete',
+        '${meal.name} is a default meal type and cannot be deleted',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.orange[100],
+        colorText: Colors.orange[900],
+        duration: Duration(seconds: 2),
+      );
+      return;
+    }
+
     // TODO: Implement delete API call if available
     meals.removeAt(index);
     meals.refresh();
@@ -344,6 +422,86 @@ class MealTrackingController extends GetxController {
       'Meal removed',
       snackPosition: SnackPosition.BOTTOM,
     );
+  }
+
+  /// ✅ Water Intake Methods
+  /// Increment water intake by 1L
+  Future<void> incrementWaterIntake() async {
+    try {
+      // Optimistically update UI
+      waterIntake.value += 1.0;
+
+      // Call API to save
+      final dateString = _formatDateForAPI(selectedDate.value);
+      final response = await _apiService.addWaterIntake(
+        date: dateString,
+        waterIntake: waterIntake.value,
+      );
+
+      if (response['success'] == true) {
+        // Update from API response to ensure consistency
+        final macrosData = response['data']?['macrosValue'];
+        if (macrosData != null) {
+          waterIntake.value = _toDouble(macrosData['waterIntake']);
+        }
+
+        print('✅ Water intake incremented: ${waterIntake.value}L');
+      }
+    } catch (e) {
+      // Revert on error
+      waterIntake.value -= 1.0;
+      print('❌ Error incrementing water intake: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to update water intake',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red[100],
+        colorText: Colors.red[900],
+        duration: Duration(seconds: 2),
+      );
+    }
+  }
+
+  /// Decrement water intake by 1L
+  Future<void> decrementWaterIntake() async {
+    // Don't allow negative values
+    if (waterIntake.value <= 0) {
+      return;
+    }
+
+    try {
+      // Optimistically update UI
+      waterIntake.value -= 1.0;
+
+      // Call API to save
+      final dateString = _formatDateForAPI(selectedDate.value);
+      final response = await _apiService.addWaterIntake(
+        date: dateString,
+        waterIntake: waterIntake.value,
+      );
+
+      if (response['success'] == true) {
+        // Update from API response to ensure consistency
+        final macrosData = response['data']?['macrosValue'];
+        if (macrosData != null) {
+          waterIntake.value = _toDouble(macrosData['waterIntake']);
+        }
+
+        print('✅ Water intake decremented: ${waterIntake.value}L');
+      }
+    } catch (e) {
+      // Revert on error
+      waterIntake.value += 1.0;
+      print('❌ Error decrementing water intake: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to update water intake',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red[100],
+        colorText: Colors.red[900],
+        duration: Duration(seconds: 2),
+      );
+    }
   }
 
   // String Getters
@@ -382,6 +540,7 @@ class MealModel {
   double fat;
   bool isCompleted;
   bool isPinned;
+  bool isDefaultMealType;
   String? mealId;
   List<dynamic>? foods;
 
@@ -393,6 +552,7 @@ class MealModel {
     required this.fat,
     this.isCompleted = false,
     this.isPinned = false,
+    this.isDefaultMealType = false,
     this.mealId,
     this.foods,
   });

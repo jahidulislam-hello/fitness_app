@@ -99,4 +99,51 @@ class MealApiService {
       throw Exception('Error getting meals: $e');
     }
   }
+
+  // Add Water Intake API
+  Future<Map<String, dynamic>> addWaterIntake({
+    required String date,
+    required double waterIntake,
+  }) async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final url = Uri.parse("${ApiConstants.baseUrl}${ApiConstants.addWaterIntake}");
+
+      final body = {
+        "date": date,
+        "waterIntake": waterIntake,
+      };
+
+      print('💧 Adding water intake: $waterIntake L for date: $date');
+
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode(body),
+      );
+
+      print('📡 Response Status: ${response.statusCode}');
+      print('📦 Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonResponse = jsonDecode(response.body);
+        print('✅ Water intake updated successfully');
+        return jsonResponse;
+      } else {
+        print('❌ API Error: ${response.statusCode} - ${response.body}');
+        throw Exception('Failed to update water intake: ${response.body}');
+      }
+    } catch (e) {
+      print('💥 Exception in addWaterIntake: $e');
+      throw Exception('Error updating water intake: $e');
+    }
+  }
 }
