@@ -8,6 +8,7 @@ class ApiConstants{
 
   static const String addFood = "/meals/add-food";
   static const String getAllMeals = "/meals/get-all-meals";
+  static const String addWaterIntake = "/meals/add-water-intake";
 
   static const String getWorkoutLog = "/workout/get-workout-log";
 
@@ -25,6 +26,7 @@ class ApiConstants{
   static const String getTermsCOnEndPoint = "/terms";
   static const String getAboutEndPoint = "/about";
   static const String getPrivacyEndPoint = "/privacy";
+  static const String getTermsPrivacyAbout = "/terms-privacy/get-terms-policy-about-us";
   static const String getUserEndPoint = "/user/my-profile";
   static const String updateProfileEndPoint = "/user/update";
   static const String setPasswordEndPoint = "/user/change-password";

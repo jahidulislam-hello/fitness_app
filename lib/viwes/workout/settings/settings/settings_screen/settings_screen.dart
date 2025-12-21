@@ -7,6 +7,8 @@ import 'package:gym_cheloper/global%20widget/custom_appbar.dart';
 import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/utils/app_images.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_button.dart';
+import 'package:gym_cheloper/viwes/workout/choose_language/choose_laguage_screen/choose_language_screen.dart';
+import 'package:gym_cheloper/viwes/workout/settings/change_password/change_password.dart';
 import 'package:gym_cheloper/viwes/workout/settings/settings/settings_controller/settings_controller.dart';
 
 
@@ -65,7 +67,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
 
                       onTap: () {
-                        context.pushNamed(RouteNames.changePass);
+                        Get.to (()=> ChangePasswordScreen());
                       },
                     ),
 
@@ -83,7 +85,7 @@ class SettingsScreen extends StatelessWidget {
                         height: 16,
                       ),
                       onTap: () {
-                        context.pushNamed(RouteNames.chooseLanguage);
+                        Get.to (()=> ChooseLanguageScreen());
                       },
                     ),
 
