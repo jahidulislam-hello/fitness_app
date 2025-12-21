@@ -246,7 +246,7 @@ class MealScreen extends StatelessWidget {
                     height: 72.w,
                     child: CircularProgressIndicator(
                       value: controller.dailyCaloriesPercentage / 100,
-                      strokeWidth: 9.w,
+                      strokeWidth: 12.w,
                       backgroundColor: Colors.grey[200],
                       valueColor: AlwaysStoppedAnimation<Color>(Color(0xffFF5252)),
                     ),
@@ -327,7 +327,7 @@ class MealScreen extends StatelessWidget {
                     height: 72.w,
                     child: CircularProgressIndicator(
                       value: controller.weeklyCaloriesPercentage / 100,
-                      strokeWidth: 9.w,
+                      strokeWidth: 12.w,
                       backgroundColor: Colors.grey[200],
                       valueColor: AlwaysStoppedAnimation<Color>(Color(0xff4CAF50)),
                     ),
@@ -565,15 +565,16 @@ class MealScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 8.h),
-                    Wrap(
-                      spacing: 8.w,
-                      runSpacing: 6.h,
+                    SizedBox(height: 6.h),
+                    Row(
                       children: [
-                        _buildMealMacroChip('${meal.calories.toStringAsFixed(0)} kcal'),
-                        _buildMealMacroChip('Carbs ${meal.carbs.toStringAsFixed(1)}g'),
-                        _buildMealMacroChip('Protein ${meal.protein.toStringAsFixed(1)}g'),
-                        _buildMealMacroChip('Fat ${meal.fat.toStringAsFixed(1)}g'),
+                        _buildMealMacroChip('${meal.calories.round()} kcal'),
+                        SizedBox(width: 6.w),
+                        _buildMealMacroChip('Protein ${meal.protein.round()}g'),
+                        SizedBox(width: 6.w),
+                        _buildMealMacroChip('Carbs ${meal.carbs.round()}g'),
+                        SizedBox(width: 6.w),
+                        _buildMealMacroChip('Fat ${meal.fat.round()}g'),
                       ],
                     ),
                   ],
@@ -609,7 +610,7 @@ class MealScreen extends StatelessWidget {
 
   Widget _buildMealMacroChip(String text) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 5.h),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12.r),
@@ -622,7 +623,7 @@ class MealScreen extends StatelessWidget {
         text,
         style: TextStyle(
           fontSize: 10.sp,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w600,
           color: Colors.black87,
         ),
       ),

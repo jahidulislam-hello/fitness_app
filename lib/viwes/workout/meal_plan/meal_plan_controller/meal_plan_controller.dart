@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_tracking_api.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/add_meal_popup.dart';
+import 'package:gym_cheloper/viwes/workout/meal_plan/meal_constants.dart';
 import 'package:intl/intl.dart';
 
 class MealTrackingController extends GetxController {
@@ -220,16 +221,26 @@ class MealTrackingController extends GetxController {
     return 0.0;
   }
 
-  // Helper to clear all meal data
+  // Helper to load default meals when no API data
   void _clearMealData() {
-    meals.clear();
-    dailyCalories.value = 0.0;
-    carbs.value = 0.0;
-    protein.value = 0.0;
-    fat.value = 0.0;
-    waterIntake.value = 0.0;
+    // Load default meals (Breakfast, Lunch, Dinner) instead of clearing
+    loadDefaultMeals();
+    print('🧹 No API data - showing default meals');
+  }
+
+  /// Load default meals from constants (Breakfast, Lunch, Dinner)
+  void loadDefaultMeals() {
+    meals.value = MealConstants.getDefaultMeals();
+
+    // Calculate totals from default meals
+    dailyCalories.value = meals.fold(0.0, (sum, meal) => sum + meal.calories);
+    carbs.value = meals.fold(0.0, (sum, meal) => sum + meal.carbs);
+    protein.value = meals.fold(0.0, (sum, meal) => sum + meal.protein);
+    fat.value = meals.fold(0.0, (sum, meal) => sum + meal.fat);
+
     meals.refresh();
-    print('🧹 Cleared all meal data');
+    print('📋 Loaded ${meals.length} default meals (Breakfast, Lunch, Dinner)');
+    print('🔢 Total Daily Calories: ${dailyCalories.value}');
   }
 
   String _formatDateForDisplay(DateTime date) {

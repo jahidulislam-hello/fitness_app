@@ -72,7 +72,7 @@ class RouteNames{
   static const String calculateMacro ='/CalculateMacrosScreen';
   static const String settingsProfile ='/SettingsProfileScreen';
   static const String profileInfoScreen ='/ProfileInfoScreen';
-  static const String subscriptionpackScreen = '/SubscriptionPackagesScreen';
+  static const String profilsubscriptionScreen = '/ProfileSubscriptionScreen';
   static const String subscriptionbuyScreen = '/SubscriptionBuyScreen';
   static const String subscriptioncodeScreen = '/SubscriptionCodeScreen';
   static const String buypackScreen = '/BuyPackageScreen';

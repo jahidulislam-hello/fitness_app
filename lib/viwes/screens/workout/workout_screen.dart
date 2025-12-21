@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -6,6 +5,8 @@ import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:gym_cheloper/viwes/screens/workout/workout_controller.dart';
+
 import '../../../global widget/global_widget.dart';
 import '../../../helpers/helpers.dart';
 import '../../../utils/utils.dart';
@@ -13,110 +14,153 @@ import '../../../utils/utils.dart';
 class WorkoutScreen extends StatelessWidget {
   const WorkoutScreen({super.key});
 
-  final bool isComplete = true;
   @override
   Widget build(BuildContext context) {
+    final WorkoutController controller = Get.put(WorkoutController());
     final sizeH = MediaQuery.of(context).size.height;
     final sizeW = MediaQuery.of(context).size.width;
-    return  Scaffold(
+
+    return Scaffold(
       body: Padding(
-        padding:  EdgeInsets.symmetric(horizontal: 24.w),
+        padding: EdgeInsets.symmetric(horizontal: 24.w),
         child: Column(
           children: [
-            Center(child: CustomText(text: "Your routine",)),
-            SizedBox(height: 10.h,),
+            SizedBox(height: 20.h),
+            Center(
+              child: CustomText(text: "Your routine"),
+            ),
+            SizedBox(height: 10.h),
+
+            /// Add Workout Button
             CustomTextButton(
-                text: '+ Add  New Workout'.tr,
-                color: Color(0xff999999),
-                radius: 16.r,
-                onTap: () { context.pushNamed(RouteNames.exercise);}),
-            SizedBox(
-              height: sizeH * 0.379, child: ListView.builder(
-              itemCount:3,
-              itemBuilder: (context, index) {
-                return
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: sizeW * 0.02),
-                    child: InkWell(
-                      onTap: () {
+              text: '+ Add New Workout'.tr,
+              color: const Color(0xff999999),
+              radius: 16.r,
+              onTap: () {
+                context.pushNamed(RouteNames.exercise);
+              },
+            ),
 
+            SizedBox(height: 16.h),
 
-                      },
-                      child: Slidable(
-                        ///left icon=============================
+            /// Workout List
+            Obx(() {
+              /// Loading State
+              if (controller.isLoading.value) {
+                return const Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Color(0xffF93533),
+                    ),
+                  ),
+                );
+              }
 
-                        startActionPane: ActionPane(motion: StretchMotion(), children: [
-                          SizedBox(width: 20.w,),
-                          SlidableAction(onPressed: ((context){
-                            //call action method
-                          }),
-                            borderRadius: BorderRadius.circular(8.r),
-                            backgroundColor: Colors.green,
-                            icon:Icons.pin_drop_rounded,
-
-                          ),
-                          SizedBox(width: 4.w,),
-                        ],
+              /// Empty State
+              if (controller.workouts.isEmpty) {
+                return Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.fitness_center,
+                          size: 64.sp,
+                          color: Colors.grey,
                         ),
-                        ///right icon==========================
-
-                        endActionPane: ActionPane(motion: StretchMotion(),  children: [
-
-                          SizedBox(width: 4.w,),
-
-                          SlidableAction(onPressed: ((context){
-                            //call action method
-                          //  _deleteItem(index);
-                            ToastMessageHelper.errorMessageShowToster("Delete item");
-                          }),
-
-                            borderRadius: BorderRadius.circular(12.r),
-                            backgroundColor: Colors.red,
-                            icon:Icons.delete,
+                        SizedBox(height: 16.h),
+                        Text(
+                          'No workouts found',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            color: Colors.grey,
                           ),
-                          SizedBox(width: 20.w,),
-                        ]),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
 
+              /// Workout List
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: controller.workouts.length,
+                  itemBuilder: (context, index) {
+                    final workout = controller.workouts[index];
+
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: sizeW * 0.02),
+                      child: Slidable(
+                        startActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          children: [
+                            SizedBox(width: 12.w),
+                            SlidableAction(
+                              onPressed: (context) {
+                                controller.pinWorkout(index);
+                              },
+                              borderRadius: BorderRadius.circular(8.r),
+                              backgroundColor: Colors.green,
+                              icon: Icons.push_pin,
+                            ),
+                          ],
+                        ),
+                        endActionPane: ActionPane(
+                          motion: const StretchMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (context) {
+                                controller.deleteWorkout(index);
+                              },
+                              borderRadius: BorderRadius.circular(12.r),
+                              backgroundColor: Colors.red,
+                              icon: Icons.delete,
+                            ),
+                            SizedBox(width: 12.w),
+                          ],
+                        ),
                         child: Container(
                           padding: EdgeInsets.all(sizeW * 0.03),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(sizeW * 0.03),
-                            border: Border.all(color: Colors.red, width: sizeW * 0.005),
+                            borderRadius:
+                            BorderRadius.circular(sizeW * 0.03),
+                            border: Border.all(
+                              color: Colors.red,
+                              width: sizeW * 0.005,
+                            ),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              SizedBox(width: 6.w,),
-                              // Column with two texts: "Workout Plan for" and `day` in red
-                              HeadingThree(data: 'Chest Day'.tr),
-                              SizedBox(height: 10.h,),
+                              Expanded(
+                                child: HeadingThree(
+                                  data: workout.trainingName.tr,
+                                ),
+                              ),
+                              SizedBox(width: 12.w),
                               SizedBox(
-                                width: sizeW * 0.30,
+                                width: sizeW * 0.32,
                                 child: CustomTextButton(
-                                  padding: sizeH*.01,
-                                  text: isComplete ? 'Workout'.tr : 'incomplete'.tr,
-                                  onTap: () {
-                                  },
-                                  color: isComplete ? AppColors.primaryColor : Colors.grey,
-
+                                  padding: sizeH * 0.01,
+                                  text: workout.completed
+                                      ? 'Completed'.tr
+                                      : 'Workout'.tr,
+                                  onTap: () {},
+                                  color: workout.completed
+                                      ? AppColors.primaryColor
+                                      : Colors.grey,
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ),
-                  );
-                // );
-              },
-            ),
-            ),
-            // Image.network(
-            //   'https://lottiefiles.com/animations/t-plank-exercise-g5qVU6RPYY',
-            //   width: 200,
-            //   height: 200,
-            //   fit: BoxFit.cover,
-            // )
+                    );
+                  },
+                ),
+              );
+            }),
           ],
         ),
       ),

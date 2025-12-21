@@ -9,6 +9,8 @@ class ApiConstants{
   static const String addFood = "/meals/add-food";
   static const String getAllMeals = "/meals/get-all-meals";
 
+  static const String getWorkoutLog = "/workout/get-workout-log";
+
   static const String getProfileInfo = "/profile/profile-information";
   static const String updateProfile = "/profile/profile-update";
 
@@ -29,6 +31,9 @@ class ApiConstants{
   static const String getMacros = "/macros";
   static const String getWorkoutPlans = "/workout-plan";
   static  String getDayWorkoutPlans(String day) => "/workout-plan/exercise-list?day=$day";
+
+  static const String getProgressBar = "/progress-bar/get-progress-bar";
+  static const String addProgressBar = "/progress-bar/add-progress-bar";
 
 
 
