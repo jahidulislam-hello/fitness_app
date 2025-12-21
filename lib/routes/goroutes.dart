@@ -19,7 +19,7 @@ import 'routes_name.dart';
 
 class AppRoutes {
   static final GoRouter router = GoRouter(
-    initialLocation: RouteNames.subscriptionpackScreen,
+    initialLocation: RouteNames.splashScreen,
     routes: [
       // Splash
       GoRoute(
@@ -110,8 +110,8 @@ class AppRoutes {
         builder: (context, state) => ProfileInfoScreen(),
       ),
       GoRoute(
-        path: RouteNames.subscriptionpackScreen,
-        name: RouteNames.subscriptionpackScreen,
+        path: RouteNames.profilsubscriptionScreen,
+        name: RouteNames.profilsubscriptionScreen,
         builder: (context, state) => ProfileSubscriptionScreen(),
       ),
       // Add more screens as needed...

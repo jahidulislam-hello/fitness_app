@@ -495,6 +495,7 @@ import 'package:gym_cheloper/global widget/custom_button.dart';
 import 'package:gym_cheloper/utils/app_images.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_button.dart';
 import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_controller/subscription_card_controller.dart';
+import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/subscription_buy_screen.dart';
 
 
 class ChooseYourCardScreen extends StatelessWidget {
@@ -691,8 +692,10 @@ class ChooseYourCardScreen extends StatelessWidget {
                   color: const Color(0xff3971FF),   // button background color
                   titlecolor: Colors.white,
                   onpress: () {
-                    // Navigate to Subscription Success Screen
-                    Navigator.pushNamed(context, '/subscription-buy');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SubscriptionBuyScreen()),
+                    );
                   },
                 ),
                 ),

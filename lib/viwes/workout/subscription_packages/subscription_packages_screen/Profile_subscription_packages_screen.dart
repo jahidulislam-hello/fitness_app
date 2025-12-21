@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_controller/profile_subscription_packages_controller.dart';
+import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/subscription_card_screen.dart';
+import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/subscription_code_screen.dart';
+// TODO: Add this import once you provide the correct path
+// import 'package:gym_cheloper/path/to/choose_your_card_screen.dart';
 import '../../../widgets/widgets.dart';
 
 
@@ -63,7 +67,11 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
     controller.selectPlan(index);
     // Small delay to show selection animation before navigation
     Future.delayed(Duration(milliseconds: 200), () {
-      Navigator.pushNamed(context, '/subscription-card');
+      // TODO: Replace SubscriptionCodeScreen with ChooseYourCardScreen once imported
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ChooseYourCardScreen()),
+      );
     });
   }
 
@@ -83,7 +91,7 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
                   SizedBox(height: 40.h,),
                   CarouselSlider(
                     options: CarouselOptions(
-                      height: 380.h,
+                      height: 300.h,
                       autoPlay: true,
                       enlargeCenterPage: true,
                       enableInfiniteScroll: true,
@@ -98,21 +106,18 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
                         builder: (BuildContext context) {
                           return Padding(
                             padding: EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  data["onboardImage"]!,
-                                  width: 405.w,
-                                  height: 320.h,
-                                  fit: BoxFit.contain,
-                                ),
-                              ],
+                            child: Image.asset(
+                              data["onboardImage"]!,
+                              width: 405.w,
+                              height: 280.h,
+                              fit: BoxFit.contain,
                             ),
                           );
                         },
                       );
                     }).toList(),
                   ),
+                  SizedBox(height: 15.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
@@ -155,12 +160,15 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
                                       ? Colors.black.withOpacity(0.05)
                                       : Colors.transparent,
                                 ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('Monthly', style: TextStyle(color: Colors.grey)),
-                                    Text('US\$ 12.99/mo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                                  ],
+                                child: Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('Monthly', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                                      SizedBox(height: 4.h),
+                                      Text('US\$ 12.99/mo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -182,12 +190,15 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
                                       ? Colors.black.withOpacity(0.05)
                                       : Colors.transparent,
                                 ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('3 month', style: TextStyle(color: Colors.grey)),
-                                    Text('US\$ 9.74/mo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                                  ],
+                                child: Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('3 month', style: TextStyle(color: Colors.grey, fontSize: 14)),
+                                      SizedBox(height: 4.h),
+                                      Text('US\$ 9.74/mo', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -198,11 +209,12 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
                           top: 16.h,
                           right: 45.w,
                           child: Container(
-                              width: 80.w,
+                              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                               decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.black),
                               child: CustomText(text: "Save 25%",color: Colors.white,fontsize: 12.sp,)))
                     ],
                   )),
+                  SizedBox(height: 10.h),
                   CustomText(text: "Best Price value offer in the market",),
                   Padding(
                     padding:  EdgeInsets.all(8.r),
@@ -219,15 +231,15 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
                       color: Colors.black,
                     ),
                   ),
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 10.h,),
                   Obx(() => CustomText(
                     text: controller.selectedIndex.value == 0
                         ? "5 days free, then US\$ 12.99 per month"
                         : "5 days free, then US\$ 29.23 per 3 months (US\$ 9.74/mo)",
                   )),
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 10.h,),
                   CustomText(text: "You won't be charged now. Your selected subscription \nwill start after your free trial ends. Cancel anytime in AppStore.",fontsize: 12.sp,),
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 10.h,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -247,7 +259,10 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/subscription-code');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => SubscriptionCodeScreen()),
+                          );
                         },
                         child: Text(
                           "Redeem Code",
@@ -260,13 +275,13 @@ class _SubscriptionPackegeScreenState extends State<ProfileSubscriptionScreen> {
                       )
                     ],
                   ),
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 10.h,),
                   CustomText(text: "Any Questions?", fontWeight: FontWeight.w600,
                     fontsize: 14.sp,),
-                  SizedBox(height: 20.h,),
+                  SizedBox(height: 10.h,),
                   CustomText(text: "Contact Us at scorpionfitnessapp@gmail.com",
                     fontsize: 14.sp,),
-                  SizedBox(height: 50.h,),
+                  SizedBox(height: 30.h,),
 
                 ],
               ),

@@ -95,10 +95,10 @@ class InfoCongratulationScreen extends StatelessWidget {
       children: [
         SizedBox(height: 20.h,),
 
-        SizedBox(height: 10.h,),
+        SizedBox(height: 20.h,),
         CircularPercentIndicator(
-          radius: 40.0,
-          lineWidth: 8.0,
+          radius: 50.0,
+          lineWidth: 14.0,
           percent: value / total, // Fill based on the value and total
           center: Text(
             "$value", // Show only the current value

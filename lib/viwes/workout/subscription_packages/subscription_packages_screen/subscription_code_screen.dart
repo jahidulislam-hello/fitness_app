@@ -63,7 +63,7 @@ class SubscriptionCodeScreen extends StatelessWidget {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12.r),
                     borderSide: const BorderSide(
-                      color: Color(0xffF93533),
+                      color: Colors.black38,
                       width: 1.4,
                     ),
                   ),
@@ -77,26 +77,18 @@ class SubscriptionCodeScreen extends StatelessWidget {
               SizedBox(height: 40.h),
 
               /// Confirm Button
-              CustomNewButton(
-                title: "Confirm",
-                onpress: () {
-                  final code = controller.codeController.text.trim();
-                  if (code.isEmpty) {
-                    Get.snackbar(
-                      "Error",
-                      "Please enter a subscription code",
-                      backgroundColor: Colors.black,
-                      colorText: Colors.white,
-                    );
-                    return;
-                  }
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100.r),
 
-                  // Save code to controller
-                  controller.code.value = code;
-
-                  // Navigate to next screen
-                  Get.to(() => SubscriptionBuyScreen());
-                },
+                child:  CustomNewButton(
+                  title: "Confirm",
+                  color:  Colors.black,   // button background color
+                  titlecolor: Colors.white,
+                  onpress: () {
+                    // Navigate to Subscription Success Screen
+                    Navigator.pushNamed(context, '/subscription-buy');
+                  },
+                ),
               ),
             ],
           ),
