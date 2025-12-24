@@ -50,17 +50,19 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: customLeading ??
           (showBackButton
               ? IconButton(
-            icon: Padding(
-              padding: EdgeInsets.only(left: 4.w),
-              child: SvgPicture.asset(
-                leadingIcon ??
-                    AppImages.chevronLeft,
-                height: 16.h,
-                width: 16.w,
-                color: leadingIconColor ?? iconColor,
+            icon: SvgPicture.asset(
+              leadingIcon ?? AppImages.chevronLeft,
+              height: 20.h,
+              width: 20.w,
+              colorFilter: ColorFilter.mode(
+                leadingIconColor ?? iconColor,
+                BlendMode.srcIn,
               ),
             ),
-            onPressed: onBackPressed ?? () => Get.back(),
+            onPressed: onBackPressed ?? () {
+              print('🔙 Back button pressed');
+              Get.back();
+            },
           )
               : null),
 

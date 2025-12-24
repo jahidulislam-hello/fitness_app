@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_screen/meal_plan_screen.dart';
+import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/meal_plan_controller.dart';
 import 'package:gym_cheloper/viwes/workout/settings/settings/settings_screen/settings_profile_screen.dart';
 import 'package:gym_cheloper/viwes/workout/weight_tracking/weight_tracking_screen/weight_tracking_screen.dart';
 
@@ -52,14 +53,53 @@ class CustomNavbarState extends State<CustomNavbar> {
         ),
 
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: AppIcons.fire,
+          Builder(
+            builder: (context) {
+              // Check if MealTrackingController is registered
+              if (Get.isRegistered<MealTrackingController>()) {
+                final mealController = Get.find<MealTrackingController>();
+                return Obx(() {
+                  final streakColor = mealController.streakStatusColor.value;
+
+                  // Select icon based on streak status (only red or green)
+                  Widget fireIcon;
+                  if (streakColor == 'green') {
+                    fireIcon = SvgPicture.asset(
+                      AppIcons.green,
+                      width: 24.w,
+                      height: 24.h,
+                    );
+                  } else {
+                    // Default to red for any other value including 'red'
+                    fireIcon = SvgPicture.asset(
+                      AppIcons.red,
+                      width: 24.w,
+                      height: 24.h,
+                    );
+                  }
+
+                  return IconButton(
+                    onPressed: () {},
+                    icon: fireIcon,
+                  );
+                });
+              }
+              else {
+                // Default red icon if controller not initialized
+                return IconButton(
+                  onPressed: () {},
+                  icon: SvgPicture.asset(
+                    AppIcons.red,
+                    width: 24.w,
+                    height: 24.h,
+                  ),
+                );
+              }
+            },
           ),
           IconButton(
             onPressed: () {
-              // Example navigation to cart screen
-              // Get.toNamed(RouteNames.cartScreen, preventDuplicates: false);
+
             },
             icon: const Icon(Icons.shopping_cart_outlined),
           ),

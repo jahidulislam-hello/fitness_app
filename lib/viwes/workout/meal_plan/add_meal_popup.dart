@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/add_meal_controller.dart';
+import 'package:gym_cheloper/utils/app_icons.dart';
 
 class AddMealPopup extends StatelessWidget {
   final String selectedDate;
@@ -43,7 +45,7 @@ class AddMealPopup extends StatelessWidget {
       body: Column(
         children: [
           // Search Bar with Three Dots
-          _buildSearchBar(controller),
+          _buildSearchBar(context, controller),
 
           SizedBox(height: 12.h),
 
@@ -72,7 +74,7 @@ class AddMealPopup extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchBar(AddMealController controller) {
+  Widget _buildSearchBar(BuildContext context, AddMealController controller) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
       child: Row(
@@ -109,7 +111,7 @@ class AddMealPopup extends StatelessWidget {
           SizedBox(width: 12.w),
           GestureDetector(
             onTap: () {
-              _showOptionsMenu();
+              _showOptionsMenu(context);
             },
             child: Container(
               width: 48.w,
@@ -468,9 +470,11 @@ class AddMealPopup extends StatelessWidget {
     );
   }
 
-  void _showOptionsMenu() {
-    Get.bottomSheet(
-      Container(
+  void _showOptionsMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -491,39 +495,75 @@ class AddMealPopup extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20.h),
-            ListTile(
-              leading: Icon(Icons.refresh, color: Colors.black87),
-              title: Text('Refresh'),
+
+            // Create Food
+            InkWell(
               onTap: () {
-                Get.back();
-                final controller = Get.find<AddMealController>();
-                controller.loadTabData();
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.filter_list, color: Colors.black87),
-              title: Text('Filter'),
-              onTap: () {
-                Get.back();
+                Navigator.pop(context);
                 Get.snackbar(
                   'Info',
-                  'Filter feature coming soon',
+                  'Create Food feature coming soon',
                   snackPosition: SnackPosition.BOTTOM,
                 );
               },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Create Food',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      AppIcons.food,
+                      width: 24.w,
+                      height: 24.h,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            ListTile(
-              leading: Icon(Icons.sort, color: Colors.black87),
-              title: Text('Sort'),
+
+            Divider(height: 1, thickness: 1, color: Colors.grey[200]),
+
+            // Create Recipe
+            InkWell(
               onTap: () {
-                Get.back();
+                Navigator.pop(context);
                 Get.snackbar(
                   'Info',
-                  'Sort feature coming soon',
+                  'Create Recipe feature coming soon',
                   snackPosition: SnackPosition.BOTTOM,
                 );
               },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Create Recipe',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    SvgPicture.asset(
+                      AppIcons.recipe,
+                      width: 24.w,
+                      height: 24.h,
+                    ),
+                  ],
+                ),
+              ),
             ),
+
             SizedBox(height: 20.h),
           ],
         ),
