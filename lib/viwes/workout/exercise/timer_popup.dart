@@ -34,10 +34,14 @@ class _RestTimerPopupState extends State<RestTimerPopup> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
       child: Container(
-        width: 380.w,
-        height: 217.h,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        height: 240.h,
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

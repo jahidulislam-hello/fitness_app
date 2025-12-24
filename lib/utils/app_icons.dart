@@ -11,6 +11,10 @@ class AppIcons{
   static const String qIcon = "$path/qIcon.svg";
   static const String qIcon2 = "$path/qIcon2.svg";
   static const String qIcon3 = "$path/qIcon3.svg";
+  static const String red = "$path/red.svg";
+  static const String green = "$path/green.svg";
+  static const String food = "$path/ep_food.svg";
+  static const String recipe = "$path/ep_recipe.svg";
   static const String qIcon4 = "$path/qIcon4.svg";
   static const String qIcon5 = "$path/qIcon5.svg";
   static const String congraIcon = "$path/congraIcon.svg";

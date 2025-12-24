@@ -54,6 +54,7 @@ class WorkoutScreen extends StatelessWidget {
                     ),
                   ),
                 );
+                
               }
 
               /// Empty State
@@ -123,12 +124,15 @@ class WorkoutScreen extends StatelessWidget {
                         child: Container(
                           padding: EdgeInsets.all(sizeW * 0.03),
                           decoration: BoxDecoration(
-                            borderRadius:
-                            BorderRadius.circular(sizeW * 0.03),
-                            border: Border.all(
-                              color: Colors.red,
-                              width: sizeW * 0.005,
-                            ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12.r),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                blurRadius: 5,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,8 +152,8 @@ class WorkoutScreen extends StatelessWidget {
                                       : 'Workout'.tr,
                                   onTap: () {},
                                   color: workout.completed
-                                      ? AppColors.primaryColor
-                                      : Colors.grey,
+                                      ? Colors.grey
+                                      : AppColors.primaryColor,
                                 ),
                               ),
                             ],

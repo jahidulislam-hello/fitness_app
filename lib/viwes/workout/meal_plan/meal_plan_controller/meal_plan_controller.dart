@@ -18,9 +18,12 @@ class MealTrackingController extends GetxController {
 
   // Calories Data
   var dailyCalories = 0.0.obs;
-  var dailyCaloriesGoal = 2000.0.obs;
+  var dailyCaloriesGoal = 2200.0.obs;
   var weeklyCalories = 0.0.obs;
-  var weeklyCaloriesGoal = 3400.0.obs;
+  var weeklyCaloriesGoal = 15400.0.obs;
+
+  // Streak Status
+  var streakStatusColor = 'red'.obs;
 
   // Macros Data
   var carbs = 0.0.obs;
@@ -139,10 +142,12 @@ class MealTrackingController extends GetxController {
       }
     }
 
-    // Get weekly calories (always last item in array)
+    // Get weekly calories and streak status (always last item in array)
     if (data.isNotEmpty && data.last is Map && data.last.containsKey('totalLast7DaysCalories')) {
       weeklyCalories.value = _toDouble(data.last['totalLast7DaysCalories']);
+      streakStatusColor.value = data.last['streakStatusColor'] ?? 'red';
       print('📊 Weekly Calories: ${weeklyCalories.value}');
+      print('🔥 Streak Status Color: ${streakStatusColor.value}');
     }
 
     // If no matching date found, show default meals with 0 values

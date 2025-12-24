@@ -71,7 +71,7 @@ class MealScreen extends StatelessWidget {
                       physics: NeverScrollableScrollPhysics(),
                       itemCount: controller.meals.length,
                       itemBuilder: (context, index) {
-                        return _buildMealCard(controller, index);
+                        return _buildMealCard(context, controller, index);
                       },
                     )),
 
@@ -558,16 +558,17 @@ class MealScreen extends StatelessWidget {
     ));
   }
 
-  Widget _buildMealCard(MealTrackingController controller, int index) {
+  Widget _buildMealCard(BuildContext context, MealTrackingController controller, int index) {
     final meal = controller.meals[index];
 
     return Padding(
       padding: EdgeInsets.only(bottom: 12.h),
       child: Slidable(
         key: ValueKey(meal.name + index.toString()),
-        enabled: !meal.isDefaultMealType, // ✅ Disable swipe for default meals
+        enabled: !meal.isDefaultMealType,
 
-        startActionPane: !meal.isDefaultMealType ? ActionPane(
+        startActionPane: !meal.isDefaultMealType
+            ? ActionPane(
           motion: const DrawerMotion(),
           extentRatio: 0.25,
           children: [
@@ -580,9 +581,11 @@ class MealScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
           ],
-        ) : null,
+        )
+            : null,
 
-        endActionPane: !meal.isDefaultMealType ? ActionPane(
+        endActionPane: !meal.isDefaultMealType
+            ? ActionPane(
           motion: const DrawerMotion(),
           extentRatio: 0.25,
           children: [
@@ -595,98 +598,210 @@ class MealScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
           ],
-        ) : null,
+        )
+            : null,
 
-        child: Container(
-          padding: EdgeInsets.all(16.w),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: meal.isDefaultMealType && meal.calories == 0
-                ? Colors.grey[200]!
-                : Colors.grey[300]!,
-              width: 1
-            ),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        if (meal.isPinned)
-                          Padding(
-                            padding: EdgeInsets.only(right: 6.w),
-                            child: Icon(Icons.push_pin,
-                                size: 14.sp, color: Colors.blueAccent),
-                          ),
-                        Text(
-                          meal.name,
-                          style: TextStyle(
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.w600,
-                            color: meal.isDefaultMealType && meal.calories == 0
-                                ? Colors.grey[500]
-                                : Colors.black87,
-                          ),
-                        ),
-                        if (meal.isDefaultMealType && meal.calories == 0)
-                          Padding(
-                            padding: EdgeInsets.only(left: 6.w),
-                            child: Text(
-                              '(Empty)',
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.grey[400],
-                                fontStyle: FontStyle.italic,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                    SizedBox(height: 6.h),
-                    Row(
-                      children: [
-                        _buildMealMacroChip('${meal.calories.round()} kcal'),
-                        SizedBox(width: 6.w),
-                        _buildMealMacroChip('Protein ${meal.protein.round()}g'),
-                        SizedBox(width: 6.w),
-                        _buildMealMacroChip('Carbs ${meal.carbs.round()}g'),
-                        SizedBox(width: 6.w),
-                        _buildMealMacroChip('Fat ${meal.fat.round()}g'),
-                      ],
-                    ),
-                  ],
-                ),
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            tilePadding: EdgeInsets.all(16.w),
+            childrenPadding: EdgeInsets.only(left: 16.w, right: 16.w, bottom: 16.h),
+            collapsedShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              side: BorderSide(
+                color: meal.isDefaultMealType && meal.calories == 0
+                    ? Colors.grey[200]!
+                    : Colors.grey[300]!,
+                width: 1,
               ),
-              SizedBox(width: 12.w),
-              GestureDetector(
-                onTap: () => controller.toggleMealCompletion(index),
-                child: Container(
-                  width: 24.w,
-                  height: 24.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: meal.isCompleted
-                        ? const Color(0xffF93533)
-                        : const Color(0xff8C8C8C),
-                    border: Border.all(
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.r),
+              side: BorderSide(
+                color: meal.isDefaultMealType && meal.calories == 0
+                    ? Colors.grey[200]!
+                    : Colors.grey[300]!,
+                width: 1,
+              ),
+            ),
+            backgroundColor: Colors.white,
+            collapsedBackgroundColor: Colors.white,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                GestureDetector(
+                  onTap: () => controller.toggleMealCompletion(index),
+                  child: Container(
+                    width: 24.w,
+                    height: 24.h,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
                       color: meal.isCompleted
                           ? const Color(0xffF93533)
-                          : const Color(0xFF8C8C8C),
-                      width: 2,
+                          : const Color(0xff8C8C8C),
+                      border: Border.all(
+                        color: meal.isCompleted
+                            ? const Color(0xffF93533)
+                            : const Color(0xFF8C8C8C),
+                        width: 2,
+                      ),
                     ),
+                    child: Icon(Icons.check, color: Colors.white, size: 20.sp),
                   ),
-                  child: Icon(Icons.check, color: Colors.white, size: 20.sp),
                 ),
-              ),
+                SizedBox(width: 8.w),
+              ],
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    if (meal.isPinned)
+                      Padding(
+                        padding: EdgeInsets.only(right: 6.w),
+                        child: Icon(Icons.push_pin,
+                            size: 14.sp, color: Colors.blueAccent),
+                      ),
+                    Text(
+                      meal.name,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: meal.isDefaultMealType && meal.calories == 0
+                            ? Colors.grey[500]
+                            : Colors.black87,
+                      ),
+                    ),
+                    if (meal.isDefaultMealType && meal.calories == 0)
+                      Padding(
+                        padding: EdgeInsets.only(left: 6.w),
+                        child: Text(
+                          '(Empty)',
+                          style: TextStyle(
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.grey[400],
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                SizedBox(height: 6.h),
+                Row(
+                  children: [
+                    _buildMealMacroChip('${meal.calories.round()} kcal'),
+                    SizedBox(width: 6.w),
+                    _buildMealMacroChip('Protein ${meal.protein.round()}g'),
+                    SizedBox(width: 6.w),
+                    _buildMealMacroChip('Carbs ${meal.carbs.round()}g'),
+                    SizedBox(width: 6.w),
+                    _buildMealMacroChip('Fat ${meal.fat.round()}g'),
+                  ],
+                ),
+              ],
+            ),
+            children: [
+              // Expanded content goes here
+              _buildExpandedContent(controller, meal, index),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+// Add this method to build the expanded content
+  Widget _buildExpandedContent(MealTrackingController controller, meal, int index) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(12.w),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(8.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Food items list
+          if (meal.foods != null && meal.foods!.isNotEmpty)
+            ...meal.foods!.map((item) {
+              final foodItem = item as Map<String, dynamic>;
+              final foodName = foodItem['foodName'] ?? 'Food Item';
+              final calories = (foodItem['nutritionValue']?['calories'] ?? 0).toDouble();
+
+              return Padding(
+                padding: EdgeInsets.only(bottom: 8.h),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.restaurant, size: 16.sp, color: Colors.grey[600]),
+                        SizedBox(width: 8.w),
+                        Text(
+                          foodName,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      '${calories.round()} Cal',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[700],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            })
+          else
+            Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 8.h),
+                child: Text(
+                  'No food items added',
+                  style: TextStyle(
+                    fontSize: 14.sp,
+                    color: Colors.grey[500],
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ),
+            ),
+
+          SizedBox(height: 12.h),
+
+          // Add food button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () {
+                // Add your add food logic here
+                // controller.addFoodToMeal(index);
+              },
+              icon: Icon(Icons.add, size: 18.sp),
+              label: Text(
+                'Add Food',
+                style: TextStyle(fontSize: 14.sp),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xffF93533),
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 12.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

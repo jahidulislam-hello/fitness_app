@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
 import 'package:gym_cheloper/viwes/workout/exercise/exercise_controller/exercise_controller.dart';
 import 'package:gym_cheloper/viwes/workout/exercise/timer_popup.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 
 class ExerciseScreen extends StatelessWidget {
@@ -39,18 +40,50 @@ class ExerciseScreen extends StatelessWidget {
               SizedBox(height: 20.h),
 
               /// Exercise image
-              Container(
-                height: 160.h,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.red, width: 1),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Center(
-                  child: Image.asset(
-                    'assets/icons/chest_plank.png', // update with real asset
-                    height: 130.h,
-                    fit: BoxFit.contain,
+              Obx(
+                () => Container(
+                  height: 160.h,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.red, width: 1),
+                    borderRadius: BorderRadius.circular(12.r),
+                  ),
+                  child: Center(
+                    child: controller.isMainImageLoading.value
+                        ? const CircularProgressIndicator(
+                            color: Color(0xffF93533),
+                          )
+                        : controller.currentExerciseImage.value.isNotEmpty
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(12.r),
+                                child: CachedNetworkImage(
+                                  imageUrl: controller.currentExerciseImage.value,
+                                  height: 130.h,
+                                  fit: BoxFit.contain,
+                                  httpHeaders: const {
+                                    'x-rapidapi-key': 'fb9a00baa2msh43336df37f58631p1ceeaejsnd8eacd0ede8e',
+                                    'x-rapidapi-host': 'exercisedb.p.rapidapi.com',
+                                    'x-app-id': '8ad96951',
+                                    'x-app-key': 'f04813f79bf461d565d4a33ca5a86e9a',
+                                  },
+                                  placeholder: (context, url) => const CircularProgressIndicator(
+                                    color: Color(0xffF93533),
+                                  ),
+                                  errorWidget: (context, url, error) {
+                                    print('❌ Image error: $error');
+                                    return Image.asset(
+                                      'assets/icons/chest_plank.png',
+                                      height: 130.h,
+                                      fit: BoxFit.contain,
+                                    );
+                                  },
+                                ),
+                              )
+                            : Image.asset(
+                                'assets/icons/chest_plank.png',
+                                height: 130.h,
+                                fit: BoxFit.contain,
+                              ),
                   ),
                 ),
               ),
@@ -68,14 +101,9 @@ class ExerciseScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       showDialog(
-                        context: context, // Use the widget's context
+                        context: context,
                         builder: (context) {
-                          return Dialog(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: RestTimerPopup(), // Your custom popup content
-                          );
+                          return RestTimerPopup();
                         },
                       );
                     },
@@ -119,16 +147,16 @@ class ExerciseScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = controller.exercises[index];
                       return Padding(
-                        padding: EdgeInsets.only(bottom: 18.h),
+                        padding: EdgeInsets.only(bottom: 20.h),
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12.r),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
+                                color: Colors.black.withOpacity(0.2),
                                 blurRadius: 5,
-                                offset: const Offset(0, 2),
+                                offset: const Offset(0, 1),
                               ),
                             ],
                           ),
@@ -137,8 +165,8 @@ class ExerciseScreen extends StatelessWidget {
 
                             // Left icon
                             leading: Container(
-                              width: 38.w,
-                              height: 38.w,
+                              width: 42.w,
+                              height: 42.w,
                               decoration: BoxDecoration(
                                 color: const Color(0xffF5F5F5),
                                 borderRadius: BorderRadius.circular(10.r),
