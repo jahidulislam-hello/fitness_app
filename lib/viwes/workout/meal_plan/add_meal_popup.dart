@@ -199,7 +199,7 @@ class AddMealPopup extends StatelessWidget {
         itemCount: controller.myFoodList.length,
         itemBuilder: (context, index) {
           final item = controller.myFoodList[index];
-          return _buildFoodItemCard(item, controller);
+          return _buildFoodItemCard(item, controller, context);
         },
       );
     });
@@ -216,7 +216,7 @@ class AddMealPopup extends StatelessWidget {
         itemCount: controller.myRecipeList.length,
         itemBuilder: (context, index) {
           final item = controller.myRecipeList[index];
-          return _buildFoodItemCard(item, controller);
+          return _buildFoodItemCard(item, controller, context);
         },
       );
     });
@@ -233,7 +233,7 @@ class AddMealPopup extends StatelessWidget {
         itemCount: controller.favouriteList.length,
         itemBuilder: (context, index) {
           final item = controller.favouriteList[index];
-          return _buildFoodItemCard(item, controller);
+          return _buildFoodItemCard(item, controller, context);
         },
       );
     });
@@ -262,13 +262,13 @@ class AddMealPopup extends StatelessWidget {
         itemCount: controller.searchResults.length,
         itemBuilder: (context, index) {
           final item = controller.searchResults[index];
-          return _buildSearchFoodItemCard(item, controller);
+          return _buildSearchFoodItemCard(item, controller, context);
         },
       );
     });
   }
 
-  Widget _buildFoodItemCard(FoodItem item, AddMealController controller) {
+  Widget _buildFoodItemCard(FoodItem item, AddMealController controller, BuildContext context) {
     final nutrition = item.nutritionValue;
     final calories = nutrition['calories']?.toDouble() ?? 0.0;
     final protein = nutrition['protein']?.toDouble() ?? 0.0;
@@ -276,7 +276,7 @@ class AddMealPopup extends StatelessWidget {
     final fat = nutrition['fat']?.toDouble() ?? 0.0;
 
     return GestureDetector(
-      onTap: () => controller.selectFood(item),
+      onTap: () => controller.selectFood(item, context),
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         padding: EdgeInsets.all(16.w),
@@ -334,9 +334,9 @@ class AddMealPopup extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchFoodItemCard(SearchFoodItem item, AddMealController controller) {
+  Widget _buildSearchFoodItemCard(SearchFoodItem item, AddMealController controller, BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.selectSearchFood(item),
+      onTap: () => controller.selectSearchFood(item, context),
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         padding: EdgeInsets.all(16.w),

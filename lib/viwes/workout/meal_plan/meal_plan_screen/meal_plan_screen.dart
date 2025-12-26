@@ -15,7 +15,6 @@ class MealScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Obx(() {
-          // ✅ Show loading indicator while fetching data
           if (controller.isLoading.value) {
             return Center(
               child: CircularProgressIndicator(
