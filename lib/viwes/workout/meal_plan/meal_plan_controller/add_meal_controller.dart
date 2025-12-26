@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/services/api_constants.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/meal_plan_controller.dart';
+import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_screen/food_popup.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -306,6 +307,7 @@ class AddMealController extends GetxController {
 
     try {
       isSearching.value = true;
+      print('🔎 Searching for: $query');
 
       final url = Uri.parse(
         "https://trackapi.nutritionix.com/v2/search/instant?query=$query"
@@ -320,16 +322,23 @@ class AddMealController extends GetxController {
         },
       );
 
+      print('📡 Search response status: ${response.statusCode}');
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         if (data['common'] != null) {
           searchResults.value = (data['common'] as List)
               .map((item) => SearchFoodItem.fromJson(item))
               .toList();
+          print('✅ Found ${searchResults.length} search results');
+        } else {
+          print('⚠️ No results found in response');
         }
+      } else {
+        print('❌ Search API error: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error searching food: $e');
+      print('❌ Error searching food: $e');
       Get.snackbar(
         'Error',
         'Failed to search food',
@@ -341,20 +350,18 @@ class AddMealController extends GetxController {
   }
 
   /// Get detailed nutrition info from Nutritionix
-  Future<void> selectSearchFood(SearchFoodItem item) async {
+  Future<void> selectSearchFood(SearchFoodItem item, BuildContext context) async {
     try {
-      Get.dialog(
-        Center(
-          child: CircularProgressIndicator(
-            color: Color(0xffF93533),
-          ),
-        ),
-        barrierDismissible: false,
-      );
+      print('🔍 selectSearchFood called for: ${item.foodName}');
+
+      // Use loading state instead of dialog
+      isLoading.value = true;
 
       final url = Uri.parse(
         "https://trackapi.nutritionix.com/v2/natural/nutrients"
       );
+
+      print('🌐 Fetching nutrition details from Nutritionix...');
 
       final response = await http.post(
         url,
@@ -367,15 +374,26 @@ class AddMealController extends GetxController {
         body: jsonEncode({"query": item.foodName}),
       );
 
-      Get.back(); // Close loading dialog
+      print('📡 Nutritionix response status: ${response.statusCode}');
+
+      isLoading.value = false; // Stop loading
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print('📦 Response data: ${data.toString().substring(0, 200)}...');
+
         if (data['foods'] != null && (data['foods'] as List).isNotEmpty) {
           final foodData = data['foods'][0];
 
+          print('✅ Showing FoodPopup for: ${item.foodName}');
+          print('   Calories: ${foodData['nf_calories']}');
+          print('   Protein: ${foodData['nf_protein']}');
+          print('   Carbs: ${foodData['nf_total_carbohydrate']}');
+          print('   Fat: ${foodData['nf_total_fat']}');
+
           // Show dialog to add this food to a meal time
           _showAddFoodDialog(
+            context: context,
             foodName: item.foodName,
             calories: foodData['nf_calories']?.toDouble() ?? 0.0,
             protein: foodData['nf_protein']?.toDouble() ?? 0.0,
@@ -384,21 +402,22 @@ class AddMealController extends GetxController {
             serving: foodData['serving_unit'] ?? 'serving',
             quantity: foodData['serving_qty']?.toString() ?? '1',
           );
+        } else {
+          print('⚠️ No food data in response');
         }
+      } else {
+        print('❌ API error: ${response.statusCode} - ${response.body}');
       }
     } catch (e) {
-      Get.back(); // Close loading dialog if still open
-      print('Error getting nutrition details: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to get nutrition details',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      isLoading.value = false; // Stop loading on error
+      print('❌ Error getting nutrition details: $e');
+      print('Stack trace: ${StackTrace.current}');
     }
   }
 
-  /// Show dialog to add food to meal time
+  /// Show FoodPopup to add food
   void _showAddFoodDialog({
+    required BuildContext context,
     required String foodName,
     required double calories,
     required double protein,
@@ -407,129 +426,151 @@ class AddMealController extends GetxController {
     required String serving,
     required String quantity,
   }) {
-    String selectedMealTime = 'breakfast';
-    final mealTimes = ['breakfast', 'lunch', 'dinner', 'snack'];
+    print('🎯 _showAddFoodDialog called');
+    print('   Food: $foodName');
+    print('   Quantity: $quantity, Serving: $serving');
 
-    Get.dialog(
-      Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Add $foodName',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Nutrition Info:',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 8),
-              Text('Calories: ${calories.toStringAsFixed(0)} kcal'),
-              Text('Protein: ${protein.toStringAsFixed(1)}g'),
-              Text('Carbs: ${carbs.toStringAsFixed(1)}g'),
-              Text('Fat: ${fat.toStringAsFixed(1)}g'),
-              SizedBox(height: 16),
-              Text(
-                'Select Meal Time:',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              SizedBox(height: 8),
-              StatefulBuilder(
-                builder: (context, setState) {
-                  return DropdownButtonFormField<String>(
-                    value: selectedMealTime,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    ),
-                    items: mealTimes.map((time) {
-                      return DropdownMenuItem(
-                        value: time,
-                        child: Text(time[0].toUpperCase() + time.substring(1)),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      if (value != null) {
-                        setState(() {
-                          selectedMealTime = value;
-                        });
-                      }
-                    },
-                  );
-                },
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Get.back(),
-                    child: Text('Cancel'),
-                  ),
-                  SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () async {
-                      Get.back(); // Close meal time selection dialog
+    try {
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.transparent,
+        builder: (BuildContext context) {
+          return FoodPopup(
+            foodName: foodName,
+            baseCalories: calories,
+            baseProtein: protein,
+            baseCarbs: carbs,
+            baseFat: fat,
+            initialServing: serving,
+            initialQuantity: quantity,
+            onAddFood: ({
+              required String foodName,
+              required String quantity,
+              required String serving,
+              required String timeName,
+              required Map<String, dynamic> nutritionValue,
+            }) async {
+              Navigator.of(context).pop(); // Close FoodPopup
 
-                      // Add the food using the parent controller
-                      try {
-                        final parentController = Get.find<MealTrackingController>();
-                        await parentController.addNewMealToAPI(
-                          foodName: foodName,
-                          quantity: quantity,
-                          serving: serving,
-                          timeName: selectedMealTime,
-                          nutritionValue: {
-                            'calories': calories,
-                            'protein': protein,
-                            'carbs': carbs,
-                            'fat': fat,
-                          },
-                        );
+              // Show loading
+              isLoading.value = true;
 
-                        Get.back(); // Close add meal popup after successful add
-                      } catch (e) {
-                        print('Error adding food: $e');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffF93533),
-                    ),
-                    child: Text(
-                      'Add',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+              try {
+                // Call API to add food
+                await addFoodToAPI(
+                  foodName: foodName,
+                  quantity: quantity,
+                  serving: serving,
+                  timeName: timeName,
+                  date: selectedDate,
+                  foodType: 'food',
+                  nutritionValue: nutritionValue,
+                );
+
+                isLoading.value = false;
+                Navigator.of(context).pop(); // Close AddMealPopup
+
+                // Refresh parent controller
+                try {
+                  final parentController = Get.find<MealTrackingController>();
+                  await parentController.loadMealsFromAPI();
+                } catch (e) {
+                  print('Parent controller not found: $e');
+                }
+
+                print('✅ Food added successfully!');
+              } catch (e) {
+                isLoading.value = false;
+                print('❌ Error adding food: $e');
+              }
+            },
+          );
+        },
+      );
+      print('✅ FoodPopup bottom sheet shown');
+    } catch (e, stackTrace) {
+      print('❌ Error showing FoodPopup: $e');
+      print('Stack trace: $stackTrace');
+    }
+  }
+
+  /// Add food to API
+  Future<void> addFoodToAPI({
+    required String foodName,
+    required String quantity,
+    required String serving,
+    required String timeName,
+    required String date,
+    required String foodType,
+    required Map<String, dynamic> nutritionValue,
+  }) async {
+    try {
+      final token = await _getToken();
+
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final url = Uri.parse("${ApiConstants.baseUrl}${ApiConstants.addFood}");
+
+      print('🌐 Adding food to: $url');
+      print('📦 Request body: {');
+      print('  foodName: $foodName,');
+      print('  quantity: $quantity,');
+      print('  serving: $serving,');
+      print('  timeName: $timeName,');
+      print('  date: $date,');
+      print('  foodType: $foodType,');
+      print('  nutritionValue: $nutritionValue');
+      print('}');
+
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode({
+          "foodName": foodName,
+          "quantity": quantity,
+          "serving": serving,
+          "timeName": timeName,
+          "date": date,
+          "foodType": foodType,
+          "nutritionValue": {
+            "protein": nutritionValue['protein'],
+            "fat": nutritionValue['fat'],
+            "carbs": nutritionValue['carbs'],
+            "calories": nutritionValue['calories'],
+          },
+        }),
+      );
+
+      print('📡 Response Status: ${response.statusCode}');
+      print('📦 Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        if (data['success'] == true) {
+          print('✅ Food added successfully');
+        } else {
+          throw Exception(data['message'] ?? 'Failed to add food');
+        }
+      } else {
+        throw Exception('Server error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ Error in addFoodToAPI: $e');
+      rethrow;
+    }
   }
 
   /// Select food from My Food/Recipe/Favourite lists
-  void selectFood(FoodItem item) {
+  void selectFood(FoodItem item, BuildContext context) {
     _showAddFoodDialog(
+      context: context,
       foodName: item.foodName,
       calories: item.nutritionValue['calories']?.toDouble() ?? 0.0,
       protein: item.nutritionValue['protein']?.toDouble() ?? 0.0,
