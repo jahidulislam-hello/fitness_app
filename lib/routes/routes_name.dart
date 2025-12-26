@@ -26,7 +26,6 @@ class RouteNames{
   static const String customNavBar='/CustomNavBar';
 
   static const String workOutScreen='/WorkOutScreen';
-  static const String exerciseScreen='/ExerciseScreen';
   static const String swapScreen='/SwapScreen';
   static const String workoutRoutineScreen='/WorkoutRoutineScreen';
 
@@ -81,6 +80,7 @@ class RouteNames{
   static const String settings = '/SettingsScreen';
   static const String changePass = '/ChangePasswordScreen';
   static const String chooseLanguage = '/ChooseLanguageScreen';
+
 
 
 

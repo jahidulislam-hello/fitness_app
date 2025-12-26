@@ -89,6 +89,7 @@ class AppRoutes {
         name: RouteNames.weightTrack,
         builder: (context, state) => const WeightTrackingScreen(),
       ),
+
       GoRoute(
         path: RouteNames.settingsProfile,
         name: RouteNames.settingsProfile,
