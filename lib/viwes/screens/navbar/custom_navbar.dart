@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_screen/meal_plan_screen.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/meal_plan_controller.dart';
+import 'package:gym_cheloper/viwes/workout/new_thing/super_market/super_market_screen/super_market_list.dart';
 import 'package:gym_cheloper/viwes/workout/settings/settings/settings_screen/settings_profile_screen.dart';
 import 'package:gym_cheloper/viwes/workout/weight_tracking/weight_tracking_screen/weight_tracking_screen.dart';
 
@@ -99,7 +100,7 @@ class CustomNavbarState extends State<CustomNavbar> {
           ),
           IconButton(
             onPressed: () {
-
+              Get.to(() => SupermarketListPopup());
             },
             icon: const Icon(Icons.shopping_cart_outlined),
           ),

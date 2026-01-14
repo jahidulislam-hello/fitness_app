@@ -2,6 +2,7 @@
 class ApiConstants{
 
   static const String baseUrl = "https://fitness-training-be.vercel.app/api/v1";
+  static const String cloudUrl = "https://envelope-hitachi-chronic-sandwich.trycloudflare.com/api/v1";
 
   static const String imageBaseUrl = "https://escorpion-fitness-asifur-rahman.sarv.live/";
 
