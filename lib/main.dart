@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:get/get.dart';
 
 import 'controller/controllers.dart';
@@ -16,6 +15,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   //Get.lazyPut(() => InformationOfClientState());
   Map<String, Map<String, String>> languages = await di.init();
+
+  Stripe.publishableKey = "pk_test_51Sc2RyJFE0G3dpbM443Q7nmngbU8sW3KUATGLTTEnYEHzYcAaRlCoweeIThMxMMbf037sjbQetOf97cMKbr2odCF009RKE7jeP";
+  await Stripe.instance.applySettings();
 
 
   runApp(MyApp(

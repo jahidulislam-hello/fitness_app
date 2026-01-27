@@ -76,6 +76,7 @@ class RouteNames{
   static const String subscriptioncodeScreen = '/SubscriptionCodeScreen';
   static const String buypackScreen = '/BuyPackageScreen';
   static const String choosecardScreen = '/ChooseYourCardScreen';
+  static const String addCouponScreen = '/AddCouponScreen';
 
   static const String settings = '/SettingsScreen';
   static const String changePass = '/ChangePasswordScreen';

@@ -56,7 +56,7 @@ class AuthController extends GetxController {
         // Save token
         final accessToken = data['data']?['accessToken'] ?? '';
         if (accessToken.isNotEmpty) {
-          await PrefsHelper.setString('bearerToken', accessToken);
+          await PrefsHelper.setString(AppConstants.bearerToken, accessToken);
           print("✅ Token saved: $accessToken");
         }
 

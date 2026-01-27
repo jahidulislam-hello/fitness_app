@@ -38,6 +38,14 @@ class ApiConstants{
   static const String getProgressBar = "/progress-bar/get-progress-bar";
   static const String addProgressBar = "/progress-bar/add-progress-bar";
 
+  // Subscription APIs
+  static const String addSubscription = "/subscription/add-subscription";
+  static const String getSubscriptions = "/subscription/get-subscriptions";
+
+  // Coupon APIs
+  static const String addCoupon = "/subscription/add-coupon";
+  static const String validateCoupon = "/subscription/validate-coupon";
+
 
 
 
