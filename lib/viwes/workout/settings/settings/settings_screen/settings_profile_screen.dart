@@ -201,7 +201,7 @@ class SettingsProfileScreen extends StatelessWidget {
                         ),
                         title: "Feedback",
                         trailingIcon: SvgPicture.asset(
-                          AppImages.chevronRight,qwen
+                          AppImages.chevronRight,
                           width: 24,
                           height: 24,
                         ),
