@@ -500,11 +500,7 @@ class AddMealPopup extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.pop(context);
-                Get.snackbar(
-                  'Info',
-                  'Create Food feature coming soon',
-                  snackPosition: SnackPosition.BOTTOM,
-                );
+
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),

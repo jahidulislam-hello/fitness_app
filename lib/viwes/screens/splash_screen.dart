@@ -39,8 +39,10 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     String token = await PrefsHelper.getString(AppConstants.bearerToken);
 
     if (token.isNotEmpty) {
-      context.goNamed(RouteNames.signInScreen);
+      // Token exists - go to Navbar (Home)
+      context.goNamed(RouteNames.customNavBar);
     } else {
+      // No token - go to onboarding
       context.goNamed(RouteNames.onboardingScreen);
     }
   }

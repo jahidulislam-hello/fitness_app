@@ -14,6 +14,7 @@ import '../viwes/workout/subscription_packages/subscription_packages_screen/subs
 import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_card_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_code_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/Profile_subscription_packages_screen.dart';
+import '../viwes/workout/subscription_packages/subscription_packages_screen/add_coupon_screen.dart';
 import '../viwes/workout/weight_tracking/weight_tracking_screen/weight_tracking_screen.dart';
 import 'routes_name.dart';
 
@@ -89,6 +90,7 @@ class AppRoutes {
         name: RouteNames.weightTrack,
         builder: (context, state) => const WeightTrackingScreen(),
       ),
+
       GoRoute(
         path: RouteNames.settingsProfile,
         name: RouteNames.settingsProfile,
@@ -113,6 +115,26 @@ class AppRoutes {
         path: RouteNames.profilsubscriptionScreen,
         name: RouteNames.profilsubscriptionScreen,
         builder: (context, state) => ProfileSubscriptionScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.choosecardScreen,
+        name: RouteNames.choosecardScreen,
+        builder: (context, state) => ChooseYourCardScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.subscriptioncodeScreen,
+        name: RouteNames.subscriptioncodeScreen,
+        builder: (context, state) => SubscriptionCodeScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.subscriptionbuyScreen,
+        name: RouteNames.subscriptionbuyScreen,
+        builder: (context, state) => SubscriptionBuyScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.addCouponScreen,
+        name: RouteNames.addCouponScreen,
+        builder: (context, state) => const AddCouponScreen(),
       ),
       // Add more screens as needed...
     ],

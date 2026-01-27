@@ -84,6 +84,7 @@ dev_dependencies:
   carousel_slider: ^5.0.0
   flutter_animate: ^4.3.0
   fl_chart:
+  flutter_stripe:
 
 
 

@@ -1,234 +1,10 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-//
-// class CardDetectionController extends GetxController {
-// RxString cardNumber = ''.obs;
-// RxString cardType = ''.obs;
-// RxString bankName = ''.obs;
-//
-// void detectCardType(String input) {
-// cardNumber.value = input.replaceAll(' ', '');
-//
-// if (cardNumber.value.startsWith('4')) {
-// cardType.value = 'Visa';
-// bankName.value = 'Chase Bank';
-// } else if (cardNumber.value.startsWith('5')) {
-// cardType.value = 'MasterCard';
-// bankName.value = 'AYC Bank';
-// } else if (cardNumber.value.startsWith('3')) {
-// cardType.value = 'American Express';
-// bankName.value = 'American Express Bank';
-// } else if (cardNumber.value.startsWith('6')) {
-// cardType.value = 'Discover';
-// bankName.value = 'Discover Bank';
-// } else {
-// cardType.value = 'Unknown';
-// bankName.value = 'Unknown Bank';
-// }
-// }
-// }
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-// import 'package:get/get.dart';
-//
-// class ChooseYourCardController extends GetxController {
-//   // raw card number typed by user
-//   RxString rawNumber = ''.obs;
-//
-//   // derived values
-//   RxString formattedNumber = ''.obs; // for display on card
-//   RxString cardType = ''.obs; // Visa, MasterCard, American Express, Discover, Debit
-//   RxString bankName = ''.obs; // Example bank name from prefix map
-//   RxString expiry = '10/28'.obs; // default or from previous screen
-//
-//   // simple bank mapping by BIN prefix (expand as needed)
-//   final Map<String, String> _bankPrefixMap = {
-//     // Common MasterCard starting ranges (50-55 and 2221-2720) - short demo keys
-//     '5': 'AYCBank',
-//     '4': 'VBank',
-//     '34': 'AmexBank',
-//     '37': 'AmexBank',
-//     '6': 'DiscoverBank',
-//     '51': 'AYCBank',
-//     '52': 'AYCBank',
-//     '53': 'AYCBank',
-//     '54': 'AYCBank',
-//     '55': 'AYCBank',
-//     // Add more exact BINs if you have them
-//   };
-//
-//   @override
-//   void onInit() {
-//     super.onInit();
-//     // reactively detect changes
-//     ever(rawNumber, (_) => _onNumberChanged(rawNumber.value));
-//   }
-//
-//   void setNumber(String value) {
-//     // keep only digits
-//     final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
-//     rawNumber.value = digits;
-//   }
-//
-//   void _onNumberChanged(String digits) {
-//     // Detect card type
-//     detectCardType(digits);
-//
-//     // Format number for display
-//     formattedNumber.value = _formatForDisplay(digits);
-//
-//     // detect bank name using prefixes (try longer prefixes first)
-//     bankName.value = _detectBankName(digits);
-//   }
-//
-//   void detectCardType(String digits) {
-//     if (digits.isEmpty) {
-//       cardType.value = '';
-//       return;
-//     }
-//     // American Express: starts with 34 or 37, length 15
-//     if (RegExp(r'^(34|37)').hasMatch(digits)) {
-//       cardType.value = 'American Express';
-//       return;
-//     }
-//     // Visa: starts with 4
-//     if (digits.startsWith('4')) {
-//       cardType.value = 'Visa';
-//       return;
-//     }
-//     // MasterCard: 51-55 or 2221-2720
-//     if (RegExp(r'^(5[1-5])').hasMatch(digits) || RegExp(r'^(2(2[2-9]|[3-6][0-9]|7[0-1]|720))').hasMatch(digits)) {
-//       cardType.value = 'MasterCard';
-//       return;
-//     }
-//     // Discover: 6011, 65, 644-649
-//     if (RegExp(r'^(6011|65|64[4-9])').hasMatch(digits)) {
-//       cardType.value = 'Discover';
-//       return;
-//     }
-//     // Fallback: Debit / Unknown
-//     cardType.value = 'Debit Card';
-//   }
-//
-//   String _detectBankName(String digits) {
-//     if (digits.isEmpty) return '';
-//     // Try to match longer prefixes first
-//     final possiblePrefixes = _bankPrefixMap.keys.toList()
-//       ..sort((a, b) => b.length.compareTo(a.length));
-//     for (final p in possiblePrefixes) {
-//       if (digits.startsWith(p)) return _bankPrefixMap[p]!;
-//     }
-//     // fallback names by card type
-//     switch (cardType.value) {
-//       case 'Visa':
-//         return 'VBank';
-//       case 'MasterCard':
-//         return 'AYCBank';
-//       case 'American Express':
-//         return 'AmexBank';
-//       case 'Discover':
-//         return 'DiscoverBank';
-//       default:
-//         return 'My Bank';
-//     }
-//   }
-//
-//   String _formatForDisplay(String digits) {
-//     if (digits.isEmpty) return 'XXXX XXXX XXXX XXXX';
-//     // Amex format: 4-6-5 (15 digits)
-//     if (cardType.value == 'American Express') {
-//       final parts = <String>[];
-//       final p1 = digits.length >= 4 ? digits.substring(0, 4) : digits;
-//       parts.add(p1);
-//       if (digits.length > 4) {
-//         final p2 = digits.length >= 10 ? digits.substring(4, 10) : digits.substring(4);
-//         parts.add(p2);
-//       }
-//       if (digits.length > 10) {
-//         final p3 = digits.substring(10);
-//         parts.add(p3);
-//       }
-//       return parts.join(' ').padRight(17, 'X'); // pad for consistent width
-//     }
-//     // Default 4-4-4-4 groups
-//     final buffer = StringBuffer();
-//     for (int i = 0; i < digits.length; i++) {
-//       buffer.write(digits[i]);
-//       final next = i + 1;
-//       if (next % 4 == 0 && next != digits.length && next < 16) buffer.write(' ');
-//     }
-//     // Pad with X groups if short
-//     final result = buffer.toString();
-//     if (cardType.value == 'Visa' || cardType.value == 'MasterCard' || cardType.value == 'Discover') {
-//       // ensure at least 19 chars (including spaces) for visual stability
-//       return result.padRight(19, 'X');
-//     }
-//     return result;
-//   }
-// }
-// import 'package:flutter/material.dart';
-
-
-
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:gym_cheloper/models/subscription_model.dart';
+import 'package:gym_cheloper/services/subscription_service.dart';
+import 'package:gym_cheloper/viwes/workout/stripe_payment/stripe/stripe_config.dart';
+import 'package:gym_cheloper/viwes/workout/stripe_payment/stripe/stripe_helper.dart';
+import 'package:gym_cheloper/viwes/workout/stripe_payment/stripe/payment_result.dart';
 
 class ChooseYourCardController extends GetxController {
   RxString cardNumber = ''.obs;
@@ -236,16 +12,55 @@ class ChooseYourCardController extends GetxController {
   RxString bankName = ''.obs;
   RxString expiryDate = ''.obs;
 
+  // Subscription packages
+  RxList<SubscriptionPackageModel> subscriptionPackages =
+      <SubscriptionPackageModel>[].obs;
+  Rx<SubscriptionPackageModel?> selectedPackage =
+      Rx<SubscriptionPackageModel?>(null);
+  RxInt selectedPackageIndex = 0.obs;
+  RxBool isLoading = false.obs;
+  RxBool isPaymentProcessing = false.obs;
+
+  // Stripe payment helper
+  late StripePaymentHelper _stripeHelper;
+
   @override
   void onInit() {
     super.onInit();
-    // Example default data (you can set these dynamically from previous screen)
+    // Example default data
     cardNumber.value = "8763273698730329";
     expiryDate.value = "10/28";
     detectCardType(cardNumber.value);
+
+    // Initialize Stripe helper
+    _initStripeHelper();
+
+    // Fetch subscription packages
+    fetchSubscriptionPackages();
   }
 
-  /// 🔍 Detect card type based on number pattern
+  void _initStripeHelper() {
+    const stripeConfig = StripeConfig(
+      secretKey:
+          'sk_test_your_stripe_secret_key', // Replace with your actual Stripe secret key
+      merchantDisplayName: 'Scorpion Fitness',
+    );
+
+    _stripeHelper = StripePaymentHelper(
+      config: stripeConfig,
+      onPaymentSuccess: (result) {
+        debugPrint('Payment successful: ${result.message}');
+      },
+      onPaymentFailure: (result) {
+        debugPrint('Payment failed: ${result.message}');
+      },
+      onLog: (message) {
+        debugPrint(message);
+      },
+    );
+  }
+
+  /// Detect card type based on number pattern
   void detectCardType(String number) {
     if (number.isEmpty) {
       cardType.value = "";
@@ -269,5 +84,155 @@ class ChooseYourCardController extends GetxController {
       cardType.value = "Debit Card";
       bankName.value = "My Bank";
     }
+  }
+
+  /// Fetch subscription packages from API
+  Future<void> fetchSubscriptionPackages() async {
+    isLoading.value = true;
+    try {
+      final response = await SubscriptionService.getSubscriptions();
+      if (response.statusCode == 200 && response.body != null) {
+        final data = response.body['data'];
+        if (data is List) {
+          subscriptionPackages.value = data
+              .map((item) => SubscriptionPackageModel.fromJson(item))
+              .toList();
+          if (subscriptionPackages.isNotEmpty) {
+            selectedPackage.value = subscriptionPackages.first;
+            selectedPackageIndex.value = 0;
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint('Error fetching subscription packages: $e');
+      // Load default packages if API fails
+      _loadDefaultPackages();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void _loadDefaultPackages() {
+    subscriptionPackages.value = [
+      SubscriptionPackageModel(
+        id: '1',
+        packageName: 'Monthly',
+        packageAmount: '12.99',
+        packageDuration: '1 month',
+        packageFeatures: [
+          'Access to all workouts',
+          'Custom meal plans',
+          'Progress tracking',
+        ],
+      ),
+      SubscriptionPackageModel(
+        id: '2',
+        packageName: '3 Month',
+        packageAmount: '29.23',
+        packageDuration: '3 months',
+        packageFeatures: [
+          'Access to all workouts',
+          'Custom meal plans',
+          'Progress tracking',
+          'Priority support',
+          'Save 25%',
+        ],
+      ),
+    ];
+    if (subscriptionPackages.isNotEmpty) {
+      selectedPackage.value = subscriptionPackages.first;
+      selectedPackageIndex.value = 0;
+    }
+  }
+
+  /// Select a subscription package
+  void selectPackage(int index) {
+    if (index >= 0 && index < subscriptionPackages.length) {
+      selectedPackageIndex.value = index;
+      selectedPackage.value = subscriptionPackages[index];
+    }
+  }
+
+  /// Process payment with Stripe
+  Future<PaymentResult> processPayment(BuildContext context) async {
+    if (selectedPackage.value == null) {
+      Get.snackbar(
+        'Error',
+        'Please select a subscription package',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+      return PaymentResult.failure(message: 'No package selected');
+    }
+
+    isPaymentProcessing.value = true;
+
+    try {
+      final amount = double.tryParse(selectedPackage.value!.packageAmount) ?? 0;
+
+      final result = await _stripeHelper.processPayment(
+        context: context,
+        amount: amount,
+        currency: 'USD',
+        description:
+            'Subscription: ${selectedPackage.value!.packageName} - ${selectedPackage.value!.packageDuration}',
+        metadata: {
+          'package_id': selectedPackage.value!.id ?? '',
+          'package_name': selectedPackage.value!.packageName,
+          'package_duration': selectedPackage.value!.packageDuration,
+        },
+      );
+
+      if (result.isSuccess) {
+        // Save subscription to backend
+        await _saveSubscriptionToBackend();
+
+        Get.snackbar(
+          'Success',
+          'Payment completed successfully!',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      }
+
+      return result;
+    } catch (e) {
+      debugPrint('Payment error: $e');
+      Get.snackbar(
+        'Error',
+        'Payment failed: ${e.toString()}',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+      return PaymentResult.failure(message: e.toString());
+    } finally {
+      isPaymentProcessing.value = false;
+    }
+  }
+
+  /// Save subscription to backend after successful payment
+  Future<void> _saveSubscriptionToBackend() async {
+    if (selectedPackage.value == null) return;
+
+    try {
+      final response =
+          await SubscriptionService.addSubscription(selectedPackage.value!);
+      if (response.statusCode == 200) {
+        debugPrint('Subscription saved successfully');
+      } else {
+        debugPrint('Failed to save subscription: ${response.statusText}');
+      }
+    } catch (e) {
+      debugPrint('Error saving subscription: $e');
+    }
+  }
+
+  /// Get price per month for display
+  String getPricePerMonth(SubscriptionPackageModel package) {
+    final amount = double.tryParse(package.packageAmount) ?? 0;
+    if (package.packageDuration.contains('3')) {
+      return (amount / 3).toStringAsFixed(2);
+    }
+    return amount.toStringAsFixed(2);
   }
 }

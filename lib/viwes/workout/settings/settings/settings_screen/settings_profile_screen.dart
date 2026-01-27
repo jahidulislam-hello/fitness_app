@@ -184,8 +184,12 @@ class SettingsProfileScreen extends StatelessWidget {
                           height: 24,
                         ),
                         onTap: () {
-                          // Get.to(() => SubscriptionPackagesScreen());
-                          // context.pushNamed(RouteNames.buypackScreen);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ProfileSubscriptionScreen(),
+                            ),
+                          );
                         },
                       ),
                       const SizedBox(height: 24),
@@ -197,7 +201,7 @@ class SettingsProfileScreen extends StatelessWidget {
                         ),
                         title: "Feedback",
                         trailingIcon: SvgPicture.asset(
-                          AppImages.chevronRight,
+                          AppImages.chevronRight,qwen
                           width: 24,
                           height: 24,
                         ),
