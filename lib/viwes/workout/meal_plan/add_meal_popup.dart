@@ -4,6 +4,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/add_meal_controller.dart';
 import 'package:gym_cheloper/utils/app_icons.dart';
+import 'package:gym_cheloper/viwes/workout/new_thing/create_food/create_food_screen/create_food_screen.dart';
+
+// Function to show the popup
+void showAddMealPopup(BuildContext context, String selectedDate) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (context) => AddMealPopup(selectedDate: selectedDate),
+  );
+}
 
 class AddMealPopup extends StatelessWidget {
   final String selectedDate;
@@ -22,28 +33,68 @@ class AddMealPopup extends StatelessWidget {
       }
     });
 
-    return Dialog.fullscreen(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(Icons.close, color: Colors.black87),
-            onPressed: () => Navigator.of(context).pop(),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.85,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20.r),
+            topRight: Radius.circular(20.r),
           ),
-          title: Text(
-            'Add Meal',
-            style: TextStyle(
-              color: Colors.black87,
-              fontSize: 18.sp,
-              fontWeight: FontWeight.w600,
+          border: Border(
+            bottom: BorderSide(
+              color: Colors.grey[300]!,
+              width: 1,
             ),
           ),
-          centerTitle: true,
         ),
-      body: Column(
+        child: Column(
         children: [
+          // Drag Handle
+          Center(
+            child: Container(
+              margin: EdgeInsets.only(top: 12.h),
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+          ),
+
+          // Header
+          Padding(
+            padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 12.h),
+            child: Row(
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.black87,
+                    size: 24.sp,
+                  ),
+                ),
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      'Add Meal',
+                      style: TextStyle(
+                        color: Colors.black87,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 24.w), // Balance the close icon
+              ],
+            ),
+          ),
+
           // Search Bar with Three Dots
           _buildSearchBar(context, controller),
 
@@ -68,15 +119,18 @@ class AddMealPopup extends StatelessWidget {
               return _buildTabContent(controller);
             }),
           ),
+
+          // Bottom safe area padding
+          SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
-      ),
+        ),
       ),
     );
   }
 
   Widget _buildSearchBar(BuildContext context, AddMealController controller) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
       child: Row(
         children: [
           Expanded(
@@ -470,11 +524,11 @@ class AddMealPopup extends StatelessWidget {
     );
   }
 
-  void _showOptionsMenu(BuildContext context) {
+  void _showOptionsMenu(BuildContext parentContext) {
     showModalBottomSheet(
-      context: context,
+      context: parentContext,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
+      builder: (bottomSheetContext) => Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -499,8 +553,8 @@ class AddMealPopup extends StatelessWidget {
             // Create Food
             InkWell(
               onTap: () {
-                Navigator.pop(context);
-
+                Navigator.of(bottomSheetContext).pop();
+                showCreateFoodPopup(parentContext);
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
@@ -530,7 +584,7 @@ class AddMealPopup extends StatelessWidget {
             // Create Recipe
             InkWell(
               onTap: () {
-                Navigator.pop(context);
+                Navigator.of(bottomSheetContext).pop();
                 Get.snackbar(
                   'Info',
                   'Create Recipe feature coming soon',
