@@ -1,161 +1,260 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:gym_cheloper/viwes/workout/new_thing/create_food/create_food_controller/create_food_controller.dart';
 
-
-// UI Widget
-class CreateFoodPopup extends StatelessWidget {
+class CreateFoodPopup extends StatefulWidget {
   const CreateFoodPopup({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(CreateFoodController());
+  State<CreateFoodPopup> createState() => _CreateFoodPopupState();
+}
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        backgroundColor: Colors.grey[50],
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black, size: 20),
-          onPressed: () => Get.back(),
-        ),
-        title: const Text(
-          'Create Food',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
+class _CreateFoodPopupState extends State<CreateFoodPopup> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _servingWeightController =
+  TextEditingController(text: '150g');
+  final TextEditingController _caloriesController =
+  TextEditingController(text: '350 kCal');
+  final TextEditingController _carbsController =
+  TextEditingController(text: '350 Cal');
+  final TextEditingController _proteinController =
+  TextEditingController(text: '350 Cal');
+  final TextEditingController _fatController =
+  TextEditingController(text: '350 Cal');
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _servingWeightController.dispose();
+    _caloriesController.dispose();
+    _carbsController.dispose();
+    _proteinController.dispose();
+    _fatController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Name Field
-            _buildInputField(
-              label: 'Name',
-              controller: controller.nameController,
-              hintText: '',
-            ),
-            const SizedBox(height: 20),
-
-            // Serving Weight Field
-            _buildInputField(
-              label: 'Serving weight',
-              controller: controller.servingWeightController,
-            ),
-            const SizedBox(height: 20),
-
-            // Calories Field
-            _buildInputField(
-              label: 'Calories',
-              controller: controller.caloriesController,
-            ),
-            const SizedBox(height: 20),
-
-            // Carbs Field
-            _buildInputField(
-              label: 'Carbs',
-              controller: controller.carbsController,
-            ),
-            const SizedBox(height: 20),
-
-            // Protein Field
-            _buildInputField(
-              label: 'Protein',
-              controller: controller.proteinController,
-            ),
-            const SizedBox(height: 20),
-
-            // Fat Field
-            _buildInputField(
-              label: 'Fat',
-              controller: controller.fatController,
-            ),
-
-            const Spacer(),
-
-            // Add Button
-            SizedBox(
-              width: double.infinity,
-              height: 56,
-              child: ElevatedButton(
-                onPressed: controller.addFood,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  elevation: 0,
+            // Drag Handle
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(top: 12),
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
                 ),
-                child: const Text(
-                  'Add In Food',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+              ),
+            ),
+            // Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 20),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 28,
+                      color: Color(0xFF333333),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Create Food',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF333333),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Form Fields
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Name Field - just text label
+                  const Text(
+                    'Name',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      color: Color(0xFF666666),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(
+                    color: Color(0xFFE0E0E0),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Serving weight Field
+                  _buildInlineField('Serving weight', _servingWeightController, '150g'),
+                  const SizedBox(height: 16),
+                  const Divider(
+                    color: Color(0xFFE0E0E0),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Calories Field
+                  _buildInlineField('Calories', _caloriesController, '350 kCal'),
+                  const SizedBox(height: 16),
+                  const Divider(
+                    color: Color(0xFFE0E0E0),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Carbs Field
+                  _buildInlineField('Carbs', _carbsController, '350 Cal'),
+                  const SizedBox(height: 16),
+                  const Divider(
+                    color: Color(0xFFE0E0E0),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Protein Field
+                  _buildInlineField('Protein', _proteinController, '350 Cal'),
+                  const SizedBox(height: 16),
+                  const Divider(
+                    color: Color(0xFFE0E0E0),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Fat Field
+                  _buildInlineField('Fat', _fatController, '350 Cal'),
+                  const SizedBox(height: 32),
+                ],
+              ),
+            ),
+
+            // Add In Food Button
+            Padding(
+              padding: EdgeInsets.fromLTRB(20, 0, 20, MediaQuery.of(context).padding.bottom + 20),
+              child: SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Handle add food action
+                    Navigator.of(context).pop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFF0000),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: const Text(
+                    'Add In Food',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildInputField({
-    required String label,
-    required TextEditingController controller,
-    String? hintText,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+  // Inline field with label on left and input on right
+  Widget _buildInlineField(String label, TextEditingController controller, String placeholder) {
+    return Row(
       children: [
+        // Label on left
         Text(
           label,
           style: const TextStyle(
             fontSize: 14,
-            color: Colors.black87,
             fontWeight: FontWeight.w400,
+            color: Color(0xFF666666),
           ),
         ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: hintText,
-            filled: true,
-            fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 14,
-            ),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.red, width: 1.5),
-            ),
-          ),
-        ),
+        const Spacer(),
+        // Input box on right
+        _buildInlineTextField(controller, placeholder),
       ],
+    );
+  }
+
+  Widget _buildInlineTextField(TextEditingController controller, String placeholder) {
+    return Container(
+      width: 111,
+      height: 40,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: const Color(0xFF4E4E4E),
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: TextField(
+        controller: controller,
+        textAlign: TextAlign.right,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          color: Color(0xFF666666),
+        ),
+        decoration: InputDecoration(
+          hintText: placeholder,
+          hintStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w400,
+            color: Color(0xFF999999),
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 4,
+          ),
+        ),
+      ),
     );
   }
 }
 
-// Usage Example:
-// To show this popup, use:
-// Get.to(() => const CreateFoodPopup());
-// or
-// Navigator.push(context, MaterialPageRoute(builder: (context) => const CreateFoodPopup()));
+// Example usage:
+void showCreateFoodPopup(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (BuildContext context) {
+      return const CreateFoodPopup();
+    },
+  );
+}
