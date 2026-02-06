@@ -6,6 +6,7 @@ import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
 import 'package:get/get.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gym_cheloper/viwes/screens/workout/workout_controller.dart';
+import 'package:gym_cheloper/viwes/workout/calender_Strek/add_traning_day.dart';
 
 import '../../../global widget/global_widget.dart';
 import '../../../helpers/helpers.dart';
@@ -33,11 +34,17 @@ class WorkoutScreen extends StatelessWidget {
 
             /// Add Workout Button
             CustomTextButton(
-              text: '+ Add New Workout'.tr,
+              text: '+ Add New Training Day'.tr,
               color: const Color(0xff999999),
               radius: 16.r,
               onTap: () {
-                context.pushNamed(RouteNames.exercise);
+                AddTrainingDayBottomSheet.show(
+                  context,
+                  onDone: (data) {
+                    // Navigate to exercise screen after training day is created
+                    context.pushNamed(RouteNames.exercise);
+                  },
+                );
               },
             ),
 

@@ -8,6 +8,7 @@ import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/meal_p
 import 'package:gym_cheloper/viwes/workout/new_thing/super_market/super_market_screen/super_market_list.dart';
 import 'package:gym_cheloper/viwes/workout/settings/settings/settings_screen/settings_profile_screen.dart';
 import 'package:gym_cheloper/viwes/workout/weight_tracking/weight_tracking_screen/weight_tracking_screen.dart';
+import 'package:gym_cheloper/viwes/workout/calender_Strek/calorieStrekCounter.dart';
 
 import '../../../global widget/global_widget.dart';
 
@@ -80,7 +81,13 @@ class CustomNavbarState extends State<CustomNavbar> {
                   }
 
                   return IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // Show CalorieStreakCounter dialog
+                      CalorieStreakDialog.show(
+                        context,
+                        mealController.calorieStreakController,
+                      );
+                    },
                     icon: fireIcon,
                   );
                 });
@@ -88,7 +95,11 @@ class CustomNavbarState extends State<CustomNavbar> {
               else {
                 // Default red icon if controller not initialized
                 return IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // Show default streak dialog with temporary controller
+                    final tempController = CalorieStreakController();
+                    CalorieStreakDialog.show(context, tempController);
+                  },
                   icon: SvgPicture.asset(
                     AppIcons.red,
                     width: 24.w,
@@ -98,11 +109,28 @@ class CustomNavbarState extends State<CustomNavbar> {
               }
             },
           ),
-          IconButton(
-            onPressed: () {
-              Get.to(() => SupermarketListPopup());
-            },
-            icon: const Icon(Icons.shopping_cart_outlined),
+          Builder(
+            builder: (context) => IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (context) => Container(
+                    height: MediaQuery.of(context).size.height * 0.85,
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20),
+                      ),
+                    ),
+                    child: const SupermarketListPopup(),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.shopping_cart_outlined, size: 24),
+            ),
           ),
           GestureDetector(
             onTap: () {

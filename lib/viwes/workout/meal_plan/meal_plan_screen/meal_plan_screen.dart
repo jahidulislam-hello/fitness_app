@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
+import 'package:gym_cheloper/viwes/workout/calender_Strek/calender_strek.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/meal_plan_controller.dart';
 
 class MealScreen extends StatelessWidget {
@@ -36,7 +37,7 @@ class MealScreen extends StatelessWidget {
                     SizedBox(height: 16.h),
 
                     // Date Selector
-                    _buildDateSelector(controller),
+                    _buildDateSelector(context, controller),
 
                     SizedBox(height: 24.h),
 
@@ -122,23 +123,54 @@ class MealScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDateSelector(MealTrackingController controller) {
+  Widget _buildDateSelector(BuildContext context, MealTrackingController controller) {
     return Obx(() => Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Header Row
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.calendar_today_outlined,
-                size: 16.sp, color: Colors.black87),
-            SizedBox(width: 6.w),
-            Text(
-              'Today, ${_formatDate(controller.selectedDate.value)}',
-              style: TextStyle(
-                fontSize: 14.sp,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
+            // Icon on the left with padding
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  barrierColor: Colors.black.withOpacity(0.3),
+                  builder: (context) => Dialog(
+                    backgroundColor: Colors.transparent,
+                    elevation: 0,
+                    child: CalendarStreakView(
+                      controller: controller.calendarStreakController,
+                      onClose: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: EdgeInsets.only(left: 6.w),
+                child: Icon(
+                  Icons.calendar_today_outlined,
+                  size: 24.sp,
+                  color: Colors.black54,
+                ),
+              ),
+            ), // ← Added missing comma here
+
+            // Flexible spacer
+            Expanded(
+              child: Align(
+                alignment: Alignment.center,
+                child: Transform.translate(
+                  offset: Offset(-8.w, 0), // Slight adjustment for visual centering
+                  child: Text(
+                    'Today, ${_formatDate(controller.selectedDate.value)}',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

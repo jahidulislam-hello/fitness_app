@@ -3,13 +3,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
 
-// Add New Exercise Dialog
+// Add New Exercise Dialog - Works as both Dialog and BottomSheet content
 class AddNewExerciseDialog extends StatelessWidget {
   final Function(String) onAddExercise;
+  final bool isBottomSheet;
 
   const AddNewExerciseDialog({
     super.key,
     required this.onAddExercise,
+    this.isBottomSheet = false,
   });
 
   @override
@@ -37,6 +39,201 @@ class AddNewExerciseDialog extends StatelessWidget {
       }
     }
 
+    Widget content = Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Drag Handle (only for bottom sheet)
+        if (isBottomSheet)
+          Container(
+            margin: EdgeInsets.only(top: 12.h, bottom: 8.h),
+            width: 40.w,
+            height: 4.h,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(2.r),
+            ),
+          ),
+
+        // Header
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: isBottomSheet ? 8.h : 20.h),
+          child: Row(
+            children: [
+              InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                child: Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 20.sp,
+                  color: Colors.black87,
+                ),
+              ),
+              SizedBox(width: 12.w),
+              CustomText(
+                text: "Add New Exercise",
+                fontsize: 18.sp,
+                fontName: "RobotoMedium",
+                color: Colors.black87,
+              ),
+            ],
+          ),
+        ),
+
+        SizedBox(height: 12.h),
+
+        // Search Field
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: TextField(
+            controller: searchController,
+            onChanged: filterExercises,
+            decoration: InputDecoration(
+              hintText: "Incline Chest",
+              hintStyle: TextStyle(
+                color: Colors.grey[400],
+                fontSize: 14.sp,
+              ),
+              suffixIcon: Icon(
+                Icons.search,
+                color: Colors.red,
+                size: 24.sp,
+              ),
+              filled: true,
+              fillColor: Colors.grey[50],
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.r),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.r),
+                borderSide: BorderSide(color: Colors.grey[300]!),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30.r),
+                borderSide: const BorderSide(color: Colors.red, width: 1.5),
+              ),
+              contentPadding:
+              EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+            ),
+          ),
+        ),
+
+        SizedBox(height: 16.h),
+
+        // Exercise List
+        Expanded(
+          child: Obx(
+                () => ListView.separated(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              shrinkWrap: true,
+              itemCount: filteredExercises.length,
+              separatorBuilder: (context, index) => SizedBox(height: 12.h),
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    onAddExercise(filteredExercises[index]);
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 14.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12.r),
+                      border: Border.all(
+                        color: Colors.grey[200]!,
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        // Icon
+                        Container(
+                          width: 40.w,
+                          height: 40.w,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(10.r),
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              'assets/icons/dumbbell.png',
+                              height: 24.h,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 12.w),
+                        // Text
+                        Expanded(
+                          child: CustomText(
+                            text: filteredExercises[index],
+                            fontsize: 15.sp,
+                            color: Colors.black87,
+                            textAlign: TextAlign.left,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+
+        SizedBox(height: 16.h),
+
+        // Add Button
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w).copyWith(bottom: 20.h),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100.r),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+              ),
+              onPressed: () {
+                if (searchController.text.isNotEmpty) {
+                  onAddExercise(searchController.text);
+                  Navigator.of(context).pop();
+                }
+              },
+              child: CustomText(
+                text: "Add New exercise",
+                color: Colors.white,
+                fontsize: 16.sp,
+                fontName: "RobotoMedium",
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+
+    // Return as bottom sheet content or dialog based on isBottomSheet flag
+    if (isBottomSheet) {
+      return ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.r),
+          topRight: Radius.circular(20.r),
+        ),
+        child: content,
+      );
+    }
+
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.r),
@@ -47,168 +244,7 @@ class AddNewExerciseDialog extends StatelessWidget {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.7,
         ),
-        padding: EdgeInsets.all(20.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Row(
-              children: [
-                InkWell(
-                  onTap: () => Get.back(),
-                  child: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    size: 20.sp,
-                    color: Colors.black87,
-                  ),
-                ),
-                SizedBox(width: 12.w),
-                CustomText(
-                  text: "Add New Exercise",
-                  fontsize: 18.sp,
-                  fontName: "RobotoMedium",
-                  color: Colors.black87,
-                ),
-              ],
-            ),
-
-            SizedBox(height: 20.h),
-
-            // Search Field
-            TextField(
-              controller: searchController,
-              onChanged: filterExercises,
-              decoration: InputDecoration(
-                hintText: "Incline Chest",
-                hintStyle: TextStyle(
-                  color: Colors.grey[400],
-                  fontSize: 14.sp,
-                ),
-                suffixIcon: Icon(
-                  Icons.search,
-                  color: Colors.red,
-                  size: 24.sp,
-                ),
-                filled: true,
-                fillColor: Colors.grey[50],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.r),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.r),
-                  borderSide: BorderSide(color: Colors.grey[300]!),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.r),
-                  borderSide: const BorderSide(color: Colors.red, width: 1.5),
-                ),
-                contentPadding:
-                EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-              ),
-            ),
-
-            SizedBox(height: 16.h),
-
-            // Exercise List
-            Expanded(
-              child: Obx(
-                    () => ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: filteredExercises.length,
-                  separatorBuilder: (context, index) => SizedBox(height: 12.h),
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        onAddExercise(filteredExercises[index]);
-                        Get.back();
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 14.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12.r),
-                          border: Border.all(
-                            color: Colors.grey[200]!,
-                            width: 1,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            // Icon
-                            Container(
-                              width: 40.w,
-                              height: 40.w,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[100],
-                                borderRadius: BorderRadius.circular(10.r),
-                              ),
-                              child: Center(
-                                child: Image.asset(
-                                  'assets/icons/dumbbell.png',
-                                  height: 24.h,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 12.w),
-                            // Text
-                            Expanded(
-                              child: CustomText(
-                                text: filteredExercises[index],
-                                fontsize: 15.sp,
-                                color: Colors.black87,
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-
-            SizedBox(height: 16.h),
-
-            // Add Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100.r),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: 14.h),
-                ),
-                onPressed: () {
-                  if (searchController.text.isNotEmpty) {
-                    onAddExercise(searchController.text);
-                    Get.back();
-                  }
-                },
-                child: CustomText(
-                  text: "Add New exercise",
-                  color: Colors.white,
-                  fontsize: 16.sp,
-                  fontName: "RobotoMedium",
-                ),
-              ),
-            ),
-          ],
-        ),
+        child: content,
       ),
     );
   }
