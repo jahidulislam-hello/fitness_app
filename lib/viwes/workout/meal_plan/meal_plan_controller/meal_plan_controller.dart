@@ -3,10 +3,16 @@ import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_tracking_api.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/add_meal_popup.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_constants.dart';
+import 'package:gym_cheloper/viwes/workout/calender_Strek/calender_strek.dart';
+import 'package:gym_cheloper/viwes/workout/calender_Strek/calorieStrekCounter.dart';
 import 'package:intl/intl.dart';
 
 class MealTrackingController extends GetxController {
   final MealApiService _apiService = MealApiService();
+
+  // Calendar and Streak Controllers
+  late CalendarStreakController calendarStreakController;
+  late CalorieStreakController calorieStreakController;
 
   // Loading states
   var isLoading = false.obs;
@@ -43,8 +49,18 @@ class MealTrackingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // Initialize calendar and streak controllers
+    calendarStreakController = CalendarStreakController();
+    calorieStreakController = CalorieStreakController();
     _generateWeekDates();
     loadMealsFromAPI();
+  }
+
+  @override
+  void onClose() {
+    calendarStreakController.dispose();
+    calorieStreakController.dispose();
+    super.onClose();
   }
 
   void _generateWeekDates() {
