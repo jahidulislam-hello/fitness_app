@@ -14,6 +14,7 @@ class CustomButtonCommon extends StatelessWidget {
   final double? width;
   final double? fontSize;
   final bool loading;
+  final Widget? icon;
 
   const CustomButtonCommon({
     super.key,
@@ -25,6 +26,7 @@ class CustomButtonCommon extends StatelessWidget {
     this.fontSize,
     this.titlecolor,
     this.loading=false,
+    this.icon,
   });
 
   @override
@@ -49,11 +51,20 @@ class CustomButtonCommon extends StatelessWidget {
               width: 20.h,
               child: const CircularProgressIndicator(color: Colors.white,),
             ):
-            CustomText(
-              text: title,
-              fontsize: fontSize ?? 20.sp,
-              color: titlecolor ?? Colors.white,
-              fontWeight: FontWeight.w400,
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (icon != null) ...[
+                  icon!,
+                  SizedBox(width: 10.w),
+                ],
+                CustomText(
+                  text: title,
+                  fontsize: fontSize ?? 20.sp,
+                  color: titlecolor ?? Colors.white,
+                  fontWeight: FontWeight.w400,
+                ),
+              ],
             ),
           ],
         ),

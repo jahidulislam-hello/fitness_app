@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_cheloper/controller/localization_controller.dart';
 
 import 'package:gym_cheloper/viwes/screens/auths/controller/signin_controller.dart';
 import '../../../global widget/global_widget.dart';
@@ -19,6 +20,7 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _formInKey = GlobalKey<FormState>();
   final SignInController signInController = Get.put(SignInController());
+  final LocalizationController _localizationController = Get.find<LocalizationController>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,62 @@ class _SignInScreenState extends State<SignInScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(height: sizeH * 0.05),
+              // Language toggle at the top-right
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: EdgeInsets.only(right: sizeW * 0.05),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                'Spanish',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Switch(
+                              value: _localizationController.isLtr,
+                              onChanged: (value) {
+                                setState(() {
+                                  _localizationController.isLtr
+                                      ? _localizationController.setLanguage(const Locale('es', "ES"))
+                                      : _localizationController.setLanguage(const Locale('en', "US"));
+                                });
+                              },
+                              activeThumbColor: AppColors.primaryColor,
+                              inactiveThumbColor: Colors.white,
+                              inactiveTrackColor: Colors.grey,
+                            ),
+                            GestureDetector(
+                              onTap: () {},
+                              child: Text(
+                                'English',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               SizedBox(height: sizeH * .14),
               const AppLogo(),
               SizedBox(height: sizeH * .10),
@@ -129,6 +187,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       CustomButtonCommon(
                         title: 'Apple'.tr,
                         color: Colors.black,
+                        icon: Image.asset('assets/icons/Apple.png', height: 24.h, width: 24.w),
                         onpress: () {},
                       ),
                       SizedBox(height: sizeH * .02),
@@ -136,6 +195,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         title: 'Google'.tr,
                         color: Colors.black12,
                         titlecolor: Colors.black,
+                        icon: Image.asset('assets/icons/Google.png', height: 24.h, width: 24.w),
                         onpress: () {},
                       ),
 
