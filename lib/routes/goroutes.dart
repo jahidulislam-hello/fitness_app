@@ -10,12 +10,20 @@ import '../viwes/workout/meal_plan/meal_plan_screen/meal_plan_screen.dart';
 import '../viwes/workout/settings/change_password/change_password.dart';
 import '../viwes/workout/settings/settings/settings_screen/settings_profile_screen.dart';
 import '../viwes/workout/settings/settings/settings_screen/settings_screen.dart';
+import '../viwes/workout/settings/privacy_policy/privacy_policy_screen/privacy_policy_screen.dart';
+import '../viwes/workout/settings/privacy_policy/privacy_policy_screen/terms_condition_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_buy_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_card_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/subscription_code_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/Profile_subscription_packages_screen.dart';
 import '../viwes/workout/subscription_packages/subscription_packages_screen/add_coupon_screen.dart';
 import '../viwes/workout/weight_tracking/weight_tracking_screen/weight_tracking_screen.dart';
+import '../viwes/screens/question/question_screen.dart';
+import '../viwes/screens/question/quesstion_screen2.dart';
+import '../viwes/screens/question/question_screen3.dart';
+import '../viwes/screens/question/quesstion_screen4.dart';
+import '../viwes/screens/question/question_final_screen.dart';
+import '../viwes/screens/auths/select_screen.dart';
 import 'routes_name.dart';
 
 class AppRoutes {
@@ -33,6 +41,37 @@ class AppRoutes {
         path: RouteNames.onboardingScreen,
         name: RouteNames.onboardingScreen,
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      // Question Screens
+      GoRoute(
+        path: RouteNames.fitnessQuestionScreen,
+        name: RouteNames.fitnessQuestionScreen,
+        builder: (context, state) => const FitnessQuestionScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.fitnessQuestionScreen2,
+        name: RouteNames.fitnessQuestionScreen2,
+        builder: (context, state) => const QuesstionScreen2(),
+      ),
+      GoRoute(
+        path: RouteNames.fitnessQuestionScreen3,
+        name: RouteNames.fitnessQuestionScreen3,
+        builder: (context, state) => const QuestionScreen3(),
+      ),
+      GoRoute(
+        path: RouteNames.fitnessQuestionScreen4,
+        name: RouteNames.fitnessQuestionScreen4,
+        builder: (context, state) => const QuesstionScreen4(),
+      ),
+      GoRoute(
+        path: RouteNames.questionFinalScreen,
+        name: RouteNames.questionFinalScreen,
+        builder: (context, state) => const QuestionFinalScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.selectScreen,
+        name: RouteNames.selectScreen,
+        builder: (context, state) => const SelectScreen(),
       ),
       // Authentication
       GoRoute(
@@ -135,6 +174,17 @@ class AppRoutes {
         path: RouteNames.addCouponScreen,
         name: RouteNames.addCouponScreen,
         builder: (context, state) => const AddCouponScreen(),
+      ),
+      // Privacy & Terms
+      GoRoute(
+        path: RouteNames.privacyPolicyScreen,
+        name: RouteNames.privacyPolicyScreen,
+        builder: (context, state) => const PrivacyScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.termsScreen,
+        name: RouteNames.termsScreen,
+        builder: (context, state) => const TermsScreen(),
       ),
       // Add more screens as needed...
     ],

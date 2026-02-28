@@ -48,12 +48,13 @@ class _QuesstionScreen2State extends State<QuesstionScreen2> {
     final sizeW = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(leading: InkWell(
-          onTap: (){
+      appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
             context.pop();
           },
           child: Icon(Icons.arrow_back_ios)),
-      title: SvgPicture.asset(AppIcons.qIcon2),
+        title: SvgPicture.asset(AppIcons.qIcon2),
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: sizeW * 0.12),

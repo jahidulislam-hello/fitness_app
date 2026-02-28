@@ -28,19 +28,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     final sizeH = MediaQuery.sizeOf(context).height;
     return Scaffold(
-        appBar: AppBar(
-          title: HeadingTwo(data: 'signUpAppBar'.tr),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(sizeH * .016),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: sizeH*.06,),
-                const AppLogo(),
-                SizedBox(height: sizeH*.04,),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(sizeH * .016),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(height: 144.h,),
+              SizedBox(
+                height: 175.h,
+                width: 175.w,
+                child: const AppLogo(),
+              ),
+              SizedBox(height: 40.h,),
                 Padding(
                   padding: EdgeInsets.all(sizeH * .016),
                   child: Form(
@@ -145,15 +145,74 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   context.pushNamed(RouteNames.signInScreen);
                                 })
                           ],
-                        )
+                        ),
+
+
+
+                        SizedBox(
+                          height: sizeH * .016,
+                        ),
+                        //==========================>Terms & Conditions and Privacy Policy<============================
+                        Column(
+                          children: [
+                            Text(
+                              "By continuing you agree to the",
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    context.pushNamed(RouteNames.termsScreen);
+                                  },
+                                  child: Text(
+                                    "Terms & Conditions",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: AppColors.primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  " and ",
+                                  style: TextStyle(
+                                    fontSize: 12.sp,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    context.pushNamed(RouteNames.privacyPolicyScreen);
+                                  },
+                                  child: Text(
+                                    "Privacy Policy",
+                                    style: TextStyle(
+                                      fontSize: 12.sp,
+                                      color: AppColors.primaryColor,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
-        ));
+        ),
+    );
   }
 
   // @override

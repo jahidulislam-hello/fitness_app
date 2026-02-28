@@ -115,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         );
                       }).toList(),
                     ),
-        
+
                     // Optional: Page Indicator (if required)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -142,7 +142,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-        
+
                   ],
                 ),
               ),
@@ -183,7 +183,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         
             // Language toggle at the top-right
             Positioned(
-              top: sizeH * 0.05,
+              top: sizeH * 0.02,
               right: sizeW * 0.05,
               child:Row(
                   children: [

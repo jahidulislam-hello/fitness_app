@@ -10,6 +10,7 @@ class RouteNames{
   static const String fitnessQuestionScreen4 ='/fitnessQuestionScreen4';
   static const String questionFinalScreen ='/questionFinalScreen';
 
+  static const String selectScreen ='/SelectScreen';
   static const String signInScreen='/SignInScreen';
   static const String singUpScreen='/SingUpScreen';
   static const String basicInformation='/basicInfo';

@@ -90,9 +90,9 @@ class _QuestionFinalScreenState extends State<QuestionFinalScreen> {
             SizedBox(height: 40.h),
             CustomTextButton(
               onTap: () {
-                context.pushNamed(RouteNames.signInScreen);
+                context.pushNamed(RouteNames.selectScreen);
               },
-              text: "Let’s go!",
+              text: "Let's go!",
             ),
           ],
         ),
