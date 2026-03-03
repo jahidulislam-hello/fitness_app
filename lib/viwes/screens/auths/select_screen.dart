@@ -19,8 +19,7 @@ class SelectScreen extends StatefulWidget {
 
 class _SelectScreenState extends State<SelectScreen> {
   final GlobalKey<FormState> _formInKey = GlobalKey<FormState>();
-  final SignInController signInController = Get.put(SignInController
-    ());
+  final SignInController signInController = Get.put(SignInController());
   final LocalizationController _localizationController = Get.find<LocalizationController>();
 
   @override
