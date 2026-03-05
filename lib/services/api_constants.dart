@@ -12,6 +12,7 @@ class ApiConstants{
   static const String addWaterIntake = "/meals/add-water-intake";
 
   static const String getWorkoutLog = "/workout/get-workout-log";
+  static const String finishExercise = "/workout/finish-exercise";
 
   static const String getProfileInfo = "/profile/profile-information";
   static const String updateProfile = "/profile/profile-update";

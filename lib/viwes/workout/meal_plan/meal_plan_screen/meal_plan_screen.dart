@@ -51,15 +51,17 @@ class MealScreen extends StatelessWidget {
 
                     SizedBox(height: 24.h),
 
-                    // Today Label
-                    Text(
-                      'Today',
+                    // Date Label
+                    Obx(() => Text(
+                      _isSameDay(controller.selectedDate.value, DateTime.now())
+                          ? 'Today'
+                          : _formatDate(controller.selectedDate.value),
                       style: TextStyle(
                         fontSize: 18.sp,
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
                       ),
-                    ),
+                    )),
 
                     SizedBox(height: 16.h),
 
@@ -163,7 +165,9 @@ class MealScreen extends StatelessWidget {
                 child: Transform.translate(
                   offset: Offset(-8.w, 0), // Slight adjustment for visual centering
                   child: Text(
-                    'Today, ${_formatDate(controller.selectedDate.value)}',
+                    _isSameDay(controller.selectedDate.value, DateTime.now())
+                        ? 'Today, ${_formatDate(controller.selectedDate.value)}'
+                        : _formatDate(controller.selectedDate.value),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -178,30 +182,42 @@ class MealScreen extends StatelessWidget {
 
         SizedBox(height: 20.h),
 
-        // Week Date Row
+        // Week Date Row - Today in middle with 3 days left and 3 days right
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(7, (index) {
             final date = controller.weekDates[index];
-            final isSelected =
-            _isSameDay(date, controller.selectedDate.value);
+            final isSelected = _isSameDay(date, controller.selectedDate.value);
+            final isToday = _isSameDay(date, DateTime.now());
             final dayName = _getDayNameShort(date.weekday);
             final dayNumber = date.day;
+            final hasMealData = controller.dateHasMealData(date);
+
+            // 7 different colors for each day
+            final List<Color> dayColors = [
+              const Color(0xFFE57373), // Red
+              const Color(0xFFFFB74D), // Orange
+              const Color(0xFFFFD54F), // Yellow
+              const Color(0xFF4CAF50), // Green
+              const Color(0xFF64B5F6), // Blue
+              const Color(0xFF9575CD), // Purple
+              const Color(0xFFFF8A80), // Pink
+            ];
 
             // Base colors
             Color borderColor = const Color(0xFFD1D1D1);
             Color fillColor = Colors.white;
             Color textColor = Colors.black87;
 
-            // Apply color indicators
-            if (index == 0) borderColor = const Color(0xFFE57373);
-            if (index == 1) borderColor = const Color(0xFFFFD54F);
-            if (index == 2) borderColor = const Color(0xFF4CAF50);
+            // Apply color if date has meal data
+            if (hasMealData) {
+              borderColor = dayColors[index];
+            }
 
             // Selected state
             if (isSelected) {
-              fillColor = const Color(0xFF4CAF50);
-              borderColor = const Color(0xFF4CAF50);
+              fillColor = dayColors[index];
+              borderColor = dayColors[index];
               textColor = Colors.white;
             }
 
@@ -217,7 +233,7 @@ class MealScreen extends StatelessWidget {
                       color: fillColor,
                       border: Border.all(
                         color: borderColor,
-                        width: 5.w,
+                        width: hasMealData || isSelected ? 5.w : 2.w,
                       ),
                     ),
                     alignment: Alignment.center,
@@ -244,6 +260,17 @@ class MealScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+                  // Small indicator dot for today
+                  if (isToday && !isSelected)
+                    Container(
+                      margin: EdgeInsets.only(top: 4.h),
+                      width: 6.w,
+                      height: 6.w,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: dayColors[index],
+                      ),
+                    ),
                 ],
               ),
             );

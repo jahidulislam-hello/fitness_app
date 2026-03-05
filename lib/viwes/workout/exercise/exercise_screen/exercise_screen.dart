@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
 import 'package:gym_cheloper/viwes/workout/exercise/dialog.dart';
 import 'package:gym_cheloper/viwes/workout/exercise/exercise_controller/exercise_controller.dart';
@@ -8,11 +9,28 @@ import 'package:gym_cheloper/viwes/workout/exercise/timer_popup.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class ExerciseScreen extends StatelessWidget {
-  const ExerciseScreen({super.key});
+  final String? workoutId;
+  final String? trainingName;
+
+  const ExerciseScreen({
+    super.key,
+    this.workoutId,
+    this.trainingName,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Delete existing controller if any to ensure fresh state
+    if (Get.isRegistered<ExerciseController>()) {
+      Get.delete<ExerciseController>();
+    }
+
     final controller = Get.put(ExerciseController());
+
+    // Set workout data if provided
+    if (workoutId != null && workoutId!.isNotEmpty) {
+      controller.setWorkout(workoutId!, trainingName ?? 'Workout');
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -26,7 +44,7 @@ class ExerciseScreen extends StatelessWidget {
               Row(
                 children: [
                   InkWell(
-                    onTap: () => Get.back(),
+                    onTap: () => context.pop(),
                     child: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
                   ),
                   SizedBox(width: 10.w),
@@ -469,7 +487,13 @@ class ExerciseScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(100.r),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () async {
+                      final success = await controller.finishTodaysExercise();
+                      if (success && context.mounted) {
+                        // Navigate back to workout screen after completing
+                        context.pop();
+                      }
+                    },
                     child: CustomText(
                       text: "Finish today's exercise",
                       color: Colors.white,

@@ -46,4 +46,45 @@ class WorkoutApiService {
       throw Exception('Error getting workout log: $e');
     }
   }
+
+  // Finish Exercise API
+  Future<Map<String, dynamic>> finishExercise({required String workoutId}) async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final url = Uri.parse("${ApiConstants.baseUrl}${ApiConstants.finishExercise}");
+
+      print('🌐 Finishing exercise at: $url');
+
+      final response = await http.post(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "workoutId": workoutId,
+        }),
+      );
+
+      print('📡 Response Status: ${response.statusCode}');
+      print('📦 Response Body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonResponse = jsonDecode(response.body);
+        print('✅ Successfully finished exercise');
+        return jsonResponse;
+      } else {
+        print('❌ API Error: ${response.statusCode} - ${response.body}');
+        throw Exception('Failed to finish exercise: ${response.body}');
+      }
+    } catch (e) {
+      print('💥 Exception in finishExercise: $e');
+      throw Exception('Error finishing exercise: $e');
+    }
+  }
 }

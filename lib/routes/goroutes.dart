@@ -117,7 +117,13 @@ class AppRoutes {
       GoRoute(
         path: RouteNames.exercise,
         name: RouteNames.exercise,
-        builder: (context, state) => const ExerciseScreen(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return ExerciseScreen(
+            workoutId: extra?['workoutId'],
+            trainingName: extra?['trainingName'],
+          );
+        },
       ),
       GoRoute(
         path: RouteNames.mealPlan,

@@ -128,42 +128,63 @@ class WorkoutScreen extends StatelessWidget {
                             SizedBox(width: 12.w),
                           ],
                         ),
-                        child: Container(
-                          padding: EdgeInsets.all(sizeW * 0.03),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.2),
-                                blurRadius: 5,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: HeadingThree(
-                                  data: workout.trainingName.tr,
+                        child: GestureDetector(
+                          onTap: () {
+                            // Navigate to ExerciseScreen with workout data
+                            context.pushNamed(
+                              RouteNames.exercise,
+                              extra: {
+                                'workoutId': workout.id,
+                                'trainingName': workout.trainingName,
+                              },
+                            );
+                          },
+                          child: Container(
+                            padding: EdgeInsets.all(sizeW * 0.03),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12.r),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.2),
+                                  blurRadius: 5,
+                                  offset: const Offset(0, 4),
                                 ),
-                              ),
-                              SizedBox(width: 12.w),
-                              SizedBox(
-                                width: sizeW * 0.32,
-                                child: CustomTextButton(
-                                  padding: sizeH * 0.01,
-                                  text: workout.completed
-                                      ? 'Completed'.tr
-                                      : 'Workout'.tr,
-                                  onTap: () {},
-                                  color: workout.completed
-                                      ? Colors.grey
-                                      : AppColors.primaryColor,
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: HeadingThree(
+                                    data: workout.trainingName.tr,
+                                  ),
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 12.w),
+                                SizedBox(
+                                  width: sizeW * 0.32,
+                                  child: CustomTextButton(
+                                    padding: sizeH * 0.01,
+                                    text: workout.completed
+                                        ? 'Completed'.tr
+                                        : 'Workout'.tr,
+                                    onTap: () {
+                                      // Navigate to ExerciseScreen with workout data
+                                      context.pushNamed(
+                                        RouteNames.exercise,
+                                        extra: {
+                                          'workoutId': workout.id,
+                                          'trainingName': workout.trainingName,
+                                        },
+                                      );
+                                    },
+                                    color: workout.completed
+                                        ? Colors.grey
+                                        : AppColors.primaryColor,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
