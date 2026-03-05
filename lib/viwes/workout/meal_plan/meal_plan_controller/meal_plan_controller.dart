@@ -22,6 +22,9 @@ class MealTrackingController extends GetxController {
   var selectedDate = DateTime.now().obs;
   var weekDates = <DateTime>[].obs;
 
+  // Track dates that have meal data
+  var datesWithMealData = <String>{}.obs;
+
   // Calories Data
   var dailyCalories = 0.0.obs;
   var dailyCaloriesGoal = 2200.0.obs;
@@ -54,6 +57,7 @@ class MealTrackingController extends GetxController {
     calorieStreakController = CalorieStreakController();
     _generateWeekDates();
     loadMealsFromAPI();
+    loadWeekMealDataStatus();
   }
 
   @override
@@ -67,9 +71,51 @@ class MealTrackingController extends GetxController {
     weekDates.clear();
     DateTime today = DateTime.now();
 
-    for (int i = 6; i >= 0; i--) {
-      weekDates.add(today.subtract(Duration(days: i)));
+    // Generate dates: 3 days before today, today, 3 days after today
+    for (int i = -3; i <= 3; i++) {
+      weekDates.add(today.add(Duration(days: i)));
     }
+  }
+
+  /// Load meal data status for all week dates
+  Future<void> loadWeekMealDataStatus() async {
+    try {
+      // Load all meals and check which dates have data
+      final response = await _apiService.getAllMeals(
+        foodType: "",
+        date: _formatDateForAPI(DateTime.now()),
+      );
+
+      if (response['success'] == true && response['data'] != null) {
+        final data = response['data'] as List;
+        datesWithMealData.clear();
+
+        for (var item in data) {
+          if (item is Map && item.containsKey('date')) {
+            final itemDate = item['date'] as String;
+            final itemDateOnly = itemDate.split('T')[0];
+
+            // Check if this date has any meals with calories
+            final macrosData = item['macrosValue'];
+            if (macrosData != null) {
+              final calories = _toDouble(macrosData['calories']);
+              if (calories > 0) {
+                datesWithMealData.add(itemDateOnly);
+              }
+            }
+          }
+        }
+        print('📅 Dates with meal data: ${datesWithMealData.toList()}');
+      }
+    } catch (e) {
+      print('❌ Error loading week meal status: $e');
+    }
+  }
+
+  /// Check if a date has meal data
+  bool dateHasMealData(DateTime date) {
+    final dateString = _formatDateForAPI(date);
+    return datesWithMealData.contains(dateString);
   }
 
   void selectDate(DateTime date) {
@@ -383,6 +429,8 @@ class MealTrackingController extends GetxController {
 
         // Reload meals to show updated data
         await loadMealsFromAPI();
+        // Refresh meal data status for week dates
+        await loadWeekMealDataStatus();
       }
     } catch (e) {
       Get.snackbar(

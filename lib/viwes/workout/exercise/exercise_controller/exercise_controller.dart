@@ -70,10 +70,24 @@ class ExerciseController extends GetxController {
   var trainingName = 'Chest Day'.obs;
   var workoutId = ''.obs;
 
+  // Store selected workout ID passed from WorkoutScreen
+  String? selectedWorkoutId;
+
   @override
   void onInit() {
     super.onInit();
     print('🎬 ExerciseController onInit - Loading workout data from API...');
+    // Workout data will be set via setWorkout() from ExerciseScreen
+    // Only load if no specific workout is set (fallback behavior)
+    if (selectedWorkoutId == null) {
+      loadWorkoutData();
+    }
+  }
+
+  /// Set workout to load (call before navigation or use Get.arguments)
+  void setWorkout(String id, String name) {
+    selectedWorkoutId = id;
+    trainingName.value = name;
     loadWorkoutData();
   }
 
@@ -93,9 +107,24 @@ class ExerciseController extends GetxController {
         print('✅ Data received, parsing workouts...');
 
         if (data.isNotEmpty) {
-          // Get the first workout (or you can let user select which workout)
-          final firstWorkout = data[0];
-          _parseWorkoutData(firstWorkout);
+          // Find the specific workout by ID, or use first one as fallback
+          Map<String, dynamic>? targetWorkout;
+
+          if (selectedWorkoutId != null && selectedWorkoutId!.isNotEmpty) {
+            // Find workout by ID
+            for (var workout in data) {
+              if (workout['_id'] == selectedWorkoutId) {
+                targetWorkout = workout;
+                print('✅ Found matching workout: ${workout['trainingName']}');
+                break;
+              }
+            }
+          }
+
+          // Fallback to first workout if not found
+          targetWorkout ??= Map<String, dynamic>.from(data[0]);
+
+          _parseWorkoutData(targetWorkout!);
         } else {
           print('⚠️ No workout data available');
           exercises.clear();
@@ -497,5 +526,72 @@ class ExerciseController extends GetxController {
       return sets.every((set) => set.isCompleted.value);
     }
     return false;
+  }
+
+  /// Finish today's exercise - call API to mark workout as completed
+  Future<bool> finishTodaysExercise() async {
+    try {
+      if (workoutId.value.isEmpty) {
+        Get.snackbar(
+          'Error',
+          'No workout selected',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return false;
+      }
+
+      // Show loading
+      Get.dialog(
+        const Center(
+          child: CircularProgressIndicator(
+            color: Color(0xffF93533),
+          ),
+        ),
+        barrierDismissible: false,
+      );
+
+      final response = await _apiService.finishExercise(workoutId: workoutId.value);
+
+      // Close loading
+      Get.back();
+
+      if (response['success'] == true) {
+        Get.snackbar(
+          'Success',
+          response['message'] ?? 'Exercise completed!',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 2),
+        );
+        return true;
+      } else {
+        Get.snackbar(
+          'Error',
+          response['message'] ?? 'Failed to complete exercise',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+        return false;
+      }
+    } catch (e) {
+      // Close loading if still open
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+
+      print('❌ Error finishing exercise: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to complete exercise',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return false;
+    }
   }
 }
