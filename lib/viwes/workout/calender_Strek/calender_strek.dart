@@ -35,10 +35,19 @@ class CalendarDay {
 
 // Controller to manage calendar state
 class CalendarStreakController extends ChangeNotifier {
-  String _monthYear = 'June, 2025';
+  DateTime _currentMonth = DateTime.now();
   List<CalendarDay> _days = [];
+  DateTime? _selectedDate;
+  Map<String, DayStatus> _dateStatusMap = {};
 
-  String get monthYear => _monthYear;
+  String get monthYear {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'];
+    return '${months[_currentMonth.month - 1]}, ${_currentMonth.year}';
+  }
+
+  DateTime get currentMonth => _currentMonth;
+  DateTime? get selectedDate => _selectedDate;
   List<CalendarDay> get days => List.unmodifiable(_days);
 
   CalendarStreakController() {
@@ -46,17 +55,91 @@ class CalendarStreakController extends ChangeNotifier {
   }
 
   void _initializeDays() {
-    // Initialize with 35 days (5 weeks)
-    _days = List.generate(35, (index) {
-      return CalendarDay(
-        day: index + 1,
-        status: DayStatus.none,
-      );
-    });
+    _days = [];
+
+    // Get first day of month
+    final firstDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month, 1);
+    // Get last day of month
+    final lastDayOfMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 0);
+
+    // Get the weekday of first day (1 = Monday, 7 = Sunday)
+    int startWeekday = firstDayOfMonth.weekday;
+    // Adjust for Sunday start (convert Monday=1 to Sunday=0)
+    int leadingEmptyDays = startWeekday % 7;
+
+    // Add empty days for padding
+    for (int i = 0; i < leadingEmptyDays; i++) {
+      _days.add(CalendarDay(day: 0, status: DayStatus.none));
+    }
+
+    // Add actual days of the month
+    for (int day = 1; day <= lastDayOfMonth.day; day++) {
+      final date = DateTime(_currentMonth.year, _currentMonth.month, day);
+      final dateKey = _formatDate(date);
+      final status = _dateStatusMap[dateKey] ?? DayStatus.none;
+
+      _days.add(CalendarDay(day: day, status: status));
+    }
+
+    // Fill remaining slots to complete the grid (6 rows x 7 cols = 42)
+    while (_days.length < 42) {
+      _days.add(CalendarDay(day: 0, status: DayStatus.none));
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+  }
+
+  void goToPreviousMonth() {
+    _currentMonth = DateTime(_currentMonth.year, _currentMonth.month - 1, 1);
+    _initializeDays();
+    notifyListeners();
+  }
+
+  void goToNextMonth() {
+    _currentMonth = DateTime(_currentMonth.year, _currentMonth.month + 1, 1);
+    _initializeDays();
+    notifyListeners();
+  }
+
+  void selectDate(int day) {
+    if (day > 0) {
+      _selectedDate = DateTime(_currentMonth.year, _currentMonth.month, day);
+      notifyListeners();
+    }
+  }
+
+  bool isSelectedDay(int day) {
+    if (_selectedDate == null || day == 0) return false;
+    return _selectedDate!.year == _currentMonth.year &&
+           _selectedDate!.month == _currentMonth.month &&
+           _selectedDate!.day == day;
+  }
+
+  bool isToday(int day) {
+    if (day == 0) return false;
+    final today = DateTime.now();
+    return today.year == _currentMonth.year &&
+           today.month == _currentMonth.month &&
+           today.day == day;
   }
 
   void setMonthYear(String monthYear) {
-    _monthYear = monthYear;
+    // Parse and set month/year if needed
+    notifyListeners();
+  }
+
+  void setDateStatus(DateTime date, DayStatus status) {
+    final dateKey = _formatDate(date);
+    _dateStatusMap[dateKey] = status;
+    _initializeDays();
+    notifyListeners();
+  }
+
+  void setDateStatusMap(Map<String, DayStatus> statusMap) {
+    _dateStatusMap = statusMap;
+    _initializeDays();
     notifyListeners();
   }
 
@@ -151,14 +234,18 @@ class CalendarStreakController extends ChangeNotifier {
 class CalendarDayCircle extends StatelessWidget {
   final CalendarDay day;
   final double size;
+  final bool isSelected;
+  final bool isToday;
 
   const CalendarDayCircle({
     Key? key,
     required this.day,
     this.size = 36,
+    this.isSelected = false,
+    this.isToday = false,
   }) : super(key: key);
 
-  Color _getBackgroundColor() {
+  Color _getStatusColor() {
     switch (day.status) {
       case DayStatus.completed:
         return const Color(0xFF4CAF50); // Green
@@ -171,11 +258,58 @@ class CalendarDayCircle extends StatelessWidget {
     }
   }
 
-  Color _getTextColor() {
-    if (day.status == DayStatus.none) {
-      return const Color(0xFF9E9E9E);
+  Color _getBackgroundColor() {
+    // Empty day (padding)
+    if (day.day == 0) return Colors.transparent;
+
+    // Selected day - filled with status color or primary color
+    if (isSelected) {
+      return day.status != DayStatus.none
+          ? _getStatusColor()
+          : const Color(0xffF93533);
     }
-    return Colors.white;
+
+    // Has data - show white background with colored border
+    if (day.status != DayStatus.none) {
+      return Colors.white;
+    }
+
+    // No data, not selected - light grey background
+    return const Color(0xFFF5F5F5);
+  }
+
+  Color _getBorderColor() {
+    // Empty day
+    if (day.day == 0) return Colors.transparent;
+
+    // Has status data - show status color border
+    if (day.status != DayStatus.none) {
+      return _getStatusColor();
+    }
+
+    // Today without data
+    if (isToday) {
+      return const Color(0xffF93533);
+    }
+
+    // Default grey border
+    return const Color(0xFFE0E0E0);
+  }
+
+  Color _getTextColor() {
+    // Empty day
+    if (day.day == 0) return Colors.transparent;
+
+    // Selected - white text
+    if (isSelected) return Colors.white;
+
+    // Has status - dark text
+    if (day.status != DayStatus.none) {
+      return const Color(0xFF1a1a1a);
+    }
+
+    // Default
+    return const Color(0xFF9E9E9E);
   }
 
   Widget _buildIcon() {
@@ -191,14 +325,14 @@ class CalendarDayCircle extends StatelessWidget {
           color: Colors.white,
           shape: BoxShape.circle,
           border: Border.all(
-            color: _getBackgroundColor(),
+            color: _getStatusColor(),
             width: 1.5,
           ),
         ),
         child: Icon(
           Icons.star,
           size: 8,
-          color: _getBackgroundColor(),
+          color: _getStatusColor(),
         ),
       ),
     );
@@ -206,6 +340,11 @@ class CalendarDayCircle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Empty day (padding)
+    if (day.day == 0) {
+      return SizedBox(width: size, height: size);
+    }
+
     return SizedBox(
       width: size,
       height: size,
@@ -218,6 +357,10 @@ class CalendarDayCircle extends StatelessWidget {
             decoration: BoxDecoration(
               color: _getBackgroundColor(),
               shape: BoxShape.circle,
+              border: Border.all(
+                color: _getBorderColor(),
+                width: day.status != DayStatus.none || isToday ? 2.5 : 1.5,
+              ),
             ),
             child: Center(
               child: Text(
@@ -231,6 +374,19 @@ class CalendarDayCircle extends StatelessWidget {
             ),
           ),
           _buildIcon(),
+          // Today indicator dot
+          if (isToday && !isSelected)
+            Positioned(
+              bottom: 2,
+              child: Container(
+                width: 4,
+                height: 4,
+                decoration: const BoxDecoration(
+                  color: Color(0xffF93533),
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -241,12 +397,24 @@ class CalendarDayCircle extends StatelessWidget {
 class CalendarStreakView extends StatelessWidget {
   final CalendarStreakController controller;
   final VoidCallback? onClose;
+  final Function(DateTime)? onDateSelected;
+  final Set<String>? datesWithMealData; // Dates that have meal plans
 
   const CalendarStreakView({
     Key? key,
     required this.controller,
     this.onClose,
+    this.onDateSelected,
+    this.datesWithMealData,
   }) : super(key: key);
+
+  // Check if a date has meal data
+  bool _dateHasMealData(int day) {
+    if (day == 0 || datesWithMealData == null) return false;
+    final date = DateTime(controller.currentMonth.year, controller.currentMonth.month, day);
+    final dateStr = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+    return datesWithMealData!.contains(dateStr);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -269,10 +437,27 @@ class CalendarStreakView extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Header
+              // Header with navigation
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Previous month button
+                  GestureDetector(
+                    onTap: () => controller.goToPreviousMonth(),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F5F5),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Icon(
+                        Icons.chevron_left,
+                        size: 20,
+                        color: Color(0xFF1a1a1a),
+                      ),
+                    ),
+                  ),
+                  // Month/Year text
                   Text(
                     controller.monthYear,
                     style: const TextStyle(
@@ -281,22 +466,58 @@ class CalendarStreakView extends StatelessWidget {
                       color: Color(0xFF1a1a1a),
                     ),
                   ),
+                  // Next month button
                   GestureDetector(
-                    onTap: onClose,
+                    onTap: () => controller.goToNextMonth(),
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF5F5F5),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       child: const Icon(
-                        Icons.close,
+                        Icons.chevron_right,
                         size: 20,
-                        color: Color(0xFFEF5350),
+                        color: Color(0xFF1a1a1a),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 8),
+              // Close button row
+              Align(
+                alignment: Alignment.centerRight,
+                child: GestureDetector(
+                  onTap: onClose,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    child: const Icon(
+                      Icons.close,
+                      size: 20,
+                      color: Color(0xFFEF5350),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
 
-              // Calendar grid (7 columns x 5 rows)
+              // Weekday headers
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: const [
+                  _WeekdayHeader('Sun'),
+                  _WeekdayHeader('Mon'),
+                  _WeekdayHeader('Tue'),
+                  _WeekdayHeader('Wed'),
+                  _WeekdayHeader('Thu'),
+                  _WeekdayHeader('Fri'),
+                  _WeekdayHeader('Sat'),
+                ],
+              ),
+              const SizedBox(height: 8),
+
+              // Calendar grid (7 columns x 6 rows)
               _buildCalendarGrid(),
             ],
           ),
@@ -306,23 +527,137 @@ class CalendarStreakView extends StatelessWidget {
   }
 
   Widget _buildCalendarGrid() {
+    // Colors for days with meal data
+    final List<Color> dayColors = [
+      const Color(0xFFE57373), // Red
+      const Color(0xFFFFB74D), // Orange
+      const Color(0xFFFFD54F), // Yellow
+      const Color(0xFF4CAF50), // Green
+      const Color(0xFF64B5F6), // Blue
+      const Color(0xFF9575CD), // Purple
+      const Color(0xFFFF8A80), // Pink
+    ];
+
+    final rowCount = (controller.days.length / 7).ceil();
     return Column(
       children: [
-        for (int row = 0; row < 5; row++)
+        for (int row = 0; row < rowCount; row++)
           Padding(
-            padding: EdgeInsets.only(bottom: row < 4 ? 8 : 0),
+            padding: EdgeInsets.only(bottom: row < rowCount - 1 ? 6 : 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 for (int col = 0; col < 7; col++)
-                  CalendarDayCircle(
-                    day: controller.days[row * 7 + col],
-                    size: 36,
-                  ),
+                  if (row * 7 + col < controller.days.length)
+                    Builder(
+                      builder: (context) {
+                        final dayData = controller.days[row * 7 + col];
+                        final hasMealData = _dateHasMealData(dayData.day);
+                        final isSelected = controller.isSelectedDay(dayData.day);
+                        final colorIndex = dayData.day % 7;
+
+                        return GestureDetector(
+                          onTap: () {
+                            if (dayData.day > 0 && onDateSelected != null) {
+                              controller.selectDate(dayData.day);
+                              final selectedDate = DateTime(
+                                controller.currentMonth.year,
+                                controller.currentMonth.month,
+                                dayData.day,
+                              );
+                              onDateSelected!(selectedDate);
+                            }
+                          },
+                          child: _buildCalendarDayCircle(
+                            day: dayData.day,
+                            hasMealData: hasMealData,
+                            isSelected: isSelected,
+                            color: dayColors[colorIndex],
+                          ),
+                        );
+                      },
+                    ),
               ],
             ),
           ),
       ],
+    );
+  }
+
+  Widget _buildCalendarDayCircle({
+    required int day,
+    required bool hasMealData,
+    required bool isSelected,
+    required Color color,
+  }) {
+    // Empty day (padding)
+    if (day == 0) {
+      return const SizedBox(width: 36, height: 36);
+    }
+
+    // Determine colors based on state
+    Color borderColor = const Color(0xFFE0E0E0); // Default grey
+    Color fillColor = Colors.white;
+    Color textColor = const Color(0xFF9E9E9E);
+
+    // Has meal data - show colored border
+    if (hasMealData) {
+      borderColor = color;
+      textColor = const Color(0xFF1a1a1a);
+    }
+
+    // Selected - fill with color
+    if (isSelected) {
+      fillColor = color;
+      borderColor = color;
+      textColor = Colors.white;
+    }
+
+    return SizedBox(
+      width: 36,
+      height: 36,
+      child: Container(
+        decoration: BoxDecoration(
+          color: fillColor,
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: borderColor,
+            width: hasMealData || isSelected ? 3 : 1.5,
+          ),
+        ),
+        child: Center(
+          child: Text(
+            '$day',
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: textColor,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WeekdayHeader extends StatelessWidget {
+  final String text;
+  const _WeekdayHeader(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 36,
+      child: Center(
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF9E9E9E),
+          ),
+        ),
+      ),
     );
   }
 }

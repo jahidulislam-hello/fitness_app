@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'daily_macros_controller.dart' show DailyMacroController;
+import 'package:gym_cheloper/daily_marcos/daily_macros_controller.dart';
+
 
 class DailyMacroSheet extends StatelessWidget {
   DailyMacroSheet({super.key});

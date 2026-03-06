@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/calender_Strek/calender_strek.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/meal_plan_controller.dart';
+import 'package:intl/intl.dart';
 
 class MealScreen extends StatelessWidget {
   const MealScreen({super.key});
@@ -126,13 +127,32 @@ class MealScreen extends StatelessWidget {
   }
 
   Widget _buildDateSelector(BuildContext context, MealTrackingController controller) {
-    return Obx(() => Column(
+    // Colors for days that have meal data
+    final List<Color> dayColors = [
+      const Color(0xFFE57373), // Red
+      const Color(0xFFFFB74D), // Orange
+      const Color(0xFFFFD54F), // Yellow
+      const Color(0xFF4CAF50), // Green
+      const Color(0xFF64B5F6), // Blue
+      const Color(0xFF9575CD), // Purple
+      const Color(0xFFFF8A80), // Pink
+    ];
+
+    return Obx(() {
+      // Access reactive variables to ensure tracking
+      final mealDates = controller.datesWithMealData.toList();
+      final weekDates = controller.weekDates.toList();
+      final selectedDate = controller.selectedDate.value;
+
+      print('🔄 Rebuilding date selector - mealDates: $mealDates');
+
+      return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // Header Row
         Row(
           children: [
-            // Icon on the left with padding
+            // Calendar icon on the left
             GestureDetector(
               onTap: () {
                 showDialog(
@@ -144,6 +164,11 @@ class MealScreen extends StatelessWidget {
                     child: CalendarStreakView(
                       controller: controller.calendarStreakController,
                       onClose: () => Navigator.of(context).pop(),
+                      onDateSelected: (date) {
+                        controller.selectDate(date);
+                        Navigator.of(context).pop();
+                      },
+                      datesWithMealData: controller.datesWithMealData.toList().toSet(),
                     ),
                   ),
                 );
@@ -156,18 +181,18 @@ class MealScreen extends StatelessWidget {
                   color: Colors.black54,
                 ),
               ),
-            ), // ← Added missing comma here
+            ),
 
-            // Flexible spacer
+            // Flexible spacer with centered date text
             Expanded(
               child: Align(
                 alignment: Alignment.center,
                 child: Transform.translate(
-                  offset: Offset(-8.w, 0), // Slight adjustment for visual centering
+                  offset: Offset(-8.w, 0),
                   child: Text(
-                    _isSameDay(controller.selectedDate.value, DateTime.now())
-                        ? 'Today, ${_formatDate(controller.selectedDate.value)}'
-                        : _formatDate(controller.selectedDate.value),
+                    _isSameDay(selectedDate, DateTime.now())
+                        ? 'Today, ${_formatDate(selectedDate)}'
+                        : _formatDate(selectedDate),
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -182,39 +207,33 @@ class MealScreen extends StatelessWidget {
 
         SizedBox(height: 20.h),
 
-        // Week Date Row - Today in middle with 3 days left and 3 days right
+        // Week Date Row
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(7, (index) {
-            final date = controller.weekDates[index];
-            final isSelected = _isSameDay(date, controller.selectedDate.value);
-            final isToday = _isSameDay(date, DateTime.now());
+            final date = weekDates[index];
+            final isSelected = _isSameDay(date, selectedDate);
             final dayName = _getDayNameShort(date.weekday);
             final dayNumber = date.day;
-            final hasMealData = controller.dateHasMealData(date);
 
-            // 7 different colors for each day
-            final List<Color> dayColors = [
-              const Color(0xFFE57373), // Red
-              const Color(0xFFFFB74D), // Orange
-              const Color(0xFFFFD54F), // Yellow
-              const Color(0xFF4CAF50), // Green
-              const Color(0xFF64B5F6), // Blue
-              const Color(0xFF9575CD), // Purple
-              const Color(0xFFFF8A80), // Pink
-            ];
+            // Format date to check if it has meal data
+            final dateStr = DateFormat('yyyy-MM-dd').format(date);
+            final hasMealData = mealDates.contains(dateStr);
 
-            // Base colors
+            // Base colors - grey border, white fill
             Color borderColor = const Color(0xFFD1D1D1);
             Color fillColor = Colors.white;
             Color textColor = Colors.black87;
 
-            // Apply color if date has meal data
+            // If date has meal data - show colored border with filled color
             if (hasMealData) {
               borderColor = dayColors[index];
+              // Fill with a lighter version of the color
+              fillColor = dayColors[index].withOpacity(0.15);
+              print('🎨 Date $dateStr has meal data - showing colored border: ${borderColor}');
             }
 
-            // Selected state
+            // Selected state - fill with full color
             if (isSelected) {
               fillColor = dayColors[index];
               borderColor = dayColors[index];
@@ -223,61 +242,47 @@ class MealScreen extends StatelessWidget {
 
             return GestureDetector(
               onTap: () => controller.selectDate(date),
-              child: Column(
-                children: [
-                  Container(
-                    width: 44.w,
-                    height: 44.w,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: fillColor,
-                      border: Border.all(
-                        color: borderColor,
-                        width: hasMealData || isSelected ? 5.w : 2.w,
-                      ),
-                    ),
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          dayName,
-                          style: TextStyle(
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w500,
-                            color: textColor,
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Text(
-                          '$dayNumber',
-                          style: TextStyle(
-                            fontSize: 12.sp,
-                            fontWeight: FontWeight.w500,
-                            color: textColor,
-                          ),
-                        ),
-                      ],
-                    ),
+              child: Container(
+                width: 44.w,
+                height: 44.w,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: fillColor,
+                  border: Border.all(
+                    color: borderColor,
+                    width: 5.w,
                   ),
-                  // Small indicator dot for today
-                  if (isToday && !isSelected)
-                    Container(
-                      margin: EdgeInsets.only(top: 4.h),
-                      width: 6.w,
-                      height: 6.w,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: dayColors[index],
+                ),
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      dayName,
+                      style: TextStyle(
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
+                        color: textColor,
                       ),
                     ),
-                ],
+                    SizedBox(height: 1.h),
+                    Text(
+                      '$dayNumber',
+                      style: TextStyle(
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w500,
+                        color: textColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }),
         ),
       ],
-    ));
+    );
+    });
   }
 
   Widget _buildCaloriesRow(MealTrackingController controller) {
@@ -747,14 +752,13 @@ class MealScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 6.h),
-                Row(
+                Wrap(
+                  spacing: 6.w,
+                  runSpacing: 6.h,
                   children: [
                     _buildMealMacroChip('${meal.calories.round()} kcal'),
-                    SizedBox(width: 6.w),
                     _buildMealMacroChip('Protein ${meal.protein.round()}g'),
-                    SizedBox(width: 6.w),
                     _buildMealMacroChip('Carbs ${meal.carbs.round()}g'),
-                    SizedBox(width: 6.w),
                     _buildMealMacroChip('Fat ${meal.fat.round()}g'),
                   ],
                 ),

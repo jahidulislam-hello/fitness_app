@@ -61,7 +61,7 @@ class MealApiService {
   // Get All Meals API
   Future<Map<String, dynamic>> getAllMeals({
     String foodType = "",
-    required String date,
+    String? date, // Made optional
   }) async {
     try {
       final token = await _getToken();
@@ -69,9 +69,12 @@ class MealApiService {
         throw Exception('No authentication token found');
       }
 
-      final url = Uri.parse(
-          "${ApiConstants.baseUrl}${ApiConstants.getAllMeals}?foodType=$foodType&date=$date"
-      );
+      // Build URL - include date only if provided
+      String urlString = "${ApiConstants.baseUrl}${ApiConstants.getAllMeals}?foodType=$foodType";
+      if (date != null && date.isNotEmpty) {
+        urlString += "&date=$date";
+      }
+      final url = Uri.parse(urlString);
 
       print('🌐 Fetching meals from: $url');
 
