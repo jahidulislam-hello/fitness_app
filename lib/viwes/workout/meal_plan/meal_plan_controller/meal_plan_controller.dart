@@ -23,7 +23,7 @@ class MealTrackingController extends GetxController {
   var weekDates = <DateTime>[].obs;
 
   // Track dates that have meal data
-  var datesWithMealData = <String>{}.obs;
+  var datesWithMealData = <String>[].obs;
 
   // Calories Data
   var dailyCalories = 0.0.obs;
@@ -56,8 +56,12 @@ class MealTrackingController extends GetxController {
     calendarStreakController = CalendarStreakController();
     calorieStreakController = CalorieStreakController();
     _generateWeekDates();
-    loadMealsFromAPI();
-    loadWeekMealDataStatus();
+    _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await loadWeekMealDataStatus();
+    await loadMealsFromAPI();
   }
 
   @override
@@ -67,45 +71,82 @@ class MealTrackingController extends GetxController {
     super.onClose();
   }
 
-  void _generateWeekDates() {
+  void _generateWeekDates({DateTime? centerDate}) {
     weekDates.clear();
-    DateTime today = DateTime.now();
+    DateTime center = centerDate ?? DateTime.now();
 
-    // Generate dates: 3 days before today, today, 3 days after today
+    // Generate dates: 3 days before center, center, 3 days after center
     for (int i = -3; i <= 3; i++) {
-      weekDates.add(today.add(Duration(days: i)));
+      weekDates.add(center.add(Duration(days: i)));
     }
   }
 
-  /// Load meal data status for all week dates
+  /// Load meal data status for all dates from API
   Future<void> loadWeekMealDataStatus() async {
     try {
-      // Load all meals and check which dates have data
+      // Load ALL meals without date filter to get all dates with meal data
       final response = await _apiService.getAllMeals(
         foodType: "",
-        date: _formatDateForAPI(DateTime.now()),
+        // No date parameter - get all meals
       );
 
       if (response['success'] == true && response['data'] != null) {
         final data = response['data'] as List;
-        datesWithMealData.clear();
+
+        // Clear and rebuild the list
+        List<String> newDates = [];
 
         for (var item in data) {
           if (item is Map && item.containsKey('date')) {
             final itemDate = item['date'] as String;
-            final itemDateOnly = itemDate.split('T')[0];
+            // Handle both ISO format (with T) and YYYY-MM-DD format
+            final itemDateOnly = itemDate.contains('T') ? itemDate.split('T')[0] : itemDate;
 
-            // Check if this date has any meals with calories
+            // Add date if it has a meal plan entry with non-empty foods array or calories > 0
+            bool hasValidMeal = false;
+            
+            // Check if this item has meals with foods
+            final mealsList = item['meals'] as List<dynamic>?;
+            if (mealsList != null && mealsList.isNotEmpty) {
+              for (var meal in mealsList) {
+                final foods = meal['foods'] as List<dynamic>?;
+                if (foods != null && foods.isNotEmpty) {
+                  hasValidMeal = true;
+                  break;
+                }
+              }
+            }
+            
+            // Also check if macros have calories
             final macrosData = item['macrosValue'];
             if (macrosData != null) {
               final calories = _toDouble(macrosData['calories']);
               if (calories > 0) {
-                datesWithMealData.add(itemDateOnly);
+                hasValidMeal = true;
               }
+            }
+
+            // Add date if it has valid meal data
+            if (hasValidMeal && !newDates.contains(itemDateOnly)) {
+              newDates.add(itemDateOnly);
+              print('✅ Added date with meal data: $itemDateOnly');
             }
           }
         }
-        print('📅 Dates with meal data: ${datesWithMealData.toList()}');
+
+        // Update the reactive list
+        datesWithMealData.value = newDates;
+        datesWithMealData.refresh(); // Force UI refresh
+
+        print('📅 All dates with meal data: ${datesWithMealData.toList()}');
+        print('📆 Current week dates: ${weekDates.map((d) => _formatDateForAPI(d)).toList()}');
+
+        // Check which week dates have meal data
+        for (var date in weekDates) {
+          final dateStr = _formatDateForAPI(date);
+          final hasMeal = datesWithMealData.contains(dateStr);
+          print('📍 Date $dateStr has meal data: $hasMeal');
+        }
       }
     } catch (e) {
       print('❌ Error loading week meal status: $e');
@@ -115,12 +156,27 @@ class MealTrackingController extends GetxController {
   /// Check if a date has meal data
   bool dateHasMealData(DateTime date) {
     final dateString = _formatDateForAPI(date);
-    return datesWithMealData.contains(dateString);
+    final result = datesWithMealData.contains(dateString);
+    print('🔍 Checking date $dateString has meal: $result');
+    return result;
   }
 
-  void selectDate(DateTime date) {
+  Future<void> selectDate(DateTime date) async {
     selectedDate.value = date;
-    loadMealsFromAPI();
+
+    // Check if selected date is in current week view
+    bool isInCurrentWeek = weekDates.any((d) =>
+        d.year == date.year && d.month == date.month && d.day == date.day);
+
+    // If not in current week, regenerate week dates centered on selected date
+    if (!isInCurrentWeek) {
+      _generateWeekDates(centerDate: date);
+      // Reload meal data status for the new week
+      await loadWeekMealDataStatus();
+    }
+
+    // Reload meals for the selected date (this also updates weekly calories)
+    await loadMealsFromAPI();
   }
 
   // Format date for API (YYYY-MM-DD)
@@ -573,16 +629,25 @@ class MealTrackingController extends GetxController {
     }
   }
 
-  // String Getters
+  // String Getters - use selected date
   String get todayDateString {
-    DateTime today = DateTime.now();
-    return 'Dec-${today.day}';
+    final date = selectedDate.value;
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    return '${months[date.month - 1]}-${date.day}';
   }
 
   String get weekDateRangeString {
-    DateTime today = DateTime.now();
-    DateTime sevenDaysAgo = today.subtract(Duration(days: 6));
-    return 'Dec ${sevenDaysAgo.day}-${today.day}';
+    final date = selectedDate.value;
+    final sevenDaysAgo = date.subtract(Duration(days: 6));
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+    // If same month
+    if (date.month == sevenDaysAgo.month) {
+      return '${months[date.month - 1]} ${sevenDaysAgo.day}-${date.day}';
+    } else {
+      // Different months
+      return '${months[sevenDaysAgo.month - 1]} ${sevenDaysAgo.day}-${months[date.month - 1]} ${date.day}';
+    }
   }
 
   // Progress Calculations
