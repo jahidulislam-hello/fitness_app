@@ -3,10 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:gym_cheloper/controller/auth/auth_controller.dart';
 import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/utils/app_colors.dart';
 import 'package:gym_cheloper/utils/app_images.dart';
-import 'package:gym_cheloper/viwes/workout/settings/edit_profile/edit_profile_screen/edit_profile_screen.dart';
 import 'package:gym_cheloper/viwes/workout/subscription_packages/subscription_packages_screen/Profile_subscription_packages_screen.dart';
 import '../settings_controller/settings_profile_controller.dart';
 
@@ -240,6 +240,8 @@ class SettingsProfileScreen extends StatelessWidget {
                           height: 24,
                         ),
                         onTap: () {
+                          // Ensure AuthController is registered
+                          Get.lazyPut<AuthController>(() => AuthController(), fenix: true);
                           showDialog(
                             context: context,
                             barrierDismissible: true,
@@ -343,6 +345,10 @@ class LogoutPopup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthController authController = Get.isRegistered<AuthController>() 
+        ? Get.find<AuthController>() 
+        : Get.put(AuthController());
+
     return Dialog(
       backgroundColor: Colors.white,
       insetPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
@@ -367,7 +373,7 @@ class LogoutPopup extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () {
-                      Get.back();
+                      Navigator.of(context).pop();
                     },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.grey),
@@ -387,18 +393,16 @@ class LogoutPopup extends StatelessWidget {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton(
-                    // onPressed: () async {
-                    //   await SharedPreferencesHelper.clearAllData();
-                    //   Get.back();
-                    //   Get.offAll(() => LoginScreen());
-                    // },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(100), // pill shape
                       ),
                     ),
-                    onPressed: () {  },
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      await authController.logout();
+                    },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 12),
                       child: Text(

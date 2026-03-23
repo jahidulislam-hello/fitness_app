@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import '../../helpers/helpers.dart';
 import '../../routes/routes_name.dart';
+import '../../routes/goroutes.dart';
 import 'package:http/http.dart' as http;
 import '../../services/services.dart';
 import '../../utils/utils.dart';
@@ -269,6 +270,21 @@ class AuthController extends GetxController {
       isResetLoading(false);
       ToastMessageHelper.errorMessageShowToster(response.body['message']);
     }
+  }
+
+  ///=================== Logout ======================
+  Future<void> logout() async {
+    // Clear all stored data
+    await PrefsHelper.clearAll();
+    
+    // Close all snackbars and dialogs
+    Get.closeAllSnackbars();
+    
+    // Small delay to ensure cleanup completes
+    await Future.delayed(const Duration(milliseconds: 100));
+    
+    // Navigate to login screen using GoRouter
+    AppRoutes.router.go(RouteNames.signInScreen);
   }
 
 }

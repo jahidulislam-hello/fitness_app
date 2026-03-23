@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:get/get.dart';
+import 'package:gym_cheloper/routes/routes_name.dart';
 import 'package:gym_cheloper/services/api_constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,6 +10,17 @@ class WorkoutApiService {
   Future<String?> _getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
+  }
+
+  // Handle 401 Unauthorized - redirect to login
+  void _handleUnauthorized() {
+    // Clear token
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.remove('token');
+      prefs.remove('userId');
+    });
+    // Navigate to login screen
+    Get.offAllNamed(RouteNames.signInScreen);
   }
 
   // Get Workout Log API
@@ -32,6 +45,12 @@ class WorkoutApiService {
 
       print('📡 Response Status: ${response.statusCode}');
       print('📦 Response Body: ${response.body}');
+
+      if (response.statusCode == 401) {
+        print('⚠️ Token expired, redirecting to login');
+        _handleUnauthorized();
+        throw Exception('Token has expired');
+      }
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
