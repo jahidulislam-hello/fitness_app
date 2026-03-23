@@ -38,13 +38,16 @@ class WorkoutController extends GetxController {
       }
     } catch (e) {
       print('❌ Error in loadWorkoutLog: $e');
-      Get.snackbar(
-        'Error',
-        'Failed to load workouts: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red[100],
-        colorText: Colors.red[900],
-      );
+      // Only show snackbar if we're still mounted and have context
+      if (Get.context != null) {
+        Get.snackbar(
+          'Error',
+          'Failed to load workouts. Please login again.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[900],
+        );
+      }
     } finally {
       isLoading.value = false;
       print('🏁 Loading complete. Total workouts: ${workouts.length}');
