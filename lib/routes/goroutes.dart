@@ -6,6 +6,7 @@ import '../viwes/workout/buy_package/buy_package_screen/buy_package_screen.dart'
 
 import '../viwes/workout/choose_language/choose_laguage_screen/choose_language_screen.dart';
 import '../viwes/workout/exercise/exercise_screen/exercise_screen.dart';
+import '../viwes/workout/exercise/exercise_history_screen/exercise_history_screen.dart';
 import '../viwes/workout/meal_plan/meal_plan_screen/meal_plan_screen.dart';
 import '../viwes/workout/settings/change_password/change_password.dart';
 import '../viwes/workout/settings/settings/settings_screen/settings_profile_screen.dart';
@@ -120,6 +121,17 @@ class AppRoutes {
         builder: (context, state) {
           final extra = state.extra as Map<String, dynamic>?;
           return ExerciseScreen(
+            workoutId: extra?['workoutId'],
+            trainingName: extra?['trainingName'],
+          );
+        },
+      ),
+      GoRoute(
+        path: '/exercise-history',
+        name: 'exerciseHistory',
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return ExerciseHistoryScreen(
             workoutId: extra?['workoutId'],
             trainingName: extra?['trainingName'],
           );
