@@ -229,6 +229,15 @@ class ExerciseScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 ListTile(
+                                  onTap: () {
+                                    context.push(
+                                      '/exercise-history',
+                                      extra: {
+                                        'workoutId': controller.workoutId.value,
+                                        'trainingName': controller.trainingName.value,
+                                      },
+                                    );
+                                  },
                                   contentPadding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
                                   leading: Container(
                                     width: 42.w,
