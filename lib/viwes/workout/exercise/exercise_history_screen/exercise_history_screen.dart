@@ -211,6 +211,7 @@ class ExerciseHistoryScreen extends StatelessWidget {
                                                   backgroundColor: Colors.green,
                                                   colorText: Colors.white,
                                                   duration: const Duration(seconds: 2),
+
                                                 );
                                               },
                                             );

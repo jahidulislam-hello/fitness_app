@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/daily_marcos/daily_macros_controller.dart';
+import 'package:gym_cheloper/viwes/screens/auths/info/calculate_macros.dart';
 
 
 class DailyMacroSheet extends StatelessWidget {
-  DailyMacroSheet({super.key});
+  DailyMacroSheet({
+    super.key,
+    required this.calories,
+    required this.carbs,
+    required this.protein,
+    required this.fat,
+    required this.carbsGoal,
+    required this.proteinGoal,
+    required this.fatGoal,
+    required this.caloriesGoal,
+  });
 
-  final controller = Get.put(DailyMacroController());
+  final double calories;
+  final double carbs;
+  final double protein;
+  final double fat;
+  final double caloriesGoal;
+  final double carbsGoal;
+  final double proteinGoal;
+  final double fatGoal;
 
   @override
   Widget build(BuildContext context) {
+    // Calculate percentages
+    final carbsPercent = carbsGoal > 0 ? (carbs / carbsGoal * 100).clamp(0.0, 100.0).toDouble() : 0.0;
+    final proteinPercent = proteinGoal > 0 ? (protein / proteinGoal * 100).clamp(0.0, 100.0).toDouble() : 0.0;
+    final fatPercent = fatGoal > 0 ? (fat / fatGoal * 100).clamp(0.0, 100.0).toDouble() : 0.0;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
       decoration: const BoxDecoration(
@@ -48,35 +71,35 @@ class DailyMacroSheet extends StatelessWidget {
           /// Calories Row
           _infoRow(
             title: "Calories",
-            value: "2200 kCal",
+            value: "${caloriesGoal.toStringAsFixed(0)} kCal",
           ),
 
           const Divider(height: 26),
 
           /// Carbs
-          Obx(() => _macroRow(
+          _macroRow(
             title: "Carbs",
-            percent: controller.carbsPercent.value,
-            value: "${controller.carbsGram.value.toInt()} g",
-          )),
+            percent: carbsPercent,
+            value: "${carbs.toStringAsFixed(1)} g",
+          ),
 
           const Divider(height: 26),
 
           /// Protein
-          Obx(() => _macroRow(
+          _macroRow(
             title: "Protein",
-            percent: controller.proteinPercent.value,
-            value: "${controller.proteinGram.value.toInt()} g",
-          )),
+            percent: proteinPercent,
+            value: "${protein.toStringAsFixed(1)} g",
+          ),
 
           const Divider(height: 26),
 
           /// Fat
-          Obx(() => _macroRow(
+          _macroRow(
             title: "Fat",
-            percent: controller.fatPercent.value,
-            value: "${controller.fatGram.value.toInt()} g",
-          )),
+            percent: fatPercent,
+            value: "${fat.toStringAsFixed(1)} g",
+          ),
 
           const SizedBox(height: 28),
 
@@ -85,7 +108,7 @@ class DailyMacroSheet extends StatelessWidget {
             width: double.infinity,
             height: 54,
             child: ElevatedButton(
-              onPressed: controller.done,
+              onPressed: () => Navigator.of(context).pop(),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black,
                 elevation: 0,
@@ -110,7 +133,13 @@ class DailyMacroSheet extends StatelessWidget {
             width: double.infinity,
             height: 54,
             child: OutlinedButton(
-              onPressed: controller.calculateMacros,
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CalculateMacros()),
+                );
+              },
               style: OutlinedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),

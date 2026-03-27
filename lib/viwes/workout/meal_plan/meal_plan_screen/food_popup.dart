@@ -9,6 +9,7 @@ class FoodPopup extends StatefulWidget {
   final double baseFat;
   final String initialServing;
   final String initialQuantity;
+  final String? defaultMealTime;
   final Function({
     required String foodName,
     required String quantity,
@@ -26,6 +27,7 @@ class FoodPopup extends StatefulWidget {
     required this.baseFat,
     required this.initialServing,
     required this.initialQuantity,
+    this.defaultMealTime,
     required this.onAddFood,
   });
 
@@ -52,6 +54,15 @@ class _FoodPopupState extends State<FoodPopup> {
     print('🍔 FoodPopup initState - Food: ${widget.foodName}');
     quantityController = TextEditingController(text: widget.initialQuantity);
     servingController = TextEditingController(text: widget.initialServing);
+
+    // Set default meal time from parameter if provided
+    if (widget.defaultMealTime != null) {
+      final normalizedMealTime = widget.defaultMealTime!.toLowerCase();
+      // Only set if it's a valid meal time in the list
+      if (mealTimes.contains(normalizedMealTime)) {
+        selectedMealTime = normalizedMealTime;
+      }
+    }
 
     // Initial calculation
     _recalculateNutrition();

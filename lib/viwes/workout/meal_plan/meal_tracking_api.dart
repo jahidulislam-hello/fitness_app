@@ -103,10 +103,51 @@ class MealApiService {
     }
   }
 
+  // Get Macros and Water Intake API
+  Future<Map<String, dynamic>> getMacrosWaterIntake({
+    required String date,
+  }) async {
+    try {
+      final token = await _getToken();
+      if (token == null) {
+        throw Exception('No authentication token found');
+      }
+
+      final url = Uri.parse(
+        "${ApiConstants.baseUrl}/meals/get-macros-water-intake?date=$date"
+      );
+
+      print('💧 Fetching macros & water intake from: $url');
+
+      final response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $token",
+          "Accept": "application/json",
+        },
+      );
+
+      print('📡 Response Status: ${response.statusCode}');
+      print('📦 Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        print('✅ Successfully fetched macros & water intake');
+        return jsonResponse;
+      } else {
+        print('❌ API Error: ${response.statusCode} - ${response.body}');
+        throw Exception('Failed to get macros & water intake: ${response.body}');
+      }
+    } catch (e) {
+      print('💥 Exception in getMacrosWaterIntake: $e');
+      throw Exception('Error getting macros & water intake: $e');
+    }
+  }
+
   // Add Water Intake API
   Future<Map<String, dynamic>> addWaterIntake({
     required String date,
-    required double waterIntake,
+    required Map<String, dynamic> macrosValue,
   }) async {
     try {
       final token = await _getToken();
@@ -118,10 +159,10 @@ class MealApiService {
 
       final body = {
         "date": date,
-        "waterIntake": waterIntake,
+        "macrosValue": macrosValue,
       };
 
-      print('💧 Adding water intake: $waterIntake L for date: $date');
+      print('💧 Adding water intake: ${macrosValue['waterIntake']} L for date: $date');
 
       final response = await http.post(
         url,

@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gym_cheloper/utils/app_icons.dart';
-
 import '../../../../routes/routes_name.dart';
 import '../../../widgets/widgets.dart';
 
@@ -16,46 +14,55 @@ class InfoCongratulationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:
-    SafeArea(
-        child:
-        SingleChildScrollView(
+      body: SafeArea(
+        child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 40.h,),
+              SizedBox(height: 20.h),
+              // Back Button
+              Align(
+                alignment: Alignment.topLeft,
+                child: InkWell(
+                  onTap: () => context.go(RouteNames.customNavBar),
+                  child: const Icon(Icons.arrow_back_ios, size: 24),
+                ),
+              ),
+              SizedBox(height: 20.h),
               Center(child: SvgPicture.asset(AppIcons.congraIcon)),
-              SizedBox(height: 20.h,),
-              CustomText(text: "Congratulations your custom plan is ready",fontsize: 20.sp,),
-              SizedBox(height: 30.h,),
-              CustomText(text: "You should lose:",),
-              SizedBox(height: 20.h,),
+              SizedBox(height: 20.h),
+              CustomText(
+                text: "Congratulations\nyour custom plan is ready",
+                fontsize: 20.sp,
+              ),
+              SizedBox(height: 30.h),
+              CustomText(text: "You should lose:"),
+              SizedBox(height: 20.h),
               Align(
                 alignment: Alignment.center,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 40.w,right: 40.w),
+                  padding: EdgeInsets.only(left: 40.w, right: 40.w),
                   child: CustomButtonCommon(
                     color: Colors.black,
                     title: '6 kg by September 12'.tr,
                     onpress: () {
-                      //  context.pushNamed(RouteNames.calculateMacros);
-                      // Validate and trigger sign up
-          
+                      context.go(RouteNames.customNavBar);
                     },
                   ),
                 ),
               ),
-              SizedBox(height: 20.h,),
-          
-              CustomText(text: "Plan based on the following sources, among \nother peer-reviewed medical studies:",),
-              SizedBox(height: 10.h,),
+              SizedBox(height: 20.h),
+              CustomText(
+                text:
+                    "Plan based on the following sources, among \nother peer-reviewed medical studies:",
+              ),
+              SizedBox(height: 10.h),
               Center(child: BulletPointList()),
-          
               SizedBox(height: 20.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildMacroProgress(800, 2100, Colors.black, "Calories"),
-                  SizedBox(width: 40.w,),
+                  SizedBox(width: 40.w),
                   _buildMacroProgress(800, 2400, Colors.black, "Protein"),
                 ],
               ),
@@ -63,63 +70,56 @@ class InfoCongratulationScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildMacroProgress(800, 2100, Colors.black, "Carbs"),
-                  SizedBox(width: 40.w,),
+                  SizedBox(width: 40.w),
                   _buildMacroProgress(800, 2400, Colors.black, "Fat"),
                 ],
               ),
               SizedBox(height: 20.h),
-              CustomText(text: "You can always fully customize your macros",),
+              CustomText(text: "You can always fully customize your macros"),
               SizedBox(height: 10.h),
               Align(
                 alignment: Alignment.center,
                 child: CustomButtonCommon(
                   title: 'Start your Journey'.tr,
                   onpress: () {
-                   context.pushNamed(RouteNames.subscriptionScreen);
-                    // Validate and trigger sign up
-          
+                    context.go(RouteNames.subscriptionScreen);
                   },
                 ),
               ),
-              SizedBox(height: 20.h,),
-          
+              SizedBox(height: 20.h),
             ],
           ),
-        )
-    ));
+        ),
+      ),
+    );
   }
 
-  Widget _buildMacroProgress(int value, int total, Color color,String dailyWeek) {
+  Widget _buildMacroProgress(int value, int total, Color color, String dailyWeek) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SizedBox(height: 20.h,),
-
-        SizedBox(height: 20.h,),
+        SizedBox(height: 20.h),
         CircularPercentIndicator(
           radius: 50.0,
           lineWidth: 14.0,
-          percent: value / total, // Fill based on the value and total
+          percent: value / total,
           center: Text(
-            "$value", // Show only the current value
+            "$value",
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.center,
           ),
-          progressColor: color, // Color of the progress circle
-          backgroundColor: color.withOpacity(0.2), // Subtle background circle
-          circularStrokeCap: CircularStrokeCap.round, // Optional: Round the edges of the progress stroke
+          progressColor: color,
+          backgroundColor: color.withOpacity(0.2),
+          circularStrokeCap: CircularStrokeCap.round,
         ),
-
-
         SizedBox(height: 10.h),
-        Text(dailyWeek,style: TextStyle(fontSize: 10.sp,),),
+        Text(dailyWeek, style: TextStyle(fontSize: 10.sp)),
       ],
     );
   }
-
 }
 
 class BulletPointList extends StatelessWidget {
@@ -130,7 +130,7 @@ class BulletPointList extends StatelessWidget {
     "National Institutes of Health",
   ];
 
-   BulletPointList({super.key});
+  BulletPointList({super.key});
 
   @override
   Widget build(BuildContext context) {

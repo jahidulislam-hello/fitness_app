@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CreateFoodPopup extends StatefulWidget {
-  const CreateFoodPopup({Key? key}) : super(key: key);
+  final String? defaultMealTime;
+  
+  const CreateFoodPopup({Key? key, this.defaultMealTime}) : super(key: key);
 
   @override
   State<CreateFoodPopup> createState() => _CreateFoodPopupState();
@@ -19,6 +21,21 @@ class _CreateFoodPopupState extends State<CreateFoodPopup> {
   TextEditingController(text: '350 Cal');
   final TextEditingController _fatController =
   TextEditingController(text: '350 Cal');
+  
+  String _selectedMealTime = 'breakfast';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.defaultMealTime != null) {
+      String mealTime = widget.defaultMealTime!;
+      // Convert "snack number 1" or "snack number 2" to "snack"
+      if (mealTime.contains('snack')) {
+        mealTime = 'snack';
+      }
+      _selectedMealTime = mealTime;
+    }
+  }
 
   @override
   void dispose() {
@@ -108,6 +125,51 @@ class _CreateFoodPopupState extends State<CreateFoodPopup> {
                   ),
                   const SizedBox(height: 20),
 
+                  // Meal Time Dropdown
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Meal Time',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xFF666666),
+                        ),
+                      ),
+                      DropdownButton<String>(
+                        value: _selectedMealTime,
+                        underline: const SizedBox(),
+                        items: ['breakfast', 'lunch', 'dinner', 'snack']
+                            .map((time) => DropdownMenuItem(
+                                  value: time,
+                                  child: Text(
+                                    time[0].toUpperCase() + time.substring(1),
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF333333),
+                                    ),
+                                  ),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() {
+                              _selectedMealTime = value;
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  const Divider(
+                    color: Color(0xFFE0E0E0),
+                    thickness: 1,
+                    height: 1,
+                  ),
+                  const SizedBox(height: 20),
+
                   // Serving weight Field
                   _buildInlineField('Serving weight', _servingWeightController, '150g'),
                   const SizedBox(height: 16),
@@ -173,9 +235,9 @@ class _CreateFoodPopupState extends State<CreateFoodPopup> {
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Add In Food',
-                    style: TextStyle(
+                  child: Text(
+                    'Add in ${_selectedMealTime[0].toUpperCase() + _selectedMealTime.substring(1)}',
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
@@ -248,13 +310,13 @@ class _CreateFoodPopupState extends State<CreateFoodPopup> {
 }
 
 // Example usage:
-void showCreateFoodPopup(BuildContext context) {
+void showCreateFoodPopup(BuildContext context, {String? timeName}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
-      return const CreateFoodPopup();
+      return CreateFoodPopup(defaultMealTime: timeName);
     },
   );
 }

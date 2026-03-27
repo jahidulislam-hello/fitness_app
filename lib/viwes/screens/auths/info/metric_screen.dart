@@ -21,6 +21,8 @@ class _MetricScreenState extends State<MetricScreen> {
   void initState() {
     super.initState();
     calculateController = widget.controller;
+    // Load Metric profile data
+    calculateController.loadProfileData(unitSystem: "Metric");
   }
 
   @override
