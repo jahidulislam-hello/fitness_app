@@ -86,7 +86,7 @@ class WorkoutApiService {
           "Content-Type": "application/json",
         },
         body: jsonEncode({
-          "workoutId": workoutId,
+          "id": workoutId,
         }),
       );
 

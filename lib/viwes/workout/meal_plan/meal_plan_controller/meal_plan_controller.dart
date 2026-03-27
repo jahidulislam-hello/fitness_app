@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_tracking_api.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/add_meal_popup.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_constants.dart';
+import 'package:gym_cheloper/viwes/workout/meal_plan/meal_type_selector.dart';
 import 'package:gym_cheloper/viwes/workout/calender_Strek/calender_strek.dart';
 import 'package:gym_cheloper/viwes/workout/calender_Strek/calorieStrekCounter.dart';
 import 'package:intl/intl.dart';
@@ -61,6 +62,7 @@ class MealTrackingController extends GetxController {
 
   Future<void> _initializeData() async {
     await loadWeekMealDataStatus();
+    await loadMacrosWaterIntake();
     await loadMealsFromAPI();
   }
 
@@ -161,6 +163,30 @@ class MealTrackingController extends GetxController {
     return result;
   }
 
+  /// ✅ Load Macros and Water Intake from API
+  Future<void> loadMacrosWaterIntake() async {
+    try {
+      final dateString = _formatDateForAPI(selectedDate.value);
+      print('💧 Loading macros & water intake for date: $dateString');
+
+      final response = await _apiService.getMacrosWaterIntake(date: dateString);
+
+      if (response['success'] == true && response['data'] != null) {
+        final data = response['data'] as List;
+        if (data.isNotEmpty) {
+          final macrosData = data[0]['macrosValue'];
+          if (macrosData != null) {
+            waterIntake.value = _toDouble(macrosData['waterIntake']);
+            print('✅ Water intake loaded: ${waterIntake.value}L');
+          }
+        }
+      }
+    } catch (e) {
+      print('❌ Error loading macros & water intake: $e');
+      // Don't show error - water intake will default to 0
+    }
+  }
+
   Future<void> selectDate(DateTime date) async {
     selectedDate.value = date;
 
@@ -175,6 +201,8 @@ class MealTrackingController extends GetxController {
       await loadWeekMealDataStatus();
     }
 
+    // Reload water intake for the selected date
+    await loadMacrosWaterIntake();
     // Reload meals for the selected date (this also updates weekly calories)
     await loadMealsFromAPI();
   }
@@ -506,11 +534,7 @@ class MealTrackingController extends GetxController {
 
   void addNewMeal(BuildContext context) {
     final dateString = _formatDateForAPI(selectedDate.value);
-    showDialog(
-      context: context,
-      builder: (context) => AddMealPopup(selectedDate: dateString),
-      barrierDismissible: true,
-    );
+    showMealTypeSelector(context, dateString);
   }
 
   /// ✅ Swipe Actions
@@ -556,18 +580,26 @@ class MealTrackingController extends GetxController {
       // Optimistically update UI
       waterIntake.value += 1.0;
 
-      // Call API to save
+      // Call API to save with full macrosValue object
       final dateString = _formatDateForAPI(selectedDate.value);
+      final macrosValue = {
+        "calories": dailyCalories.value,
+        "carbs": carbs.value,
+        "protein": protein.value,
+        "fat": fat.value,
+        "waterIntake": waterIntake.value,
+      };
+
       final response = await _apiService.addWaterIntake(
         date: dateString,
-        waterIntake: waterIntake.value,
+        macrosValue: macrosValue,
       );
 
       if (response['success'] == true) {
         // Update from API response to ensure consistency
-        final macrosData = response['data']?['macrosValue'];
-        if (macrosData != null) {
-          waterIntake.value = _toDouble(macrosData['waterIntake']);
+        final responseData = response['data']?['macrosValue'];
+        if (responseData != null) {
+          waterIntake.value = _toDouble(responseData['waterIntake']);
         }
 
         print('✅ Water intake incremented: ${waterIntake.value}L');
@@ -598,18 +630,26 @@ class MealTrackingController extends GetxController {
       // Optimistically update UI
       waterIntake.value -= 1.0;
 
-      // Call API to save
+      // Call API to save with full macrosValue object
       final dateString = _formatDateForAPI(selectedDate.value);
+      final macrosValue = {
+        "calories": dailyCalories.value,
+        "carbs": carbs.value,
+        "protein": protein.value,
+        "fat": fat.value,
+        "waterIntake": waterIntake.value,
+      };
+
       final response = await _apiService.addWaterIntake(
         date: dateString,
-        waterIntake: waterIntake.value,
+        macrosValue: macrosValue,
       );
 
       if (response['success'] == true) {
         // Update from API response to ensure consistency
-        final macrosData = response['data']?['macrosValue'];
-        if (macrosData != null) {
-          waterIntake.value = _toDouble(macrosData['waterIntake']);
+        final responseData = response['data']?['macrosValue'];
+        if (responseData != null) {
+          waterIntake.value = _toDouble(responseData['waterIntake']);
         }
 
         print('✅ Water intake decremented: ${waterIntake.value}L');

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:gym_cheloper/viwes/workout/settings/edit_profile/edit_profile_screen/edit_profile_screen.dart';
 import '../viwes/screens/screens.dart';
+import '../viwes/screens/auths/info/info_congratulation_screen.dart';
 import '../viwes/workout/buy_package/buy_package_screen/buy_package_screen.dart';
 
 import '../viwes/workout/choose_language/choose_laguage_screen/choose_language_screen.dart';
@@ -107,6 +108,12 @@ class AppRoutes {
         path: RouteNames.calculateMacros,
         name: RouteNames.calculateMacros,
         builder: (context, state) => CalculateMacros(),
+      ),
+      // Info Congratulation Screen
+      GoRoute(
+        path: RouteNames.infoCongratulationScreen,
+        name: RouteNames.infoCongratulationScreen,
+        builder: (context, state) => const InfoCongratulationScreen(),
       ),
       // Custom NavBar / Dashboard
       GoRoute(

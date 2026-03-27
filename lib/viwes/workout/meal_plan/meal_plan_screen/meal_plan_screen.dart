@@ -4,6 +4,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/calender_Strek/calender_strek.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/meal_plan_controller.dart';
+import 'package:gym_cheloper/viwes/workout/meal_plan/add_meal_popup.dart';
+import 'package:gym_cheloper/daily_marcos/daily_macros_calculate.dart';
 import 'package:intl/intl.dart';
 
 class MealScreen extends StatelessWidget {
@@ -43,7 +45,7 @@ class MealScreen extends StatelessWidget {
                     SizedBox(height: 24.h),
 
                     // Calories Circle Row
-                    _buildCaloriesRow(controller),
+                    _buildCaloriesRow(context, controller),
 
                     SizedBox(height: 24.h),
 
@@ -285,69 +287,88 @@ class MealScreen extends StatelessWidget {
     });
   }
 
-  Widget _buildCaloriesRow(MealTrackingController controller) {
+  Widget _buildCaloriesRow(BuildContext context, MealTrackingController controller) {
     return Obx(() => Row(
       children: [
         // Daily Calories
         Expanded(
-          child: Column(
-            children: [
-              Text(
-                controller.todayDateString,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black54,
+          child: GestureDetector(
+            onTap: () {
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => DailyMacroSheet(
+                  calories: controller.dailyCalories.value,
+                  caloriesGoal: controller.dailyCaloriesGoal.value,
+                  carbs: controller.carbs.value,
+                  protein: controller.protein.value,
+                  fat: controller.fat.value,
+                  carbsGoal: controller.carbsGoal.value,
+                  proteinGoal: controller.proteinGoal.value,
+                  fatGoal: controller.fatGoal.value,
                 ),
-              ),
-              SizedBox(height: 8.h),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: 72.w,
-                    height: 72.w,
-                    child: CircularProgressIndicator(
-                      value: controller.dailyCaloriesPercentage / 100,
-                      strokeWidth: 12.w,
-                      backgroundColor: Colors.grey[200],
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xffFF5252)),
+              );
+            },
+            child: Column(
+              children: [
+                Text(
+                  controller.todayDateString,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black54,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    SizedBox(
+                      width: 72.w,
+                      height: 72.w,
+                      child: CircularProgressIndicator(
+                        value: controller.dailyCaloriesPercentage / 100,
+                        strokeWidth: 12.w,
+                        backgroundColor: Colors.grey[200],
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xffFF5252)),
+                      ),
                     ),
-                  ),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '${controller.dailyCalories.value.toStringAsFixed(0)}',
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xffFF5252),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '${controller.dailyCalories.value.toStringAsFixed(0)}',
+                          style: TextStyle(
+                            fontSize: 20.sp,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xffFF5252),
+                          ),
                         ),
-                      ),
-                      Text(
-                        '/${controller.dailyCaloriesGoal.value.toStringAsFixed(0)}',
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: Colors.black54,
+                        Text(
+                          '/${controller.dailyCaloriesGoal.value.toStringAsFixed(0)}',
+                          style: TextStyle(
+                            fontSize: 10.sp,
+                            color: Colors.black54,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                'Daily\nCalories',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                  height: 1.2,
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                SizedBox(height: 8.h),
+                Text(
+                  'Daily\nCalories',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11.sp,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
 
@@ -766,7 +787,7 @@ class MealScreen extends StatelessWidget {
             ),
             children: [
               // Expanded content goes here
-              _buildExpandedContent(controller, meal, index),
+              _buildExpandedContent(context, controller, meal, index),
             ],
           ),
         ),
@@ -775,7 +796,7 @@ class MealScreen extends StatelessWidget {
   }
 
 // Add this method to build the expanded content
-  Widget _buildExpandedContent(MealTrackingController controller, meal, int index) {
+  Widget _buildExpandedContent(BuildContext context, MealTrackingController controller, meal, int index) {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(12.w),
@@ -845,12 +866,12 @@ class MealScreen extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
-                // Add your add food logic here
-                // controller.addFoodToMeal(index);
+                final dateString = _formatDateForAPI(controller.selectedDate.value);
+                showAddMealPopup(context, dateString, mealType: meal.name);
               },
               icon: Icon(Icons.add, size: 18.sp),
               label: Text(
-                'Add Food',
+                'Manual Entry',
                 style: TextStyle(fontSize: 14.sp),
               ),
               style: ElevatedButton.styleFrom(
@@ -924,6 +945,10 @@ class MealScreen extends StatelessWidget {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     return '${date.day} ${months[date.month - 1]}';
+  }
+
+  String _formatDateForAPI(DateTime date) {
+    return DateFormat('yyyy-MM-dd').format(date);
   }
 
   String _getDayNameShort(int weekday) {

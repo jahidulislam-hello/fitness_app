@@ -15,6 +15,7 @@ class AddMealController extends GetxController {
 
   // Search
   var searchController = TextEditingController();
+  var searchFocusNode = FocusNode();
   var searchQuery = ''.obs;
   Timer? _debounceTimer;
 
@@ -30,6 +31,12 @@ class AddMealController extends GetxController {
 
   // Selected date from parent controller
   String selectedDate = '';
+  
+  // Selected meal type (Breakfast, Lunch, Dinner, etc.)
+  var selectedMealType = 'Breakfast'.obs;
+  
+  // Store popup context for showing dialogs
+  BuildContext? popupContext;
 
   @override
   void onInit() {
@@ -43,6 +50,7 @@ class AddMealController extends GetxController {
   @override
   void onClose() {
     searchController.dispose();
+    searchFocusNode.dispose();
     _debounceTimer?.cancel();
     super.onClose();
   }
@@ -350,7 +358,7 @@ class AddMealController extends GetxController {
   }
 
   /// Get detailed nutrition info from Nutritionix
-  Future<void> selectSearchFood(SearchFoodItem item, BuildContext context) async {
+  Future<void> selectSearchFood(SearchFoodItem item) async {
     try {
       print('🔍 selectSearchFood called for: ${item.foodName}');
 
@@ -391,9 +399,9 @@ class AddMealController extends GetxController {
           print('   Carbs: ${foodData['nf_total_carbohydrate']}');
           print('   Fat: ${foodData['nf_total_fat']}');
 
-          // Show dialog to add this food to a meal time
+          // Show dialog to add this food to a meal time using stored popupContext
           _showAddFoodDialog(
-            context: context,
+            context: popupContext!,
             foodName: item.foodName,
             calories: foodData['nf_calories']?.toDouble() ?? 0.0,
             protein: foodData['nf_protein']?.toDouble() ?? 0.0,
@@ -431,11 +439,33 @@ class AddMealController extends GetxController {
     print('   Quantity: $quantity, Serving: $serving');
 
     try {
+      // Store the context for later use
+      popupContext = context;
+      
+      // Use the stored popupContext for showing dialogs
+      BuildContext? dialogContext = popupContext;
+      
+      if (dialogContext == null) {
+        print('❌ No valid context available for dialog');
+        Get.snackbar(
+          'Error',
+          'Unable to show food dialog. Please try again.',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        return;
+      }
+      
       showModalBottomSheet(
-        context: context,
+        context: dialogContext,
         isScrollControlled: true,
         backgroundColor: Colors.transparent,
         builder: (BuildContext context) {
+          // Convert selectedMealType to lowercase format expected by FoodPopup
+          String mealTimeForPopup = selectedMealType.value.toLowerCase();
+          if (mealTimeForPopup.contains('snack')) {
+            mealTimeForPopup = 'snack';
+          }
+          
           return FoodPopup(
             foodName: foodName,
             baseCalories: calories,
@@ -444,6 +474,7 @@ class AddMealController extends GetxController {
             baseFat: fat,
             initialServing: serving,
             initialQuantity: quantity,
+            defaultMealTime: mealTimeForPopup,
             onAddFood: ({
               required String foodName,
               required String quantity,
@@ -451,7 +482,8 @@ class AddMealController extends GetxController {
               required String timeName,
               required Map<String, dynamic> nutritionValue,
             }) async {
-              Navigator.of(context).pop(); // Close FoodPopup
+              // Close FoodPopup using the context from builder
+              Navigator.of(context).pop();
 
               // Show loading
               isLoading.value = true;
@@ -469,7 +501,11 @@ class AddMealController extends GetxController {
                 );
 
                 isLoading.value = false;
-                Navigator.of(context).pop(); // Close AddMealPopup
+                
+                // Close AddMealPopup using Get.back() after API call completes
+                if (Get.key.currentState != null) {
+                  Get.back();
+                }
 
                 // Refresh parent controller
                 try {

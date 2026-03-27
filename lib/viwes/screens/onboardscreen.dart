@@ -79,71 +79,77 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: sizeW * .12),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // CarouselSlider Implementation
-                    CarouselSlider(
-                      options: CarouselOptions(
-                        height: 380.h, // You can change the height based on your design
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: true,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            currentPage = index;
-                          });
-                        },
-                      ),
-                      items: onboardingData.map((data) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20.0),
-                              child: Column(
-                                children: [
-                                  Image.asset(
-                                    data["onboardImage"]!,
-                                    width: 405.w,
-                                    height: 320.h,
-                                    fit: BoxFit.contain,
-                                  ),
-                                ],
-                              ),
-                            );
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // CarouselSlider Implementation
+                      CarouselSlider(
+                        options: CarouselOptions(
+                          height: 380.h,
+                          autoPlay: true,
+                          enlargeCenterPage: true,
+                          enableInfiniteScroll: true,
+                          viewportFraction: 1,
+                          onPageChanged: (index, reason) {
+                            setState(() {
+                              currentPage = index;
+                            });
                           },
-                        );
-                      }).toList(),
-                    ),
+                        ),
+                        items: onboardingData.map((data) {
+                          return Builder(
+                            builder: (BuildContext context) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                child: Column(
+                                  children: [
+                                    Image.asset(
+                                      data["onboardImage"]!,
+                                      width: 405.w,
+                                      height: 320.h,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }).toList(),
+                      ),
 
-                    // Optional: Page Indicator (if required)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(
-                        onboardingData.length,
-                            (index) => Container(
-                          margin: EdgeInsets.symmetric(horizontal: 5),
-                          height: 14.h,
-                          width: 10.w,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: currentPage == index
-                                ? Colors.black
-                                : Colors.grey,
+                      // Optional: Page Indicator (if required)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          onboardingData.length,
+                              (index) => Container(
+                            margin: EdgeInsets.symmetric(horizontal: 5),
+                            height: 14.h,
+                            width: 10.w,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: currentPage == index
+                                  ? Colors.black
+                                  : Colors.grey,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Text(
-                      "Track Your Macros. Log your Workouts. See Results.".tr,
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        color: Color(0xff222222)
+                      const SizedBox(height: 10),
+                      Text(
+                        "Track Your Macros. Log your Workouts. See Results.".tr,
+                        style: TextStyle(
+                          fontSize: 20.sp,
+                          color: const Color(0xff222222)
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                      const SizedBox(height: 20),
 
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

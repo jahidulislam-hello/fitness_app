@@ -21,6 +21,8 @@ class _ImperialScreenState extends State<ImperialScreen> {
   void initState() {
     super.initState();
     calculateController = widget.controller;
+    // Load Imperial profile data
+    calculateController.loadProfileData(unitSystem: "Imperial");
   }
 
   @override

@@ -5,26 +5,30 @@ import 'package:get/get.dart';
 import 'package:gym_cheloper/viwes/workout/meal_plan/meal_plan_controller/add_meal_controller.dart';
 import 'package:gym_cheloper/utils/app_icons.dart';
 import 'package:gym_cheloper/viwes/workout/new_thing/create_food/create_food_screen/create_food_screen.dart';
+import 'package:gym_cheloper/viwes/workout/popup/create_receipe/create_receipe_popup.dart';
 
 // Function to show the popup
-void showAddMealPopup(BuildContext context, String selectedDate) {
+void showAddMealPopup(BuildContext context, String selectedDate, {String? mealType}) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
-    builder: (context) => AddMealPopup(selectedDate: selectedDate),
+    builder: (context) => AddMealPopup(selectedDate: selectedDate, mealType: mealType),
   );
 }
 
 class AddMealPopup extends StatelessWidget {
   final String selectedDate;
+  final String? mealType;
 
-  const AddMealPopup({super.key, required this.selectedDate});
+  const AddMealPopup({super.key, required this.selectedDate, this.mealType});
 
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(AddMealController());
     controller.selectedDate = selectedDate;
+    controller.selectedMealType.value = mealType ?? 'Breakfast';
+    controller.popupContext = context;
 
     // Load data after initializing
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -36,7 +40,9 @@ class AddMealPopup extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.85,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -120,6 +126,13 @@ class AddMealPopup extends StatelessWidget {
             }),
           ),
 
+          // Custom Navbar Button - Hide on My Recipe tab
+          Obx(() => controller.selectedTabIndex.value == 1
+              ? const SizedBox.shrink()
+              : SafeArea(
+                  child: _buildCustomNavbarButton(controller, context),
+                )),
+
           // Bottom safe area padding
           SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
@@ -142,6 +155,7 @@ class AddMealPopup extends StatelessWidget {
               ),
               child: TextField(
                 controller: controller.searchController,
+                focusNode: controller.searchFocusNode,
                 decoration: InputDecoration(
                   hintText: 'Search food...',
                   hintStyle: TextStyle(
@@ -261,17 +275,65 @@ class AddMealPopup extends StatelessWidget {
 
   Widget _buildMyRecipeTab(AddMealController controller) {
     return Obx(() {
-      if (controller.myRecipeList.isEmpty) {
-        return _buildEmptyState('No recipes found');
-      }
-
-      return ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: 20.w),
-        itemCount: controller.myRecipeList.length,
-        itemBuilder: (context, index) {
-          final item = controller.myRecipeList[index];
-          return _buildFoodItemCard(item, controller, context);
-        },
+      return Column(
+        children: [
+          // Add New Recipe Button
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: GestureDetector(
+              onTap: () {
+                // Close the bottom sheet first
+                if (controller.popupContext != null) {
+                  final contextToUse = controller.popupContext!;
+                  Navigator.of(contextToUse).pop();
+                  // Show Create Recipe Popup as modal bottom sheet
+                  _showCreateRecipePopup(contextToUse);
+                }
+              },
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                decoration: BoxDecoration(
+                  color: Color(0xff999999),
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.add,
+                      color: Colors.white,
+                      size: 20.sp,
+                    ),
+                    SizedBox(width: 8.w),
+                    Text(
+                      'Add new recipe',
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 16.h),
+          // Recipe List
+          Expanded(
+            child: controller.myRecipeList.isEmpty
+                ? _buildEmptyState('No recipes found')
+                : ListView.builder(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    itemCount: controller.myRecipeList.length,
+                    itemBuilder: (context, index) {
+                      final item = controller.myRecipeList[index];
+                      return _buildFoodItemCard(item, controller, context);
+                    },
+                  ),
+          ),
+        ],
       );
     });
   }
@@ -390,7 +452,7 @@ class AddMealPopup extends StatelessWidget {
 
   Widget _buildSearchFoodItemCard(SearchFoodItem item, AddMealController controller, BuildContext context) {
     return GestureDetector(
-      onTap: () => controller.selectSearchFood(item, context),
+      onTap: () => controller.selectSearchFood(item),
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         padding: EdgeInsets.all(16.w),
@@ -524,6 +586,15 @@ class AddMealPopup extends StatelessWidget {
     );
   }
 
+  void _showCreateRecipePopup(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => const CreateRecipePopup(),
+    );
+  }
+
   void _showOptionsMenu(BuildContext parentContext) {
     showModalBottomSheet(
       context: parentContext,
@@ -556,6 +627,7 @@ class AddMealPopup extends StatelessWidget {
                 Navigator.of(bottomSheetContext).pop();
                 showCreateFoodPopup(parentContext);
               },
+
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
                 child: Row(
@@ -585,11 +657,7 @@ class AddMealPopup extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.of(bottomSheetContext).pop();
-                Get.snackbar(
-                  'Info',
-                  'Create Recipe feature coming soon',
-                  snackPosition: SnackPosition.BOTTOM,
-                );
+                _showCreateRecipePopup(parentContext);
               },
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
@@ -620,4 +688,101 @@ class AddMealPopup extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildCustomNavbarButton(AddMealController controller, BuildContext context) {
+    return Obx(() {
+      String buttonText;
+      IconData buttonIcon;
+      VoidCallback? onTapAction;
+
+      // Get the meal type from controller
+      String mealType = controller.selectedMealType.value;
+      
+      // Button text and icon based on current tab
+      switch (controller.selectedTabIndex.value) {
+        case 0: // My Food
+          buttonText = 'Add Food';
+          buttonIcon = Icons.add;
+          onTapAction = () => showCreateFoodPopup(context, timeName: mealType.toLowerCase());
+          break;
+        case 1: // My Recipe
+          buttonText = 'Add in $mealType';
+          buttonIcon = Icons.dinner_dining;
+          onTapAction = () {
+            Navigator.of(context).pop();
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (controller.popupContext != null) {
+                _showCreateRecipePopup(controller.popupContext!);
+              }
+            });
+          };
+          break;
+        case 2: // Favourite
+          buttonText = 'Add Favourite Food';
+          buttonIcon = Icons.favorite;
+          onTapAction = () {
+            Get.snackbar(
+              'Info',
+              'Add to favourites from food items',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          };
+          break;
+        case 3: // Search Food
+          buttonText = 'Add in $mealType';
+          buttonIcon = Icons.search;
+          onTapAction = () => controller.searchFocusNode.requestFocus();
+          break;
+        default:
+          buttonText = 'Add in $mealType';
+          buttonIcon = Icons.cookie;
+      }
+
+      return Container(
+        margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+        decoration: BoxDecoration(
+          color: Color(0xffF93533),
+          borderRadius: BorderRadius.circular(12.r),
+          boxShadow: [
+            BoxShadow(
+              color: Color(0xffF93533).withOpacity(0.3),
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: InkWell(
+          onTap: onTapAction,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 24.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  buttonIcon,
+                  color: Colors.white,
+                  size: 20.sp,
+                ),
+                SizedBox(width: 8.w),
+                Flexible(
+                  child: Text(
+                    buttonText,
+                    style: TextStyle(
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+  }
 }
+
