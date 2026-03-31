@@ -21,8 +21,11 @@ class _MetricScreenState extends State<MetricScreen> {
   void initState() {
     super.initState();
     calculateController = widget.controller;
-    // Load Metric profile data
-    calculateController.loadProfileData(unitSystem: "Metric");
+    // Profile data is already loaded in controller's onInit()
+    // Wait for data to load and refresh UI
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -113,10 +116,17 @@ class _MetricScreenState extends State<MetricScreen> {
                 SizedBox(height: sizeH * .02),
                 Align(
                   alignment: Alignment.center,
-                  child: CustomButtonCommon(
-                    title: 'Done'.tr,
-                    onpress: () => calculateController.addBasicInfoHandle(isMetric: true, context: context),
-                  ),
+                  child: Obx(() {
+                    final isLoading = calculateController.basicInfoLoading.value;
+                    return CustomButtonCommon(
+                      title: isLoading ? 'Loading...'.tr : 'Done'.tr,
+                      onpress: () {
+                        if (!isLoading) {
+                          calculateController.addBasicInfoHandle(isMetric: true, context: context);
+                        }
+                      },
+                    );
+                  }),
                 ),
               ],
             ),
@@ -142,8 +152,9 @@ class _MetricWeightSliderState extends State<MetricWeightSlider> {
   @override
   void initState() {
     super.initState();
-    // Initialize controller value as string
-    widget.controller.weightLossSpeed = _value.toStringAsFixed(1);
+    // Initialize slider value from controller's API-loaded value
+    final apiValue = double.tryParse(widget.controller.weightLossSpeed) ?? 0.8;
+    _value = apiValue.clamp(0.1, 1.5);
   }
 
   @override
