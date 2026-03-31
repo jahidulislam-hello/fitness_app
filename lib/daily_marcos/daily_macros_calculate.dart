@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:gym_cheloper/daily_marcos/daily_macros_controller.dart';
 import 'package:gym_cheloper/viwes/screens/auths/info/calculate_macros.dart';
+import 'package:gym_cheloper/viwes/screens/auths/controller/calculate_controller.dart';
 
 
 class DailyMacroSheet extends StatelessWidget {
@@ -28,6 +28,14 @@ class DailyMacroSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Try to get the controller, but use passed values as fallback
+    CalculateController? controller;
+    try {
+      controller = Get.find<CalculateController>();
+    } catch (e) {
+      // Controller not found, will use passed values
+    }
+    
     // Calculate percentages
     final carbsPercent = carbsGoal > 0 ? (carbs / carbsGoal * 100).clamp(0.0, 100.0).toDouble() : 0.0;
     final proteinPercent = proteinGoal > 0 ? (protein / proteinGoal * 100).clamp(0.0, 100.0).toDouble() : 0.0;
@@ -68,11 +76,18 @@ class DailyMacroSheet extends StatelessWidget {
 
           const SizedBox(height: 18),
 
-          /// Calories Row
-          _infoRow(
-            title: "Calories",
-            value: "${caloriesGoal.toStringAsFixed(0)} kCal",
-          ),
+          /// Calories Row - Using API data from controller if available, otherwise use passed value
+          controller != null
+              ? Obx(() {
+                  return _infoRow(
+                    title: "Calories",
+                    value: "${controller!.calories.value.toStringAsFixed(0)} kCal",
+                  );
+                })
+              : _infoRow(
+                  title: "Calories",
+                  value: "${caloriesGoal.toStringAsFixed(0)} kCal",
+                ),
 
           const Divider(height: 26),
 
@@ -103,7 +118,7 @@ class DailyMacroSheet extends StatelessWidget {
 
           const SizedBox(height: 28),
 
-          /// Done Button
+          /// Done Button - Use Navigator for bottom sheet
           SizedBox(
             width: double.infinity,
             height: 54,
@@ -128,15 +143,14 @@ class DailyMacroSheet extends StatelessWidget {
 
           const SizedBox(height: 14),
 
-          /// Calculate Button
+          /// Calculate Button - Use Navigator for both closing bottom sheet and opening new screen
           SizedBox(
             width: double.infinity,
             height: 54,
             child: OutlinedButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
+                Navigator.of(context).pop(); // Close bottom sheet
+                Navigator.of(context).push(
                   MaterialPageRoute(builder: (context) => const CalculateMacros()),
                 );
               },

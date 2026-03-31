@@ -7,9 +7,25 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gym_cheloper/utils/app_icons.dart';
 import '../../../../routes/routes_name.dart';
 import '../../../widgets/widgets.dart';
+import '../controller/calculate_controller.dart';
 
-class InfoCongratulationScreen extends StatelessWidget {
+class InfoCongratulationScreen extends StatefulWidget {
   const InfoCongratulationScreen({super.key});
+
+  @override
+  State<InfoCongratulationScreen> createState() => _InfoCongratulationScreenState();
+}
+
+class _InfoCongratulationScreenState extends State<InfoCongratulationScreen> {
+  late CalculateController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<CalculateController>();
+    // Fetch custom plan data
+    controller.fetchCustomPlan();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,19 +51,24 @@ class InfoCongratulationScreen extends StatelessWidget {
                 fontsize: 20.sp,
               ),
               SizedBox(height: 30.h),
-              CustomText(text: "You should lose:"),
+              CustomText(text: "You should ${controller.isWeightLoss.value ? 'lose' : 'gain'}:"),
               SizedBox(height: 20.h),
               Align(
                 alignment: Alignment.center,
                 child: Padding(
                   padding: EdgeInsets.only(left: 40.w, right: 40.w),
-                  child: CustomButtonCommon(
-                    color: Colors.black,
-                    title: '6 kg by September 12'.tr,
-                    onpress: () {
-                      context.go(RouteNames.customNavBar);
-                    },
-                  ),
+                  child: Obx(() {
+                    final weightText = controller.isWeightLoss.value
+                        ? '${controller.weightToLose.value} ${controller.unit.value} by ${_formatDate(controller.goalDate.value)}'
+                        : '${controller.weightToLose.value} ${controller.unit.value} by ${_formatDate(controller.goalDate.value)}';
+                    return CustomButtonCommon(
+                      color: Colors.black,
+                      title: weightText,
+                      onpress: () {
+                        context.go(RouteNames.customNavBar);
+                      },
+                    );
+                  }),
                 ),
               ),
               SizedBox(height: 20.h),
@@ -58,22 +79,33 @@ class InfoCongratulationScreen extends StatelessWidget {
               SizedBox(height: 10.h),
               Center(child: BulletPointList()),
               SizedBox(height: 20.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildMacroProgress(800, 2100, Colors.black, "Calories"),
-                  SizedBox(width: 40.w),
-                  _buildMacroProgress(800, 2400, Colors.black, "Protein"),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildMacroProgress(800, 2100, Colors.black, "Carbs"),
-                  SizedBox(width: 40.w),
-                  _buildMacroProgress(800, 2400, Colors.black, "Fat"),
-                ],
-              ),
+              Obx(() {
+                final calories = controller.calories.value.toInt();
+                final protein = controller.protein.value.toInt();
+                final carbs = controller.carbs.value.toInt();
+                final fat = controller.fat.value.toInt();
+                
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildMacroProgress(calories, 2100, Colors.black, "Calories"),
+                        SizedBox(width: 40.w),
+                        _buildMacroProgress(protein, 2400, Colors.black, "Protein"),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildMacroProgress(carbs, 2100, Colors.black, "Carbs"),
+                        SizedBox(width: 40.w),
+                        _buildMacroProgress(fat, 2400, Colors.black, "Fat"),
+                      ],
+                    ),
+                  ],
+                );
+              }),
               SizedBox(height: 20.h),
               CustomText(text: "You can always fully customize your macros"),
               SizedBox(height: 10.h),
@@ -92,6 +124,26 @@ class InfoCongratulationScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String _formatDate(String dateStr) {
+    if (dateStr.isEmpty) return "September 12";
+    try {
+      final date = DateTime.parse(dateStr);
+      return "${date.day} ${_getMonthName(date.month)}, ${date.year}";
+    } catch (e) {
+      // If parsing fails, return a formatted date 24 days from now
+      final futureDate = DateTime.now().add(const Duration(days: 24));
+      return "${futureDate.day} ${_getMonthName(futureDate.month)}, ${futureDate.year}";
+    }
+  }
+
+  String _getMonthName(int month) {
+    const months = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    return months[month - 1];
   }
 
   Widget _buildMacroProgress(int value, int total, Color color, String dailyWeek) {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:go_router/go_router.dart';
 import 'package:gym_cheloper/viwes/widgets/custom_text.dart';
 import '../../../../utils/utils.dart';
 import '../../screens.dart';
@@ -16,11 +15,25 @@ class CalculateMacros extends StatefulWidget {
 
 class _CalculateMacrosState extends State<CalculateMacros> with SingleTickerProviderStateMixin {
   late TabController tabController;
+  late CalculateController imperialController;
+  late CalculateController metricController;
+  bool _hasSubmitted = false; // Prevent duplicate submissions
 
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 2, vsync: this);
+    // Initialize controllers with unit system
+    imperialController = Get.put(CalculateController(unitSystem: "Imperial"), tag: "imperial");
+    metricController = Get.put(CalculateController(unitSystem: "Metric"), tag: "metric");
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    Get.delete<CalculateController>(tag: "imperial");
+    Get.delete<CalculateController>(tag: "metric");
+    super.dispose();
   }
 
   @override
@@ -30,7 +43,7 @@ class _CalculateMacrosState extends State<CalculateMacros> with SingleTickerProv
         scrolledUnderElevation: 0,
         title: CustomText(text: "Information".tr, fontsize: 18.sp),
         leading: InkWell(
-          onTap: () => context.pop(),
+          onTap: () => Get.back(),
           child: const Icon(Icons.arrow_back_ios),
         ),
       ),
@@ -76,20 +89,27 @@ class _CalculateMacrosState extends State<CalculateMacros> with SingleTickerProv
           ),
           SizedBox(height: 16.h),
           Expanded(
-            child: TabBarView(
-              controller: tabController,
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                ImperialScreen(
-                  tabController: tabController,
-                  controller: Get.put(CalculateController(), tag: "imperial"),
-                ),
-                MetricScreen(
-                  tabController: tabController,
-                  controller: Get.put(CalculateController(), tag: "metric"),
-                ),
-              ],
-            ),
+            child: Obx(() {
+              // Show loading while data is being fetched
+              if (imperialController.profileLoading.value && metricController.profileLoading.value) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              
+              return TabBarView(
+                controller: tabController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  ImperialScreen(
+                    tabController: tabController,
+                    controller: imperialController,
+                  ),
+                  MetricScreen(
+                    tabController: tabController,
+                    controller: metricController,
+                  ),
+                ],
+              );
+            }),
           ),
         ],
       ),
