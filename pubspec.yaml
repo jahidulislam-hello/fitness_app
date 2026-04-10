@@ -64,25 +64,25 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
-  flutter_screenutil: ^5.9.3
-  pin_code_fields: ^8.0.1
-  flutter_svg: ^2.0.10
-  video_player: ^2.5.0
-  percent_indicator: ^4.2.2
-  shimmer: ^3.0.0
-  cached_network_image: ^3.4.1
-  flutter_spinkit: ^5.2.1
-  shared_preferences: ^2.3.3
-  mime_type: ^1.0.1
-  country_flags: ^2.0.0
-  smooth_page_indicator: ^1.2.0+3
-  flutter_slidable: ^3.1.2
-  flutter_widget_from_html: ^0.15.2
-  get: ^4.6.6
-  go_router: ^16.1.0
-  carousel_slider: ^5.0.0
-  flutter_animate: ^4.3.0
+  flutter_lints:
+  flutter_screenutil:
+  pin_code_fields:
+  flutter_svg:
+  video_player:
+  percent_indicator:
+  shimmer:
+  cached_network_image:
+  flutter_spinkit:
+  shared_preferences:
+  mime_type:
+  country_flags:
+  smooth_page_indicator:
+  flutter_slidable:
+  flutter_widget_from_html:
+  get:
+  go_router:
+  carousel_slider:
+  flutter_animate:
   fl_chart:
   flutter_stripe:
 
