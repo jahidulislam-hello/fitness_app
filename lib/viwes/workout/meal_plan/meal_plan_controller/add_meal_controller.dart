@@ -117,7 +117,7 @@ class AddMealController extends GetxController {
       }
 
       final url = Uri.parse(
-        "${ApiConstants.baseUrl}${ApiConstants.getAllMeals}?foodType=food&date=$selectedDate"
+        "${ApiConstants.baseUrl}${ApiConstants.getAllMeals}?foodType=food"
       );
 
       print('🌐 Loading My Food from: $url');
@@ -164,7 +164,7 @@ class AddMealController extends GetxController {
       }
 
       final url = Uri.parse(
-        "${ApiConstants.baseUrl}${ApiConstants.getAllMeals}?foodType=recipe&date=$selectedDate"
+        "${ApiConstants.baseUrl}${ApiConstants.getAllMeals}?foodType=recipe"
       );
 
       print('🌐 Loading My Recipe from: $url');
